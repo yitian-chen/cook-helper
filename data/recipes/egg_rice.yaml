@@ -1,0 +1,36 @@
+schema_version: 1
+id: egg_rice
+name: 蛋炒饭
+servings: 2
+time_minutes: 12
+tags:
+- 家常
+ingredients:
+- ingredient_id: rice
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: carrot
+  amount: 80
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 胡萝卜切小丁，鸡蛋打散。
+- 热油炒熟鸡蛋与胡萝卜，加入米饭翻炒至充分热透，加盐。

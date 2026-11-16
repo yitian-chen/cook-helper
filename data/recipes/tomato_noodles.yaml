@@ -1,0 +1,37 @@
+schema_version: 1
+id: tomato_noodles
+name: 番茄鸡蛋面
+servings: 2
+time_minutes: 20
+tags:
+- 家常
+ingredients:
+- ingredient_id: tomato
+  amount: 250
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: noodles
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 番茄切块，鸡蛋打散。
+- 热油炒软番茄，加水煮沸，加入面条。
+- 煮至面条熟透，淋入蛋液煮熟，加盐。

@@ -1,0 +1,31 @@
+schema_version: 1
+id: chicken_mushroom
+name: 蘑菇炖鸡
+servings: 2
+time_minutes: 35
+tags:
+- 家常
+ingredients:
+- ingredient_id: chicken
+  amount: 350
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: mushroom
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡肉切块，蘑菇洗净切片。
+- 热油翻炒鸡肉，加蘑菇和水，炖至鸡肉完全熟透，加盐。

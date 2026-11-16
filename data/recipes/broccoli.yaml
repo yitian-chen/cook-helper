@@ -1,0 +1,26 @@
+schema_version: 1
+id: broccoli
+name: 清炒西兰花
+servings: 2
+time_minutes: 12
+tags:
+- 家常
+ingredients:
+- ingredient_id: broccoli
+  amount: 350
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 西兰花切小朵洗净，焯熟沥水。
+- 热油翻炒，加盐调味。

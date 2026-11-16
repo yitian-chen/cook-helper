@@ -1,0 +1,31 @@
+schema_version: 1
+id: mushroom_tofu
+name: 蘑菇烧豆腐
+servings: 2
+time_minutes: 20
+tags:
+- 家常
+ingredients:
+- ingredient_id: mushroom
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: tofu
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 蘑菇与豆腐切块。
+- 热油炒蘑菇，加豆腐和适量水，炖至熟透，加盐。

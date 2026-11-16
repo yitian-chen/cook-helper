@@ -1,0 +1,31 @@
+schema_version: 1
+id: carrot_rice
+name: 胡萝卜炒饭
+servings: 2
+time_minutes: 15
+tags:
+- 家常
+ingredients:
+- ingredient_id: carrot
+  amount: 150
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: rice
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 胡萝卜切丁。
+- 热油炒熟胡萝卜，加入米饭翻炒至充分热透，加盐。

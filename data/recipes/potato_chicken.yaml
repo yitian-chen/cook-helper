@@ -1,0 +1,31 @@
+schema_version: 1
+id: potato_chicken
+name: 土豆炖鸡
+servings: 2
+time_minutes: 40
+tags:
+- 家常
+ingredients:
+- ingredient_id: potato
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: chicken
+  amount: 350
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 土豆和鸡肉切块。
+- 热油翻炒鸡肉，加土豆及水炖至完全熟透，加盐。

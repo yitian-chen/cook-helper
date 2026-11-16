@@ -19,7 +19,7 @@ class LLMClient:
         self.url = url.rstrip("/")
         if not self.url.endswith("/chat/completions"):
             self.url += "/chat/completions"
-        self.model = os.getenv("REASONING_MODEL", "deepseek-v4.1-flash")
+        self.model = os.getenv("REASONING_MODEL", "qwen3.8-flash")
         self.mode = os.getenv("REASONING_PROVIDER", "live")
         if self.mode == "live" and (not self.key or not url):
             raise LLMError("缺少 API_KEY/API_URL，请配置 .env 或选择 mock 模式")

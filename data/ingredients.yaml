@@ -1,0 +1,65 @@
+tomato:
+  name: 番茄
+  allergens: []
+  meat: false
+egg:
+  name: 鸡蛋
+  allergens:
+  - egg
+  meat: false
+potato:
+  name: 土豆
+  allergens: []
+  meat: false
+carrot:
+  name: 胡萝卜
+  allergens: []
+  meat: false
+cucumber:
+  name: 黄瓜
+  allergens: []
+  meat: false
+cabbage:
+  name: 包菜
+  allergens: []
+  meat: false
+broccoli:
+  name: 西兰花
+  allergens: []
+  meat: false
+tofu:
+  name: 豆腐
+  allergens:
+  - soy
+  meat: false
+rice:
+  name: 米饭
+  allergens: []
+  meat: false
+chicken:
+  name: 鸡肉
+  allergens: []
+  meat: true
+mushroom:
+  name: 蘑菇
+  allergens: []
+  meat: false
+noodles:
+  name: 面条
+  allergens:
+  - wheat
+  meat: false
+cooking_oil:
+  name: 食用油
+  allergens: []
+  meat: false
+salt:
+  name: 盐
+  allergens: []
+  meat: false
+soy_sauce:
+  name: 酱油
+  allergens:
+  - soy
+  - wheat
+  meat: false

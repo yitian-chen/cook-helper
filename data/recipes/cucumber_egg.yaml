@@ -1,0 +1,31 @@
+schema_version: 1
+id: cucumber_egg
+name: 黄瓜炒蛋
+servings: 2
+time_minutes: 12
+tags:
+- 家常
+ingredients:
+- ingredient_id: cucumber
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 黄瓜切片，鸡蛋打散。
+- 热油炒熟鸡蛋，加入黄瓜炒熟，加盐。

@@ -1,0 +1,32 @@
+schema_version: 1
+id: tomato_egg
+name: 番茄炒蛋
+servings: 2
+time_minutes: 15
+tags:
+- 家常
+ingredients:
+- ingredient_id: tomato
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 番茄切块，鸡蛋打散。
+- 热油炒熟鸡蛋后盛出。
+- 炒软番茄，加鸡蛋和盐翻炒至熟。

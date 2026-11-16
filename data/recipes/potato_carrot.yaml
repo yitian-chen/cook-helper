@@ -1,0 +1,31 @@
+schema_version: 1
+id: potato_carrot
+name: 土豆炒胡萝卜
+servings: 2
+time_minutes: 20
+tags:
+- 家常
+ingredients:
+- ingredient_id: potato
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: carrot
+  amount: 100
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 土豆和胡萝卜切细丝。
+- 热油下锅，翻炒并加少量水焖至熟透，加盐。

@@ -1,0 +1,26 @@
+schema_version: 1
+id: cabbage
+name: 清炒包菜
+servings: 2
+time_minutes: 10
+tags:
+- 家常
+ingredients:
+- ingredient_id: cabbage
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 包菜洗净撕块。
+- 热油翻炒至熟，加盐调味。
