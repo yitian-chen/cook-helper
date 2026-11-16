@@ -20,13 +20,14 @@ Python 自建 Agent loop + React Web 厨房助手 MVP。默认推理模型为 qw
 
 设置过敏、忌口与人数 → 上传照片或手动录入 → 核对食材数量 → Agent 调用匹配工具 → 显示前三道合规菜谱、评分、缺料及步骤。
 
-视觉 API 尚未接入。上传图片后固定返回番茄/鸡蛋示例，并明确标注 mock，必须手动修正与确认；这不代表真实识别结果。数量未知可留空，个数不自动换算重量。待买清单与营养分析将在后续阶段实现。
+视觉工具现已使用 qwen3.8-flash，通过 OpenAI image_url 传入实际上传图片。默认复用现有 API_KEY/API_URL，无需新增密钥。识别结果仍需用户核对确认；未知食材单独提示，不强行归类。显式设置 VISION_PROVIDER=mock 才会返回固定示例，服务失败不会自动降级。数量未知可留空，个数不自动换算重量。待买清单与营养分析将在后续阶段实现。
 
 12 道 YAML 菜谱在 data/recipes，标准食材字典在 data/ingredients.yaml。匹配先硬过滤限制，再按种类覆盖 70% + 数量满足 30% 评分，主料/辅料/调料权重为 3/2/1。库存、偏好由服务器绑定，模型不能覆盖。前端只渲染经过工具校验的菜谱数据，不直接采用未经校验的模型推荐文本。
 
 ## 检查
 
     PYTHONPATH=backend .venv/bin/python scripts/check_llm.py
+    PYTHONPATH=backend .venv/bin/python scripts/check_vision.py
     PYTHONPATH=backend .venv/bin/pytest backend/tests -q
     npm --prefix frontend run build
 
@@ -36,6 +37,12 @@ check_llm 会产生少量真实 API 调用，验证文本、工具调用和工�
 
 当前为单用户本地应用，默认仅监听本机，无登录鉴权。SQLite 与压缩、清除元数据后的上传图片保存在 runtime，不提交 Git。服务重启时未完成任务会标记失败，可重新创建。取消后已发出的 API 请求可能仍完成，但不会覆盖取消状态。
 
-当前分支为 feat/mvp，所有实现都在该功能分支提交。空仓库直接在功能分支建立首次提交；尚未创建或合并 main，也未推送远端。后续阶段从验收后的 main 创建新分支。
+当前视觉功能分支为 feat/vision-provider，基于已完成的 feat/mvp 创建；由于 MVP 尚未合并 main，此处使用堆叠功能分支，保留完整依赖历史。空仓库直接在功能分支建立首次提交；尚未创建或合并 main，也未推送远端。后续阶段从验收后的 main 创建新分支。
 
 详见 [实施计划](docs/IMPLEMENTATION_PLAN.md) 和 [验证记录](docs/MVP_VALIDATION.md)。
+
+## 视觉配置
+
+默认复用推理模型地址和密钥，可独立配置 VISION_API_KEY、VISION_BASE_URL、VISION_MODEL、VISION_PROVIDER。未设置时分别继承推理配置。修改代码或配置后，停止原服务并重新运行 ./scripts/dev.sh，刷新页面后重新上传图片；旧任务保留原先结果。
+
+视觉功能验证见 [P2 验证记录](docs/VISION_VALIDATION.md)。

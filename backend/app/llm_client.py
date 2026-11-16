@@ -13,14 +13,22 @@ class LLMError(RuntimeError):
     pass
 
 class LLMClient:
-    def __init__(self):
+    def __init__(self, purpose="reasoning"):
         self.key = os.getenv("REASONING_API_KEY") or os.getenv("API_KEY", "")
         url = os.getenv("REASONING_BASE_URL") or os.getenv("API_URL", "")
+        if purpose == "vision":
+            self.key = os.getenv("VISION_API_KEY") or self.key
+            url = os.getenv("VISION_BASE_URL") or url
         self.url = url.rstrip("/")
         if not self.url.endswith("/chat/completions"):
             self.url += "/chat/completions"
         self.model = os.getenv("REASONING_MODEL", "qwen3.8-flash")
         self.mode = os.getenv("REASONING_PROVIDER", "live")
+        if purpose == "vision":
+            self.model = os.getenv("VISION_MODEL") or self.model
+            self.mode = os.getenv("VISION_PROVIDER") or self.mode
+        if self.mode not in ("live", "mock"):
+            raise LLMError("模型 provider 必须是 live 或 mock")
         if self.mode == "live" and (not self.key or not url):
             raise LLMError("缺少 API_KEY/API_URL，请配置 .env 或选择 mock 模式")
 

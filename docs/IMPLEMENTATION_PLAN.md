@@ -1,6 +1,6 @@
 # Cook Helper 分阶段实施计划
 
-日期：2026-11-16；状态：P1 已实现，验证详情见 MVP_VALIDATION.md。
+日期：2026-11-16；状态：P1 已实现；P2 已接入 Qwen 视觉，验证见 MVP_VALIDATION.md 和 VISION_VALIDATION.md。
 
 ## 1. 目标与当前状态
 
@@ -10,7 +10,7 @@
 - 云端仓库：[yitian-chen/cook-helper](https://github.com/yitian-chen/cook-helper)。编写时本地目录与云端仓库均为空。
 - Agent 使用 Python 自建 loop，不引入 Agent 编排框架。
 - 目标推理模型：用户指定的 `qwen3.8-flash`。已通过用户提供的 OpenAI 格式服务验证文本、原生工具调用和工具回传；不据此推断官方模型命名。
-- 视觉识别由独立多模态 API 提供，等待用户后续提供。推理模型与视觉模型使用不同适配器、配置和密钥。
+- 视觉识别使用用户现有的 qwen3.8-flash 多模态接口，默认复用推理配置；视觉适配器支持单独覆盖模型、地址和密钥。
 - 当前只实现图片与文本交互；语音输入输出不在本轮范围内。
 
 ## 2. MVP 边界与产品流程

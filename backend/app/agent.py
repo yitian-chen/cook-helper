@@ -3,6 +3,7 @@ import time
 from . import store
 from .domain import Item, Preferences, match_recipes
 from .llm_client import LLMClient, LLMError
+from .vision import recognize_ingredients
 
 def envelope(data):
     return {"ok": True, "data": data, "error": None, "warnings": []}
@@ -49,10 +50,7 @@ async def execute(run_id, phase):
                         raise ValueError("工具参数必须为空对象，数据由服务器绑定")
                     if result is None:
                         if phase == "recognize":
-                            # Explicit fixture, never claimed to describe the uploaded image.
-                            result = {"provider": "mock", "warning": "视觉 API 尚未接入。以下为固定示例，请根据照片手动修正。",
-                                      "items": [{"ingredient_id": "tomato", "amount": 2, "unit": "piece"},
-                                                {"ingredient_id": "egg", "amount": 3, "unit": "piece"}]}
+                            result = await recognize_ingredients(run["image_id"])
                         else:
                             prefs = Preferences.model_validate(run["preferences"])
                             result = match_recipes([Item.model_validate(i) for i in run["items"]], prefs)
@@ -71,7 +69,7 @@ async def execute(run_id, phase):
         if store.preferences()["version"] != run["preferences_version"]:
             raise ValueError("偏好已更新，请重新发起任务")
         if phase == "recognize":
-            run.update(status="awaiting_confirmation", items=result["items"], vision_provider="mock", warning=result["warning"])
+            run.update(status="awaiting_confirmation", items=result["items"], vision_provider=result["provider"], vision_model=result["model"], warning=result["warning"], uncertain=result["uncertain"])
         else:
             # Output comes only from validated recipes, not unchecked model prose.
             run.update(status="completed", result=result, summary="已按已确认库存和当前饮食限制完成匹配。")

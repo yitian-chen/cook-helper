@@ -6,7 +6,7 @@ type Item={ingredient_id:string;amount:number|null;unit:string};
 type Pref={version:number;allergens:string[];excluded_ingredient_ids:string[];dietary_rules:string[];servings:number};
 type Detail={name:string;required:number;unit:string;missing:number|null;status:string};
 type Recipe={id:string;name:string;score:number;time_minutes:number;coverage:number;adequacy:number;details:Detail[];steps:string[]};
-type Run={id:string;status:string;preferences_version:number;items:Item[];warning?:string;error?:string;stale?:boolean;events:{tool:string;ok:boolean}[];result?:{recipes:Recipe[];excluded:{id:string;reason:string}[]}};
+type Run={id:string;status:string;preferences_version:number;items:Item[];warning?:string;uncertain?:string[];error?:string;stale?:boolean;events:{tool:string;ok:boolean}[];result?:{recipes:Recipe[];excluded:{id:string;reason:string}[]}};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
  const res=await fetch('/api'+path,{method:method??(body?'POST':'GET'),headers:body instanceof FormData?{}:{'Content-Type':'application/json'},body:body instanceof FormData?body:body?JSON.stringify(body):undefined});
  const data=await res.json(); if(!res.ok)throw new Error(typeof data.detail==='string'?data.detail:'输入无效，请检查后重试'); return data;
@@ -16,7 +16,7 @@ const units:Record<string,string>={g:'克',piece:'个',ml:'毫升'};
 function App(){
  const [catalog,setCatalog]=useState<Record<string,{name:string}>>({});
  const [prefs,setPrefs]=useState<Pref|null>(null);
- const [health,setHealth]=useState<{model?:string;reasoning_provider?:string}>({});
+ const [health,setHealth]=useState<{model?:string;reasoning_provider?:string;vision_provider?:string;vision_model?:string}>({});
  const [run,setRun]=useState<Run|null>(null),[items,setItems]=useState<Item[]>([]);
  const [error,setError]=useState(''),[busy,setBusy]=useState(false),[preview,setPreview]=useState('');
  const [dirty,setDirty]=useState(false);
@@ -41,7 +41,7 @@ function App(){
  return <div className="shell">
  <header><a className="brand" href="/">灶边<span>COOK HELPER</span></a><span className="badge">厨房灵感 · MVP</span></header>
  <section className="hero"><div className="eyebrow">从手边食材，到一餐好饭</div><h1>今天，做点什么？</h1><p>看看厨房里有什么，让每一份食材都有好去处。</p></section>
- <div className="notice">视觉识别为模拟模式：上传后展示固定示例，请手动修正。推理模型：{health.model??'连接中'} · {health.reasoning_provider==='mock'?'离线模拟':'真实 API'}</div>
+ <div className="notice">{health.vision_provider==='live'?'视觉识别：'+health.vision_model+'，识别后请核对食材。':health.vision_provider==='mock'?'视觉模拟模式：上传后展示固定示例，请手动修正。':'视觉服务连接中或配置不可用。'} 推理模型：{health.model??'连接中'} · {health.reasoning_provider==='mock'?'离线模拟':'真实 API'}</div>
  {error&&<div className="error" role="alert">{error}</div>}
  <main><aside className="card"><div className="eyebrow">01 / 饮食偏好</div><h2>先了解你的餐桌</h2>
  {prefs&&<><label>用餐人数<input type="number" min="1" max="20" value={prefs.servings} onChange={e=>change({servings:Number(e.target.value)})}/></label>
@@ -57,6 +57,7 @@ function App(){
  <button className="text-button" disabled={working} onClick={()=>start()}>或手动录入食材 →</button>
  {working&&<p role="status" className="status">Agent 正在处理，请稍候…</p>}
  {run?.warning&&<p className="notice">{run.warning}</p>}
+ {run?.uncertain?.length ? <div className="notice">待确认：{run.uncertain.join("；")}</div> : null}
  {run?.status==='awaiting_confirmation'&&<><h3>核对食材与数量</h3><p className="hint">数量未知可留空。个数不自动换算成克数，避免虚构重量。</p>
  {items.map((item,index)=><div className="item" key={index}><select aria-label="食材" value={item.ingredient_id} onChange={e=>setItems(items.map((v,i)=>i===index?{...v,ingredient_id:e.target.value}:v))}>{Object.entries(catalog).map(([id,v])=><option key={id} value={id}>{v.name}</option>)}</select>
  <input aria-label="数量" type="number" min="0" placeholder="未知" value={item.amount??''} onChange={e=>setItems(items.map((v,i)=>i===index?{...v,amount:e.target.value===''?null:Number(e.target.value)}:v))}/>

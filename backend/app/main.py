@@ -27,9 +27,10 @@ def health():
     from .llm_client import LLMClient
     try:
         client = LLMClient()
-        return {"ok": True, "model": client.model, "reasoning_provider": client.mode, "vision_provider": "mock"}
+        vision = LLMClient(purpose="vision")
+        return {"ok": True, "model": client.model, "reasoning_provider": client.mode, "vision_provider": vision.mode, "vision_model": vision.model}
     except Exception:
-        return {"ok": False, "error": "推理模型配置缺失", "vision_provider": "mock"}
+        return {"ok": False, "error": "模型配置无效", "vision_provider": "unavailable"}
 
 @app.get("/api/ingredients")
 def ingredients():
