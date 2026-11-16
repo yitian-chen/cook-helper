@@ -1,0 +1,41 @@
+# 灶边 · Cook Helper
+
+Python 自建 Agent loop + React Web 厨房助手 MVP。默认推理模型为 qwen3.8-flash，使用 OpenAI 格式的 chat completions 和原生工具调用。
+
+## 本地启动
+
+需要 Python 3.11+、Node.js 20.19+。在 cook-helper 根目录执行：
+
+    cp .env.example .env
+    # 填写 API_KEY 和 API_URL
+    ./scripts/dev.sh
+
+已有 docs/.env 时不必复制。配置优先级：环境变量 > 根目录 .env > docs/.env。API_URL 可填写 API 根地址（例如 https://provider.example/v1）或完整 chat/completions 地址。密钥仅由后端读取。
+
+打开 http://127.0.0.1:8000 ，接口文档位于 http://127.0.0.1:8000/docs 。启动脚本首次安装依赖、构建前端并启动后端。开发前端热更新：后端启动后另开终端执行 npm --prefix frontend run dev。
+
+离线演示：设置 REASONING_PROVIDER=mock，界面会明确标注；默认使用真实 API，不在调用失败时自动切换到模拟模式。
+
+## 当前能力
+
+设置过敏、忌口与人数 → 上传照片或手动录入 → 核对食材数量 → Agent 调用匹配工具 → 显示前三道合规菜谱、评分、缺料及步骤。
+
+视觉 API 尚未接入。上传图片后固定返回番茄/鸡蛋示例，并明确标注 mock，必须手动修正与确认；这不代表真实识别结果。数量未知可留空，个数不自动换算重量。待买清单与营养分析将在后续阶段实现。
+
+12 道 YAML 菜谱在 data/recipes，标准食材字典在 data/ingredients.yaml。匹配先硬过滤限制，再按种类覆盖 70% + 数量满足 30% 评分，主料/辅料/调料权重为 3/2/1。库存、偏好由服务器绑定，模型不能覆盖。前端只渲染经过工具校验的菜谱数据，不直接采用未经校验的模型推荐文本。
+
+## 检查
+
+    PYTHONPATH=backend .venv/bin/python scripts/check_llm.py
+    PYTHONPATH=backend .venv/bin/pytest backend/tests -q
+    npm --prefix frontend run build
+
+check_llm 会产生少量真实 API 调用，验证文本、工具调用和工具结果回传。后端测试使用隔离的临时数据库和 mock。
+
+## 运行与开发约定
+
+当前为单用户本地应用，默认仅监听本机，无登录鉴权。SQLite 与压缩、清除元数据后的上传图片保存在 runtime，不提交 Git。服务重启时未完成任务会标记失败，可重新创建。取消后已发出的 API 请求可能仍完成，但不会覆盖取消状态。
+
+当前分支为 feat/mvp，所有实现都在该功能分支提交。空仓库直接在功能分支建立首次提交；尚未创建或合并 main，也未推送远端。后续阶段从验收后的 main 创建新分支。
+
+详见 [实施计划](docs/IMPLEMENTATION_PLAN.md) 和 [验证记录](docs/MVP_VALIDATION.md)。
