@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>厨房助手 · 语音测试</title>
+<style>
+:root{font-family:system-ui,"Microsoft YaHei",sans-serif;color:#243447;background:#f4f6f9;font-size:16px}
+body{max-width:920px;margin:36px auto;padding:0 20px 48px}h1{font-size:28px;margin-bottom:10px}h2{font-size:20px;margin:0 0 15px}p{line-height:1.7}section{background:white;border:1px solid #dce3eb;border-radius:14px;padding:24px;margin-top:20px}.sub{color:#5c6d80}label{display:block;font-weight:600;margin:12px 0 7px}select,textarea{box-sizing:border-box;width:100%;padding:12px;font:inherit;border:1px solid #bbc7d5;border-radius:8px;background:white}textarea{min-height:90px;resize:vertical}button{font:inherit;border:0;border-radius:8px;background:#245bc7;color:white;padding:12px 18px;margin:12px 8px 0 0;cursor:pointer}button.secondary{background:#eaf0fa;color:#244b8b}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid #e3a123;outline-offset:3px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.status{position:sticky;top:10px;z-index:2;background:#eef4ff;border:1px solid #b4c9ee;border-radius:10px;padding:14px 18px;white-space:pre-wrap;line-height:1.6}.status.error{background:#fff0ef;border-color:#e9aaa4;color:#a12620}.status.success{background:#edf7ee;border-color:#aacdab;color:#24582b}.meter{height:14px;background:#e5ebf2;border-radius:8px;overflow:hidden;margin:14px 0}.meter div{height:100%;width:0;background:#219c72;transition:width .12s}#recognized,#reply{white-space:pre-wrap;line-height:1.7;background:#f4f6f9;padding:14px;border-radius:8px;min-height:26px}.note{font-size:14px;color:#66788b}#config{font-weight:600}a{color:#245bc7}audio{width:100%;margin-top:10px}@media(max-width:640px){.grid{grid-template-columns:1fr}body{margin-top:22px}section{padding:18px}}
+</style>
+</head>
+<body>
+<h1>厨房助手 · 语音测试</h1>
+<p class="sub">先确认能录到声音、能听到回放，再测试云端识别和播报。无需阅读接口返回的数据。</p>
+<p class="note">工作方式：Python 从所选麦克风录音 → 所选云端识别 → Agent 处理 → 所选云端语音合成 → 本机音箱播放。支持分别选择阿里云或讯飞。录音和回放不联网，未调用操作系统听写；只有点击识别、合成或完整流程才请求云端。</p>
+<div id="status" class="status" role="status" aria-live="polite">正在连接服务……</div>
+<section>
+<h2>云端服务选择（切换本身不调用云端）</h2>
+<div class="grid"><div><label for="asrProvider">语音识别 ASR</label><select id="asrProvider" disabled><option value="aliyun">阿里云 · Paraformer</option><option value="xfyun">科大讯飞 · 语音听写 v2</option></select></div><div><label for="ttsProvider">语音合成 TTS</label><select id="ttsProvider" disabled><option value="aliyun">阿里云 · CosyVoice</option><option value="xfyun">科大讯飞 · 在线语音合成 v2</option></select></div></div>
+<button id="applyProviders" disabled>应用服务商选择（停止放音）</button>
+<p id="providerSummary" class="note">正在读取服务商配置……</p>
+<p class="note">密钥只填本机 .env，修改后须重启服务。页面选择仅本次运行有效，不修改 .env。讯飞版本待实际云端测试；阿里云原配置保留。切换服务商不会切换麦克风或音箱。</p>
+</section>
+<section>
+<h2>1. 选择麦克风和音箱</h2>
+<p class="note">这里使用的是运行 Python 服务那台设备的麦克风和音箱。请先调低音量。</p>
+<div class="grid"><div><label for="input">收音：麦克风</label><select id="input" disabled></select></div><div><label for="output">放音：音箱 / 耳机</label><select id="output" disabled></select></div></div>
+<button id="apply" disabled>应用设备选择</button><button id="refresh" class="secondary">重新扫描设备（停止放音）</button><button id="tone" class="secondary" disabled>播放一声提示音</button>
+<p id="deviceHint" class="note">连接/断开设备后先重新扫描，再重新选择并应用；扫描会停止放音并清除旧编号，录音或云端处理期间不可扫描。</p>
+</section>
+<section>
+<h2>2. 录一段话，再听回放（不联网）</h2>
+<p>点击开始后，说“我想做番茄炒鸡蛋”，然后点击结束。<span id="limit"></span></p>
+<button id="record" disabled>开始录音</button><button id="finish" class="secondary" disabled>结束录音</button><button id="replay" class="secondary" disabled>回放刚才的录音</button><button id="stop" class="secondary">停止放音</button>
+<div class="meter" role="meter" aria-label="麦克风音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="level"></div></div>
+<p id="recordNote" class="note">尚未录音。录音时绿色音量条应随说话变化；最终以回放是否清楚为准。</p>
+<label><input type="checkbox" id="heard">我听到了清楚、完整的录音回放</label>
+</section>
+<section>
+<h2>3. 看看语音识别是否听对了</h2>
+<p id="config" class="note">正在检查云端配置……</p>
+<button id="asr" disabled>把刚才的录音识别成文字</button>
+<p class="note">此步骤会向云端发送录音并消耗服务额度。核对菜名、数字和整句话是否正确。</p>
+<div id="recognized">识别结果将显示在这里。</div>
+</section>
+<section>
+<h2>4. 输入文字，让音箱说出来</h2>
+<label for="text">要播报的文字</label><textarea id="text" maxlength="2000">这是厨房助手的语音输出测试，请检查声音是否清晰。</textarea>
+<label><input type="checkbox" id="streaming" checked>边生成边播放（推荐）</label>
+<button id="tts" disabled>生成语音并播放</button><button id="ttsReplay" class="secondary" disabled>再次播放生成的语音</button>
+<p class="note">此步骤调用云端语音合成。它只测试播报，无需连接 Agent。</p>
+<p id="ttsTiming" class="note">首次收到音频就开始播放；相同文字再次播报可以复用本地缓存。计时不包含蓝牙音箱自身延迟。</p>
+</section>
+<section>
+<h2>5. 最后测试整条流程</h2>
+<p>使用刚才录音，依次完成识别、Agent 处理、语音合成和播放。</p>
+<p id="agentMode" class="note"></p>
+<button id="pipeline" disabled>运行完整语音流程</button>
+<div id="reply">Agent 的回复将显示在这里。</div>
+<p class="note">播放视频、暂停视频和手势开关需主系统接入。录音前，本页会停止助手播报。</p>
+</section>
+<p class="note">开发同学可继续使用 <a href="/docs">接口测试页面</a>。这个页面没有加载任何外部网页组件。</p>
+<script>
+const $=id=>document.getElementById(id);
+let recording=false,busy=false,asrReady=false,ttsReady=false,recordFile=null,ttsFile=null,timer=null,polling=false;
+function message(text,kind=''){ $('status').textContent=text;$('status').className='status '+kind; }
+async function api(path,body){
+ const response=await fetch(path,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const data=await response.json();
+ if(!response.ok){let detail=typeof data.message==='string'?data.message:'操作未完成。请检查设备选择和服务窗口。';throw Error(detail);}
+ return data;
+}
+function buttons(){
+ for(const id of ['apply','refresh','tone','record','input','output','asrProvider','ttsProvider','applyProviders'])$(id).disabled=busy||recording;
+ $('finish').disabled=busy||!recording;
+ $('replay').disabled=busy||recording||!recordFile;
+ $('asr').disabled=busy||recording||!recordFile||!asrReady;
+ $('tts').disabled=busy||recording||!ttsReady;
+ $('ttsReplay').disabled=busy||recording||!ttsFile;
+ $('pipeline').disabled=busy||recording||!recordFile||!asrReady||!ttsReady;
+}
+function showProviders(settings){
+ const names={aliyun:'阿里云',xfyun:'科大讯飞'};
+ asrReady=settings.asr.configured;ttsReady=settings.tts.configured;
+ $('asrProvider').value=settings.asr.provider;$('ttsProvider').value=settings.tts.provider;
+ const describe=(kind,label)=>{const item=settings[kind];return label+'：'+names[item.provider]+' / '+item.model+(item.voice?' / '+item.voice:'')+'；'+(item.configured?'已填写配置（权限和额度仍需实际调用验证）':'缺少 '+item.missing.join('、'));};
+ $('providerSummary').textContent=describe('asr','识别')+'。\n'+describe('tts','播报')+'。';
+ $('config').textContent=describe('asr','当前识别服务')+'。识别和播报分别检查配置；本地录音与回放可独立测试。';
+}
+function showDeviceHint(settings){
+ const windows='Windows：要从电脑扬声器出声，优先选明确的 Realtek 扬声器 · WASAPI/DirectSound。本机实测 MME 旧标签可能跟随蓝牙路由，WDM-KS 与 Hands-Free 初次勿选。';
+ const linux='Linux/树莓派：先在系统声音设置中连接并选择目标音箱，再使用 default、pulse、pipewire 或实际可用的 ALSA 入口；列表不一定显示蓝牙品牌。';
+ $('deviceHint').textContent=(settings.platform==='windows'?windows:linux)+' 连接/断开设备后重新扫描、重新选择并应用；扫描会停止放音并清除旧编号。';
+}
+async function action(fn){if(busy)return;busy=true;buttons();try{await fn();}catch(error){message(error.message,'error');}finally{busy=false;buttons();}}
+async function load(){
+ const [devices,settings]=await Promise.all([api('/devices'),api('/settings')]);
+ for(const [id,kind,selected] of [['input','input',settings.input_device],['output','output',settings.output_device]]){
+  const select=$(id);select.replaceChildren(new Option('系统默认（推荐先试）',''));
+  devices.forEach((d,index)=>{if(d['max_'+kind+'_channels']>0){const host=settings.hostapis[d.hostapi]?.name||'';const warning=/WDM-KS/i.test(host)?' [底层接口，初次勿选]':/Hands-Free/i.test(d.name)?' [通话接口]':'';select.add(new Option(d.name+' · '+host+warning,String(d.index??index)));}});
+  if(selected!==null&&selected!==undefined){for(const opt of select.options)if(opt.value===String(selected))select.value=String(selected);}
+ }
+ showProviders(settings);
+ showDeviceHint(settings);
+ $('limit').textContent='最长 '+settings.max_seconds+' 秒自动结束。';
+ $('agentMode').textContent=settings.agent_mode==='mock'?'当前为模拟 Agent：只验证文字交接，不会控制视频；回复会说明是模拟。':'当前为真实 Agent 接口模式，请确保同学的服务已经启动。';
+ message('已连接。先选好设备，点击“应用设备选择”。','success');
+}
+$('applyProviders').onclick=()=>action(async()=>{const settings=await api('/settings/providers',{asr_provider:$('asrProvider').value,tts_provider:$('ttsProvider').value});showProviders(settings);ttsFile=null;$('recognized').textContent='服务商已切换，请重新识别录音。';$('ttsTiming').textContent='服务商已切换，请重新生成语音。缓存按服务商和音色隔离。';message(settings.message,'success');});
+$('apply').onclick=()=>action(async()=>{const result=await api('/settings/devices',{input_device:$('input').value===''?null:Number($('input').value),output_device:$('output').value===''?null:Number($('output').value)});message('设备已应用。实际放音目标：'+result.output_name+'。可以播放提示音检查。','success');});
+$('refresh').onclick=()=>action(async()=>{await api('/devices/refresh',{});await load();message('已重新扫描设备并清除旧编号。请重新选择麦克风和音箱，再点击“应用设备选择”。','success');});
+$('tone').onclick=()=>action(async()=>{const result=await api('/test-tone',{});message('已启动提示音。程序实际打开：'+result.output_name+' · '+result.output_interface+'。请确认声音来自该设备。');});
+async function finishRecord(){const data=await api('/record/stop',{});recordFile=data.file;recording=false;clearInterval(timer);timer=null;$('level').style.width='0';$('recordNote').textContent='录音已保存。点击“回放刚才的录音”，听清楚后再测试识别。';message('录音完成，请先回放检查。','success');}
+async function poll(){if(polling||!recording)return;polling=true;try{const data=await api('/record/level');const value=Math.min(100,Math.round(Math.sqrt(Math.max(0,data.level))*160));$('level').style.width=value+'%';document.querySelector('.meter').setAttribute('aria-valuenow',String(value));if(!data.recording&&!busy)await action(finishRecord);}catch(error){message('读取录音状态失败，可尝试点击“结束录音”。','error');}finally{polling=false;}}
+$('record').onclick=()=>action(async()=>{await api('/record/start',{});recordFile=null;$('heard').checked=false;recording=true;$('recordNote').textContent='正在录音，请说话……点击结束后再回放。';message('正在录音。说完后点击“结束录音”。');timer=setInterval(poll,200);});
+$('finish').onclick=()=>action(finishRecord);
+async function playback(file){const result=await api('/play',{file});message('正在播放。程序实际打开：'+result.output_name+' · '+result.output_interface+'。需要中断可点“停止放音”。');}
+$('replay').onclick=()=>action(()=>playback(recordFile));
+$('stop').onclick=async()=>{try{await api('/play/stop',{});message('已停止放音。');}catch(e){message(e.message,'error');}};
+$('asr').onclick=()=>action(async()=>{message('正在识别，请稍等……');const data=await api('/asr',{file:recordFile});$('recognized').textContent=data.text;message('识别完成。请检查文字与刚才说的话是否一致。','success');});
+$('tts').onclick=()=>action(async()=>{
+ if(!$('text').value.trim())throw Error('请先输入要播报的文字。');
+ if($('streaming').checked){
+  message('正在连接语音服务，收到音频后直接播报。可用“停止放音”中断。');
+  const data=await api('/tts/speak',{text:$('text').value});ttsFile=data.file;
+  if(data.status==='cancelled'){message('本次播报已停止。');$('ttsTiming').textContent='已取消，不保存不完整语音。';}
+  else if(data.cache_hit){message('已从本地缓存开始播放。','success');$('ttsTiming').textContent='使用本地缓存；提交播放耗时 '+data.playback_submit_seconds+' 秒。';}
+  else {message('本次流式播报已完成。','success');$('ttsTiming').textContent='首次提交音频播放：'+data.first_audio_seconds+' 秒；合成和播放全程：'+data.total_seconds+' 秒。前者是首次出声等待的近似值。';}
+ }else{
+  message('整段合成中，完成后播放……');const data=await api('/tts',{text:$('text').value});ttsFile=data.file;
+  $('ttsTiming').textContent='整段合成等待：'+data.synthesis_seconds+' 秒，随后开始播放。';await playback(ttsFile);
+ }
+});
+$('ttsReplay').onclick=()=>action(()=>playback(ttsFile));
+$('pipeline').onclick=()=>action(async()=>{message('正在识别并调用 Agent，随后边生成边播报回复……');const data=await api('/pipeline',{file:recordFile,play:true});$('recognized').textContent=data.text;$('reply').textContent=data.agent.reply_text;ttsFile=data.audio_file;$('ttsTiming').textContent='识别 '+data.timings.asr_seconds+' 秒；Agent '+data.timings.agent_seconds+' 秒；合成与播放 '+data.timings.tts_and_playback_seconds+' 秒（包含说话时长）。';message(data.playback.status==='cancelled'?'回复播报已取消。':'语音流程已完成。模拟 Agent 不代表视频控制已接通。','success');});
+action(load);
+</script>
+</body></html>
