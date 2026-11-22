@@ -42,3 +42,13 @@ header nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
  header button{padding:4px 6px;font-size:14px}
  header small{display:none}
 }
+.swap-panel{border-top:1px solid #cad8c6;margin-top:12px;padding-top:10px}
+.recipe-card:has(.swap-panel){grid-column:1/-1}
+.swap-panel h4{margin:0 0 8px}
+.swap-panel form{display:flex;gap:6px;align-items:center}
+.swap-panel input{min-width:0;flex:1}
+.swap-panel form button{margin:0}
+.swap-option{border-top:1px solid #d6dfd2;padding:10px 0;margin:10px 0 0}
+.swap-option small{margin-left:12px}
+.swap-option p{margin:3px 0}
+.undo-swap{padding:8px 0}

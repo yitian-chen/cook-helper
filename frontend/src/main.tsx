@@ -12,7 +12,10 @@ type Task={id:string;dish:string;action:string;start:number;end:number;after:str
 type Message={role:'user'|'assistant';content:string;image?:string};
 type Session={id:string;title:string};
 const currentRun=(id:string)=>api<Run>('/v2/current?session_id='+encodeURIComponent(id));
-type Run={session_id:string;revision:number;preferences_version:number;messages:Message[];ready:boolean;
+type Quantity={name:string;unit:string;amount:number};
+type Alternative={id:string;name:string;reason:string;minutes:number;added:Quantity[];saved:Quantity[];needs_shopping:boolean;equipment:string[]};
+type Preview={dish_id:string;options:Alternative[]};
+type Run={swap_preview?:Preview|null;undo_swap?:{menu:{dishes:Dish[]}}|null;session_id:string;revision:number;preferences_version:number;messages:Message[];ready:boolean;
  menu:{version:number;people:number;dishes:Dish[]}|null;
  timeline:{id:string;minutes:number;steps:Task[];done:string[]}|null;kitchen?:Kitchen|null};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
@@ -25,7 +28,7 @@ type AgentEvent = ({type: 'tool'} & ToolProgress) | {type: 'result'; result: Run
 const toolLabels: Record<string, string> = {
  recognize_ingredients: '识别食材',
  write_inventory: '更新食材库存',
- compose_menu:'搭配整餐',replace_dish:'替换菜品',confirm_ready:'确认备餐',generate_timeline:'编排烹饪时间线',
+ compose_menu:'搭配整餐',replace_dish:'比较替代菜',choose_dish:'更新餐单',undo_swap:'恢复原菜',confirm_ready:'确认备餐',generate_timeline:'编排烹饪时间线',
  generate_shopping_list: '生成待买清单',
  analyze_nutrition: '估算营养',
 };
@@ -81,12 +84,15 @@ function App(){
  const [messages,setMessages]=useState<Message[]>([welcome]),[draft,setDraft]=useState('');
  const [file,setFile]=useState<File|null>(null),[run,setRun]=useState<Run|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState('');
+ const [preview,setPreview]=useState<Preview|null>(null),[swapRequest,setSwapRequest]=useState('');
+ const panel=useRef<HTMLDivElement>(null);
  const [progress,setProgress]=useState<ToolProgress[]|null>(null);
  const dialog=useRef<HTMLDialogElement>(null),end=useRef<HTMLDivElement>(null),picker=useRef<HTMLInputElement>(null);
  const kitchenDialog=useRef<HTMLDialogElement>(null);
  const [equipment,setEquipment]=useState<Kitchen>(initialKitchen);
  const [storedKitchen,setStoredKitchen]=useState<Kitchen|null>(null);
  function applyState(next:Run){
+  setPreview(next.swap_preview??null);setSwapRequest('');
   setRun(next);setMessages([welcome,...next.messages]);
  }
  function openKitchen(){setEquipment(storedKitchen??initialKitchen);kitchenDialog.current?.showModal()}
@@ -120,7 +126,7 @@ function App(){
    sessionDrawer.current?.close();
   });
  }
- useEffect(()=>{end.current?.scrollIntoView({block:'end'})},[messages,run?.revision,busy,progress]);
+ useEffect(()=>{if(preview)panel.current?.scrollIntoView({block:'nearest'});else end.current?.scrollIntoView({block:'end'})},[messages,progress,preview]);
  async function action(fn:()=>Promise<void>){setError('');setBusy(true);try{await fn()}catch(e){setError((e as Error).message);try{const [state,p]=await Promise.all([currentRun(run!.session_id),api<Pref>('/preferences')]);applyState(state);setStoredKitchen(state.kitchen??null);setSaved(p);setPrefs(p)}catch{/* keep the original error */}}finally{setBusy(false)}}
  async function askAgent(path: string, body: object) {
   setProgress([]);
@@ -158,15 +164,26 @@ function App(){
    if(next.ready&&!next.timeline&&!storedKitchen) openKitchen();
   })
  }
- async function menuAction(kind:'replace'|'ready'|'schedule',dish?:Dish){
-  if(!run)return;
+ function version(){
+  return {session_id:run!.session_id,revision:run!.revision,preferences_version:run!.preferences_version};
+ }
+ async function openAlternatives(dish:Dish){
+  if(preview?.dish_id===dish.id){setPreview(null);return}
   await action(async()=>{
-   if(dish)append({role:'user',content:'换掉'+dish.name});
-   const next=await askAgent('/v2/turn',{revision:run.revision,preferences_version:run.preferences_version,action:kind,dish_id:dish?.id});
-   applyState(next);
-   if(next.ready&&!next.timeline&&!storedKitchen)openKitchen();
+   const options=await api<Preview>('/v2/alternatives',{...version(),dish_id:dish.id});
+   setSwapRequest('');setPreview(options);
   });
  }
+ async function menuAction(kind:'replace'|'choose'|'undo'|'ready'|'schedule',dish?:Dish,target?:Alternative){
+  if(!run)return;
+  await action(async()=>{
+   const next=await askAgent('/v2/turn',{...version(),action:kind,dish_id:dish?.id,target_id:target?.id,
+    text:kind==='replace'?swapRequest.trim():undefined});
+   applyState(next);
+   if(kind==='ready'&&next.ready&&!next.timeline&&!storedKitchen)openKitchen();
+  });
+ }
+ const quantities=(rows:Quantity[])=>rows.map(q=>q.name+' '+q.amount+(units[q.unit]??q.unit)).join('、');
  async function saveKitchen(){
   if(!run)return;
   await action(async()=>{
@@ -198,7 +215,21 @@ function App(){
  <div className="dish-grid">{run.menu.dishes.map(d=><article className="recipe-card" key={d.id}>
  <small>{roles[d.course]??d.course} · {d.portions} 标准份</small><h3>{d.name}</h3>
  <p>{d.ingredients.map(i=>i.name+' '+i.amount+(units[i.unit]??i.unit)).join('、')}</p>
- <button disabled={busy} onClick={()=>menuAction('replace',d)}>换这道</button></article>)}</div>
+ <button disabled={busy} aria-expanded={preview?.dish_id===d.id} onClick={()=>openAlternatives(d)}>{preview?.dish_id===d.id?'收起候选':'换这道'}</button>
+ {preview?.dish_id===d.id&&<div className="swap-panel" ref={panel} aria-label={d.name+'的替代菜'}>
+ <h4>挑一道替代菜</h4>
+ <form onSubmit={e=>{e.preventDefault();if(swapRequest.trim()&&!busy)menuAction('replace',d)}}>
+ <input aria-label="本次换菜要求" placeholder="例如：想用牛肉、不用炒锅" maxLength={500} value={swapRequest} onChange={e=>setSwapRequest(e.target.value)}/>
+ <button disabled={busy||!swapRequest.trim()}>筛选</button></form>
+ {!preview.options.length&&<p>没有符合这次要求的替代菜。可以调整条件，或保留原菜。</p>}
+ {run.timeline&&<p>换菜后需要重新安排烹饪时间线。</p>}
+ {preview.options.map(option=><section className="swap-option" key={option.id}>
+ <strong>{option.name}</strong><small>约 {option.minutes} 分钟</small>
+ <p>{option.reason}{option.equipment.length?' · '+option.equipment.map(e=>kitchenLabels[e as keyof Kitchen]).join('、'):''}</p>
+ <p>{option.added.length?'多买 '+quantities(option.added):option.needs_shopping?'无需额外添购':'整餐无需添购'}{option.saved.length?'；少买 '+quantities(option.saved):''}</p>
+ <button disabled={busy} aria-label={'换成'+option.name} onClick={()=>menuAction('choose',d,option)}>换成这道</button></section>)}
+ </div>}</article>)}</div>
+ {run.undo_swap&&<div className="undo-swap">已换成{run.menu.dishes.find(d=>!run.undo_swap!.menu.dishes.some(old=>old.id===d.id))?.name} <button disabled={busy} onClick={()=>menuAction('undo')}>撤销换菜</button></div>}
  {!run.ready&&<button className="primary" disabled={busy} onClick={()=>menuAction('ready')}>食材已备齐</button>}
  {run.ready&&!run.timeline&&<button disabled={busy} onClick={()=>storedKitchen?menuAction('schedule'):openKitchen()}>{storedKitchen?'生成时间线':'配置厨房并生成时间线'}</button>}
  </section>}
