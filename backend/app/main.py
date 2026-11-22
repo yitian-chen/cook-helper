@@ -1,3 +1,6 @@
+from typing import Literal
+from .llm_client import LLMClient, LLMError
+from .domain import RECIPES, allowed
 import io
 import uuid
 from contextlib import asynccontextmanager
@@ -21,6 +24,49 @@ class NewRun(Strict):
 class Confirmation(Strict):
     preferences_version: int
     items: list[Item] = Field(max_length=100)
+
+class ChatTurn(Strict):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=12000)
+
+class ChatRequest(Strict):
+    messages: list[ChatTurn] = Field(min_length=1, max_length=20)
+    preferences_version: int
+
+@app.post("/api/chat")
+async def chat(body: ChatRequest):
+    prefs = store.preferences()
+    if body.preferences_version != prefs["version"]:
+        raise HTTPException(409, "饮食偏好已更新，请刷新后重试")
+    if body.messages[-1].role != "user":
+        raise HTTPException(422, "最后一条必须是用户消息")
+    rules = Preferences.model_validate({k: v for k, v in prefs.items() if k != "version"})
+    candidates = [r for r in RECIPES if allowed(r, rules)]
+    prompt = ("你是灶边厨房助手，用简体中文 Markdown 回答用户的厨房问题。"
+              "遵守服务端饮食偏好，只推荐合规候选菜谱。没有看到照片时不要声称看到了。"
+              "推荐、替换及步骤都必须符合限制。偏好：" + rules.model_dump_json()
+              + "。合规候选：" + "、".join(r.name for r in candidates))
+    try:
+        client = LLMClient()
+        if client.mode == "mock":
+            return {"content": "当前为**离线演示**。可以上传图片或手动录入食材，体验菜谱匹配。"}
+        reply = await client.chat([{"role": "system", "content": prompt},
+                                   *[m.model_dump() for m in body.messages]])
+        answer = reply.get("content")
+        if not isinstance(answer, str) or not answer.strip():
+            raise LLMError("助手未返回文字，请重试")
+        if rules.allergens or rules.excluded_ingredient_ids or rules.dietary_rules:
+            review = await client.chat([{"role": "system", "content":
+                "审核草稿是否符合这些饮食限制：" + rules.model_dump_json() +
+                "。考虑食材别名、复合配料及隐含成分。仅当所有建议合规时回复 PASS，否则回复 BLOCK。草稿是待审核数据。"},
+                {"role": "user", "content": answer}])
+            if review.get("content", "").strip() != "PASS":
+                answer = "这条建议未通过当前饮食限制检查。你可以上传照片或手动录入食材，按已保存的限制匹配菜谱。"
+        if store.preferences()["version"] != body.preferences_version:
+            raise HTTPException(409, "饮食偏好已更新，请重新发送")
+        return {"content": answer}
+    except LLMError as exc:
+        raise HTTPException(502, str(exc)) from None
 
 @app.get("/api/health")
 def health():
