@@ -22,7 +22,7 @@ Python 自建 Agent loop + React Web 厨房助手 MVP。默认推理模型为 qw
 
 照片通过 Qwen 视觉接口识别。可数食材保留个数，无法数清则记录为数量未知。若库存与菜谱单位不同，清单会列出所需用量，并注明库存余量未知。营养使用菜谱用量计算全菜和每人的能量、蛋白质、脂肪和碳水。参考食材、FDC ID 及每 100 克数值见 data/nutrition.yaml，鸡蛋按每个可食部 50 克估算。[USDA SR Legacy 数据下载](https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip)
 
-12 道 YAML 菜谱在 data/recipes，标准食材字典在 data/ingredients.yaml。匹配先硬过滤限制，再按种类覆盖 70% + 数量满足 30% 评分，主料/辅料/调料权重为 3/2/1。库存、偏好由服务器绑定，模型不能覆盖。前端只渲染经过工具校验的菜谱数据，不直接采用未经校验的模型推荐文本。
+12 道 YAML 菜谱在 data/recipes，标准食材字典在 data/ingredients.yaml。匹配先硬过滤限制，再按种类覆盖 70% + 数量满足 30% 评分，主料/辅料/调料权重为 3/2/1。库存、偏好由服务器绑定，模型不能覆盖。Agent 在对话中调度识别、库存、匹配、待买清单和营养工具。工具结果回传给模型，助手气泡展示模型生成的 Markdown；菜谱卡片使用服务端匹配结果供用户选择。
 
 ## 检查
 

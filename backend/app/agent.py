@@ -23,6 +23,7 @@ async def execute(run_id, phase):
         run["reasoning_provider"] = client.mode
         calls_used = 0
         result = None
+        final_text = None
         for _ in range(8):
             latest = store.get("run:" + run_id)
             if latest["status"] == "cancelled":
@@ -36,7 +37,10 @@ async def execute(run_id, phase):
                 if result is None:
                     messages.append({"role": "user", "content": "The required tool has not run. Call it now."})
                     continue
-                break
+                final_text = reply.get("content")
+                if isinstance(final_text, str) and final_text.strip():
+                    break
+                continue
             for call in calls:
                 calls_used += 1
                 if calls_used > 12:
@@ -59,9 +63,7 @@ async def execute(run_id, phase):
                     output = {"ok": False, "data": None, "error": {"code": "INVALID_TOOL_CALL", "message": str(exc)}, "warnings": []}
                 run["events"].append({"tool": call["function"]["name"], "ok": output["ok"], "duration_ms": round((time.monotonic()-start)*1000)})
                 messages.append({"role": "tool", "tool_call_id": call["id"], "content": json.dumps(output, ensure_ascii=False)})
-            if phase == "recognize" and result is not None:
-                break
-        if result is None:
+        if not final_text or result is None:
             raise ValueError("未完成必需工具调用，已达到轮数限制")
         latest = store.get("run:" + run_id)
         if latest["status"] == "cancelled":
@@ -69,10 +71,9 @@ async def execute(run_id, phase):
         if store.preferences()["version"] != run["preferences_version"]:
             raise ValueError("偏好已更新，请重新发起任务")
         if phase == "recognize":
-            run.update(status="awaiting_confirmation", items=result["items"], vision_provider=result["provider"], vision_model=result["model"], warning=result["warning"], uncertain=result["uncertain"])
+            run.update(status="awaiting_confirmation", items=result["items"], vision_provider=result["provider"], vision_model=result["model"], warning=final_text, uncertain=result["uncertain"])
         else:
-            # Output comes only from validated recipes, not unchecked model prose.
-            run.update(status="completed", result=result, summary="已按已确认库存和当前饮食限制完成匹配。")
+            run.update(status="completed", result=result, summary=final_text)
         store.put("run:" + run_id, run)
     except Exception as exc:
         latest = store.get("run:" + run_id)
