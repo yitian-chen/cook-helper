@@ -34,7 +34,7 @@ header nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .history-toggle{display:none}
 .sidebar-toggle{margin-right:12px}
 .workspace.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}
-.sidebar-collapsed .session-sidebar,.sidebar-toggle{display:none}
+.sidebar-collapsed .session-sidebar{display:none}
 .session-drawer{margin:0;height:100dvh;max-height:100dvh;width:min(82vw,290px);border-radius:0;border:0}
 .drawer-close{display:block;margin:0 0 12px auto}
 @media(max-width:700px){
