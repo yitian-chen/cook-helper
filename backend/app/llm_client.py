@@ -1,5 +1,6 @@
 """OpenAI-compatible chat and native tool calling. Never log credentials."""
 import asyncio
+import json
 import logging
 import os
 import re
@@ -13,10 +14,18 @@ ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(ROOT / ".env")
 load_dotenv(ROOT / "docs/.env")
 
+def format_debug_body(body: str) -> str:
+    """Indent JSON bodies and preserve plain-text responses as received."""
+    try:
+        return json.dumps(json.loads(body), ensure_ascii=False, indent=2)
+    except (ValueError, RecursionError):
+        return body
+
+
 def record_exchange(request, response=None, error=None):
     """Replace the local snapshot atomically after each finished HTTP attempt."""
-    request_text = request.content.decode("utf-8")
-    response_text = response.text if response is not None else ""
+    request_text = format_debug_body(request.content.decode("utf-8"))
+    response_text = format_debug_body(response.text) if response is not None else ""
     longest = max((len(run) for body in (request_text, response_text)
                    for run in re.findall(r"`{3,}", body)), default=2)
     fence = "`" * (longest + 1)
@@ -67,7 +76,6 @@ class LLMClient:
     async def chat(self, messages, tools=None):
         if self.mode == "mock":
             if tools:
-                import json
                 name = tools[0]["function"]["name"]
                 return {"role": "assistant", "content": None, "tool_calls": [{
                     "id": "mock-call", "type": "function",
