@@ -71,3 +71,367 @@ soy_milk:
   name: 豆浆
   allergens: [soy]
   meat: false
+bamboo_shoot:
+  name: 春笋
+  allergens: []
+  meat: false
+basil:
+  name: 罗勒
+  allergens: []
+  meat: false
+beef:
+  name: 牛肉
+  allergens: []
+  meat: true
+black_pepper:
+  name: 黑胡椒
+  allergens: []
+  meat: false
+bok_choy:
+  name: 小白菜
+  allergens: []
+  meat: false
+bread:
+  name: 原味吐司
+  allergens:
+  - wheat
+  - soy
+  - milk
+  - egg
+  - sesame
+  meat: false
+  composition_known: false
+buckwheat_noodle:
+  name: 荞麦冷面
+  allergens:
+  - wheat
+  meat: false
+  composition_known: false
+butter:
+  name: 黄油
+  allergens:
+  - milk
+  meat: false
+carp:
+  name: 鲤鱼
+  allergens:
+  - fish
+  meat: true
+celery:
+  name: 芹菜
+  allergens: []
+  meat: false
+century_egg:
+  name: 皮蛋
+  allergens:
+  - egg
+  meat: false
+chili_dry:
+  name: 干辣椒
+  allergens: []
+  meat: false
+chili_oil:
+  name: 辣椒油
+  allergens:
+  - sesame
+  - peanut
+  - soy
+  meat: false
+  composition_known: false
+chinese_sausage:
+  name: 广式腊肠
+  allergens:
+  - soy
+  - wheat
+  meat: true
+  composition_known: false
+clam:
+  name: 花蛤
+  allergens:
+  - shellfish
+  meat: true
+corn:
+  name: 玉米
+  allergens: []
+  meat: false
+cream:
+  name: 淡奶油
+  allergens:
+  - milk
+  meat: false
+cured_pork:
+  name: 咸肉
+  allergens: []
+  meat: true
+daikon:
+  name: 白萝卜
+  allergens: []
+  meat: false
+doubanjiang:
+  name: 郫县豆瓣酱
+  allergens:
+  - wheat
+  - soy
+  meat: false
+  composition_known: false
+dried_shrimp:
+  name: 虾米
+  allergens:
+  - shellfish
+  meat: true
+duck:
+  name: 鸭肉
+  allergens: []
+  meat: true
+eel:
+  name: 鳝鱼
+  allergens:
+  - fish
+  meat: true
+eggplant:
+  name: 茄子
+  allergens: []
+  meat: false
+fermented_black_bean:
+  name: 豆豉
+  allergens:
+  - soy
+  meat: false
+flour:
+  name: 面粉
+  allergens:
+  - wheat
+  meat: false
+garlic:
+  name: 大蒜
+  allergens: []
+  meat: false
+garlic_shoot:
+  name: 蒜苗
+  allergens: []
+  meat: false
+ginger:
+  name: 生姜
+  allergens: []
+  meat: false
+green_bean:
+  name: 四季豆
+  allergens: []
+  meat: false
+green_pepper:
+  name: 青椒
+  allergens: []
+  meat: false
+green_tea:
+  name: 龙井茶叶
+  allergens: []
+  meat: false
+lamb:
+  name: 羊肉
+  allergens: []
+  meat: true
+lemon:
+  name: 柠檬
+  allergens: []
+  meat: false
+mung_sprout:
+  name: 绿豆芽
+  allergens: []
+  meat: false
+napa_cabbage:
+  name: 大白菜
+  allergens: []
+  meat: false
+olive_oil:
+  name: 橄榄油
+  allergens: []
+  meat: false
+onion:
+  name: 洋葱
+  allergens: []
+  meat: false
+oyster_sauce:
+  name: 蚝油
+  allergens:
+  - shellfish
+  - soy
+  - wheat
+  meat: true
+  composition_known: false
+pasta:
+  name: 干意大利面
+  allergens:
+  - wheat
+  meat: false
+peanut:
+  name: 花生
+  allergens:
+  - peanut
+  meat: false
+pear:
+  name: 雪梨
+  allergens: []
+  meat: false
+pickled_cabbage:
+  name: 东北酸菜
+  allergens: []
+  meat: false
+pork:
+  name: 猪肉
+  allergens: []
+  meat: true
+pork_belly:
+  name: 五花肉
+  allergens: []
+  meat: true
+pork_liver:
+  name: 猪肝
+  allergens: []
+  meat: true
+pork_rib:
+  name: 猪排骨
+  allergens: []
+  meat: true
+pumpkin:
+  name: 南瓜
+  allergens: []
+  meat: false
+raw_rice:
+  name: 大米
+  allergens: []
+  meat: false
+rice_flour:
+  name: 粘米粉
+  allergens: []
+  meat: false
+rice_noodle:
+  name: 鲜河粉
+  allergens: []
+  meat: false
+rice_wine:
+  name: 料酒
+  allergens: []
+  meat: false
+salmon:
+  name: 三文鱼
+  allergens:
+  - fish
+  meat: true
+scallion:
+  name: 葱
+  allergens: []
+  meat: false
+sea_bass:
+  name: 鲈鱼
+  allergens:
+  - fish
+  meat: true
+sea_cucumber:
+  name: 泡发海参
+  allergens: []
+  meat: true
+seaweed:
+  name: 紫菜
+  allergens: []
+  meat: false
+sesame:
+  name: 芝麻
+  allergens:
+  - sesame
+  meat: false
+sesame_oil:
+  name: 香油
+  allergens:
+  - sesame
+  meat: false
+sesame_paste:
+  name: 芝麻酱
+  allergens:
+  - sesame
+  meat: false
+shiitake:
+  name: 鲜香菇
+  allergens: []
+  meat: false
+shrimp:
+  name: 虾仁
+  allergens:
+  - shellfish
+  meat: true
+sichuan_pepper:
+  name: 花椒
+  allergens: []
+  meat: false
+snow_fungus:
+  name: 干银耳
+  allergens: []
+  meat: false
+soybean_paste:
+  name: 黄豆酱
+  allergens:
+  - soy
+  - wheat
+  meat: false
+  composition_known: false
+soybean_sprout:
+  name: 黄豆芽
+  allergens:
+  - soy
+  meat: false
+spinach:
+  name: 菠菜
+  allergens: []
+  meat: false
+starch:
+  name: 玉米淀粉
+  allergens: []
+  meat: false
+sugar:
+  name: 白糖
+  allergens: []
+  meat: false
+sweet_potato_noodle:
+  name: 干红薯粉条
+  allergens: []
+  meat: false
+tofu_sheet:
+  name: 干豆腐
+  allergens:
+  - soy
+  meat: false
+vinegar:
+  name: 米醋
+  allergens: []
+  meat: false
+wheat_gluten:
+  name: 烤麸
+  allergens:
+  - wheat
+  meat: false
+wheat_starch:
+  name: 澄面
+  allergens:
+  - wheat
+  meat: false
+white_fish:
+  name: 白肉鱼片
+  allergens:
+  - fish
+  meat: true
+winter_melon:
+  name: 冬瓜
+  allergens: []
+  meat: false
+wood_ear:
+  name: 泡发木耳
+  allergens: []
+  meat: false
+yellow_croaker:
+  name: 小黄鱼
+  allergens:
+  - fish
+  meat: true
+zucchini:
+  name: 西葫芦
+  allergens: []
+  meat: false

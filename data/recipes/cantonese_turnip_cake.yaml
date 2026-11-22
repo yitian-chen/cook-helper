@@ -1,0 +1,48 @@
+schema_version: 1
+id: cantonese_turnip_cake
+name: 广式萝卜糕
+servings: 2
+time_minutes: 80
+cuisine: cantonese
+course: staple
+tags: []
+ingredients:
+- ingredient_id: daikon
+  amount: 600
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: rice_flour
+  amount: 160
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: chinese_sausage
+  amount: 65
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: dried_shrimp
+  amount: 22
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 白萝卜擦丝煮软，留少量萝卜汁。
+- 炒熟腊肠丁和泡软的虾米，连同萝卜拌入粘米粉浆，调味。
+- 入盘蒸至凝固，放凉切片煎香。

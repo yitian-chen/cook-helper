@@ -1,0 +1,48 @@
+schema_version: 1
+id: west_lake_beef_soup
+name: 西湖牛肉羹
+servings: 2
+time_minutes: 25
+cuisine: jiangzhe
+course: soup
+tags: []
+ingredients:
+- ingredient_id: beef
+  amount: 160
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: mushroom
+  amount: 90
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: starch
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 牛肉和蘑菇切末，牛肉焯水后洗净。
+- 清水煮开，下牛肉和蘑菇煮熟，加水淀粉勾薄芡。
+- 淋入打散的鸡蛋，凝固后加葱、盐和胡椒。

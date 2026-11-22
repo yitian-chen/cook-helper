@@ -1,0 +1,48 @@
+schema_version: 1
+id: shandong_oil_braised_prawns
+name: 鲁式油焖大虾
+servings: 2
+time_minutes: 25
+cuisine: shandong
+course: main
+tags: []
+ingredients:
+- ingredient_id: shrimp
+  amount: 420
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 虾去虾线，擦去表面水分。
+- 葱姜炒香，放虾两面煎，加酒、糖、酱油及少量水焖熟。
+- 收汁至亮。

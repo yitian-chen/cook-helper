@@ -1,0 +1,54 @@
+schema_version: 1
+id: northeast_cold_noodles
+name: 东北酸甜冷面
+servings: 2
+time_minutes: 28
+cuisine: dongbei
+course: staple
+tags:
+- 酸甜
+ingredients:
+- ingredient_id: buckwheat_noodle
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: cucumber
+  amount: 120
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: tomato
+  amount: 100
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: vinegar
+  amount: 35
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡蛋煮熟切半，黄瓜切丝、番茄切片。
+- 醋、糖、酱油和冷开水调汤。
+- 冷面按说明煮透后用凉开水冷却，入汤后放配菜，撒熟芝麻。

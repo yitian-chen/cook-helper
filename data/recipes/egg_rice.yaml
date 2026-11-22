@@ -5,6 +5,7 @@ servings: 2
 time_minutes: 12
 tags:
 - 家常
+- 快手
 ingredients:
 - ingredient_id: rice
   amount: 400
@@ -34,3 +35,5 @@ ingredients:
 steps:
 - 胡萝卜切小丁，鸡蛋打散。
 - 热油炒熟鸡蛋与胡萝卜，加入米饭翻炒至充分热透，加盐。
+cuisine: chinese_home
+course: staple

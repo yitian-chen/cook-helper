@@ -1,0 +1,64 @@
+schema_version: 1
+id: fish_fragrant_eggplant
+name: 鱼香茄子
+servings: 2
+time_minutes: 30
+cuisine: sichuan
+course: side
+tags:
+- 辣味
+ingredients:
+- ingredient_id: eggplant
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 茄子切条蒸软，葱姜蒜切末。
+- 炒香豆瓣与姜蒜，加入醋、糖和酱油调味，下茄子焖入味。
+- 水淀粉收汁，撒葱。

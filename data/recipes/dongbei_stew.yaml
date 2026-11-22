@@ -1,0 +1,58 @@
+schema_version: 1
+id: dongbei_stew
+name: 东北乱炖
+servings: 2
+time_minutes: 65
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_rib
+  amount: 370
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: potato
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: eggplant
+  amount: 160
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: green_bean
+  amount: 150
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: corn
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 排骨焯水，蔬菜切块，四季豆去筋。
+- 葱姜和排骨炒香，加酱油与水炖半小时。
+- 加入四季豆与剩余蔬菜炖至各料熟透。

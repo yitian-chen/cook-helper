@@ -1,0 +1,48 @@
+schema_version: 1
+id: cantonese_steamed_pork_ribs
+name: 豉汁蒸排骨
+servings: 2
+time_minutes: 42
+cuisine: cantonese
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_rib
+  amount: 450
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: fermented_black_bean
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 排骨切小块，沥干。
+- 豆豉和蒜剁碎，与酱油、淀粉、糖和油拌入排骨。
+- 平铺上锅蒸至熟透。

@@ -1,0 +1,43 @@
+schema_version: 1
+id: cantonese_claypot_rice
+name: 广式腊味煲仔饭
+servings: 2
+time_minutes: 46
+cuisine: cantonese
+course: staple
+tags: []
+ingredients:
+- ingredient_id: raw_rice
+  amount: 190
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: chinese_sausage
+  amount: 120
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: bok_choy
+  amount: 190
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 大米洗净浸泡后入抹油的砂锅，加水煮至刚收水。
+- 加切片腊肠，小火加盖焖至米饭和腊肠熟透。
+- 加焯熟青菜，淋酱油糖汁。

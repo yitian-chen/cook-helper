@@ -1,0 +1,43 @@
+schema_version: 1
+id: tomato_basil_pasta
+name: 番茄罗勒意面
+servings: 2
+time_minutes: 28
+cuisine: western
+course: staple
+tags: []
+ingredients:
+- ingredient_id: pasta
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: tomato
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: basil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: olive_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 意面按包装说明煮熟，留少量面汤。
+- 橄榄油炒香蒜和番茄，煮至成酱。
+- 拌入意面、罗勒和适量面汤，加盐。

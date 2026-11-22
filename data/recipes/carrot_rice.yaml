@@ -5,6 +5,7 @@ servings: 2
 time_minutes: 15
 tags:
 - 家常
+- 快手
 ingredients:
 - ingredient_id: carrot
   amount: 150
@@ -29,3 +30,5 @@ ingredients:
 steps:
 - 胡萝卜切丁。
 - 热油炒熟胡萝卜，加入米饭翻炒至充分热透，加盐。
+cuisine: chinese_home
+course: staple

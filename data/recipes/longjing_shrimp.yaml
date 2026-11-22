@@ -1,0 +1,47 @@
+schema_version: 1
+id: longjing_shrimp
+name: 龙井虾仁
+servings: 2
+time_minutes: 22
+cuisine: jiangzhe
+course: main
+tags: []
+ingredients:
+- ingredient_id: shrimp
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: green_tea
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: egg
+  amount: 1
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 龙井泡开滤出茶汤备用，虾仁以少量蛋清、盐和淀粉拌匀。
+- 热油滑炒虾仁至全熟，加酒和少量茶汤翻匀，点入少量茶叶。

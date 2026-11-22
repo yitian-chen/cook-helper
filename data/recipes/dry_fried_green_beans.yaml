@@ -1,0 +1,43 @@
+schema_version: 1
+id: dry_fried_green_beans
+name: 干煸四季豆
+servings: 2
+time_minutes: 28
+cuisine: sichuan
+course: side
+tags:
+- 辣味
+ingredients:
+- ingredient_id: green_bean
+  amount: 360
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: pork
+  amount: 90
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: chili_dry
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 摘净四季豆，先用沸水煮透并沥干。
+- 下油将四季豆煸至起皱，加入肉末、干辣椒和蒜继续炒至猪肉熟透，调入酱油。

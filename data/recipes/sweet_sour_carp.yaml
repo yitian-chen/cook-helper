@@ -1,0 +1,59 @@
+schema_version: 1
+id: sweet_sour_carp
+name: 糖醋鲤鱼
+servings: 2
+time_minutes: 46
+cuisine: shandong
+course: main
+tags:
+- 酸甜
+ingredients:
+- ingredient_id: carp
+  amount: 700
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: vinegar
+  amount: 40
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 42
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 55
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 45
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鲤鱼清理后打花刀，以姜和盐腌，擦干裹淀粉。
+- 分面煎炸至鱼肉熟透后沥油。
+- 葱炒香，加醋、糖、酱油及水熬汁，浇在鱼上。

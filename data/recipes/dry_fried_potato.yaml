@@ -1,0 +1,44 @@
+schema_version: 1
+id: dry_fried_potato
+name: 干锅土豆片
+servings: 2
+time_minutes: 28
+cuisine: sichuan
+course: side
+tags:
+- 辣味
+ingredients:
+- ingredient_id: potato
+  amount: 370
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: onion
+  amount: 90
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: chili_dry
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 土豆切厚片焯至半透明后沥水，洋葱切丝。
+- 土豆两面煎黄，另炒香干辣椒、洋葱、蒜和豆瓣。
+- 加入土豆翻炒至熟。

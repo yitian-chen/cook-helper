@@ -5,6 +5,7 @@ servings: 2
 time_minutes: 20
 tags:
 - 家常
+- 快手
 ingredients:
 - ingredient_id: tomato
   amount: 250
@@ -29,3 +30,5 @@ ingredients:
 steps:
 - 番茄和豆腐切块。
 - 热油炒软番茄，加豆腐和适量水，炖至熟透，加盐。
+cuisine: chinese_home
+course: main

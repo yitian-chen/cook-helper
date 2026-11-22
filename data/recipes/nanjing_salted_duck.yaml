@@ -1,0 +1,43 @@
+schema_version: 1
+id: nanjing_salted_duck
+name: 南京盐水鸭
+servings: 2
+time_minutes: 205
+cuisine: jiangzhe
+course: main
+tags: []
+ingredients:
+- ingredient_id: duck
+  amount: 650
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: salt
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 盐和花椒干炒出香，放凉后抹鸭，冷藏腌制约两小时。
+- 洗去表面浮盐，加葱姜和酒，小火浸煮至肉熟透。
+- 放凉斩块。

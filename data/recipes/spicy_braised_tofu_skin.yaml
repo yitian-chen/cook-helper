@@ -1,0 +1,44 @@
+schema_version: 1
+id: spicy_braised_tofu_skin
+name: 尖椒干豆腐
+servings: 2
+time_minutes: 20
+cuisine: dongbei
+course: side
+tags:
+- 快手
+ingredients:
+- ingredient_id: tofu_sheet
+  amount: 310
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: green_pepper
+  amount: 140
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 干豆腐切条，青椒切片。
+- 爆香蒜末，下干豆腐、酱油和少量水煮入味。
+- 加入青椒炒熟，淋水淀粉。

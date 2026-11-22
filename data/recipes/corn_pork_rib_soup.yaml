@@ -1,0 +1,38 @@
+schema_version: 1
+id: corn_pork_rib_soup
+name: 玉米排骨汤
+servings: 2
+time_minutes: 60
+cuisine: chinese_home
+course: soup
+tags:
+- 家常
+ingredients:
+- ingredient_id: pork_rib
+  amount: 350
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: corn
+  amount: 250
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: carrot
+  amount: 100
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: ginger
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 排骨焯水洗净，玉米和胡萝卜切块。
+- 排骨和姜加清水炖约三十分钟，再加玉米和胡萝卜炖至排骨软熟，加盐。

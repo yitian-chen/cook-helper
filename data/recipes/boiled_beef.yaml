@@ -1,0 +1,59 @@
+schema_version: 1
+id: boiled_beef
+name: 水煮牛肉
+servings: 2
+time_minutes: 35
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: beef
+  amount: 320
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: bok_choy
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: chili_dry
+  amount: 9
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 23
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 小白菜焯熟垫碗，牛肉薄切，用酱油和淀粉拌匀。
+- 豆瓣炒香加水煮滚，下牛肉煮熟，连汤倒入碗中。
+- 撒切碎干辣椒、蒜和花椒，淋热油。

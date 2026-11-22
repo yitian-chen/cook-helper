@@ -1,0 +1,47 @@
+schema_version: 1
+id: braised_yellow_croaker
+name: 江浙红烧小黄鱼
+servings: 2
+time_minutes: 35
+cuisine: jiangzhe
+course: main
+tags: []
+ingredients:
+- ingredient_id: yellow_croaker
+  amount: 430
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 黄鱼去鳞、去内脏，擦干后两面煎定型。
+- 加姜葱、酒、酱油、糖及水，小火烧至鱼肉熟透，收汁。

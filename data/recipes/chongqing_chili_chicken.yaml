@@ -1,0 +1,59 @@
+schema_version: 1
+id: chongqing_chili_chicken
+name: 辣子鸡
+servings: 2
+time_minutes: 38
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: chicken
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: chili_dry
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 35
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡肉切鸡丁，用酱油、盐和淀粉腌一会儿。
+- 炒煎鸡丁至金黄熟透，盛出。
+- 煸香辣椒、花椒和姜蒜，回锅快炒。

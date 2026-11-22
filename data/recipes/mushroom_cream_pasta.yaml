@@ -1,0 +1,48 @@
+schema_version: 1
+id: mushroom_cream_pasta
+name: 奶油蘑菇意面
+servings: 2
+time_minutes: 30
+cuisine: western
+course: staple
+tags: []
+ingredients:
+- ingredient_id: pasta
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: mushroom
+  amount: 250
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cream
+  amount: 140
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: butter
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 意面煮熟，蘑菇切片。
+- 黄油炒香蒜片和蘑菇，倒入淡奶油煮至浓稠。
+- 拌入意面，加盐和胡椒。

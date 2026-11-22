@@ -1,0 +1,44 @@
+schema_version: 1
+id: twice_cooked_pork
+name: 回锅肉
+servings: 2
+time_minutes: 45
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: pork_belly
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic_shoot
+  amount: 160
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 五花肉加姜煮熟，放凉后切薄片，蒜苗切段。
+- 少油煸肉片至边缘起卷，炒香豆瓣酱。
+- 加蒜苗和糖炒熟。

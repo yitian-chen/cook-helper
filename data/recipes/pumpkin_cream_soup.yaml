@@ -1,0 +1,43 @@
+schema_version: 1
+id: pumpkin_cream_soup
+name: 奶油南瓜浓汤
+servings: 2
+time_minutes: 40
+cuisine: western
+course: soup
+tags: []
+ingredients:
+- ingredient_id: pumpkin
+  amount: 440
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: cream
+  amount: 90
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: onion
+  amount: 90
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: butter
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 南瓜去籽切块，洋葱切丁。
+- 黄油炒软洋葱，加南瓜和水煮软。
+- 打成细泥，加入淡奶油再加热，调盐和胡椒。

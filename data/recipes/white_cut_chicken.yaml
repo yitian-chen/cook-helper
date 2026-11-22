@@ -1,0 +1,38 @@
+schema_version: 1
+id: white_cut_chicken
+name: 广式白切鸡
+servings: 2
+time_minutes: 55
+cuisine: cantonese
+course: main
+tags: []
+ingredients:
+- ingredient_id: chicken
+  amount: 650
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 45
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 38
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 葱姜加水烧开，下鸡肉小火浸煮，确保中心熟透。
+- 取出沥干，稍放凉后切块。
+- 切碎葱姜，加盐并淋热油作蘸汁。

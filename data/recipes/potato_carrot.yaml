@@ -5,6 +5,7 @@ servings: 2
 time_minutes: 20
 tags:
 - 家常
+- 快手
 ingredients:
 - ingredient_id: potato
   amount: 300
@@ -29,3 +30,5 @@ ingredients:
 steps:
 - 土豆和胡萝卜切细丝。
 - 热油下锅，翻炒并加少量水焖至熟透，加盐。
+cuisine: chinese_home
+course: side

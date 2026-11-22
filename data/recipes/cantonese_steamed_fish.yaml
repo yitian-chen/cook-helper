@@ -1,0 +1,38 @@
+schema_version: 1
+id: cantonese_steamed_fish
+name: 清蒸鲈鱼
+servings: 2
+time_minutes: 28
+cuisine: cantonese
+course: main
+tags: []
+ingredients:
+- ingredient_id: sea_bass
+  amount: 650
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鲈鱼清理干净，两面划刀，加姜片上蒸锅。
+- 蒸至最厚处熟透，倒掉盘中多余汤汁。
+- 摆葱丝，淋酱油和热油。

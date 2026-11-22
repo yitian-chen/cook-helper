@@ -1,0 +1,39 @@
+schema_version: 1
+id: cold_wood_ear
+name: 凉拌木耳
+servings: 2
+time_minutes: 20
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: wood_ear
+  amount: 180
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 泡发木耳洗净去根，沸水煮熟后沥干。
+- 用蒜末、醋、酱油和香油调汁，拌入木耳。

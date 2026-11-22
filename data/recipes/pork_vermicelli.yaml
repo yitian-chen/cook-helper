@@ -1,0 +1,48 @@
+schema_version: 1
+id: pork_vermicelli
+name: 猪肉白菜炖粉条
+servings: 2
+time_minutes: 55
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_belly
+  amount: 270
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: napa_cabbage
+  amount: 300
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: sweet_potato_noodle
+  amount: 160
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 肉切片，白菜切条，粉条泡软。
+- 煸香肉片和葱姜，加入酱油、白菜和适量水炖软。
+- 下粉条煮透收汁。

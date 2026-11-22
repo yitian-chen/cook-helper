@@ -1,0 +1,58 @@
+schema_version: 1
+id: guo_bao_rou
+name: 锅包肉
+servings: 2
+time_minutes: 45
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: carrot
+  amount: 35
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: starch
+  amount: 85
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 36
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 34
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 50
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 猪肉切薄片加盐，裹上用水调成的淀粉糊。
+- 分批炸至熟透和酥脆，沥油。
+- 煮醋糖汁，放葱姜和胡萝卜丝，迅速裹匀肉片。

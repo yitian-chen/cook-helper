@@ -1,0 +1,39 @@
+schema_version: 1
+id: shrimp_egg
+name: 虾仁滑蛋
+servings: 2
+time_minutes: 16
+cuisine: chinese_home
+course: main
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: shrimp
+  amount: 180
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 3
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 虾仁去虾线，鸡蛋加盐和葱花打散。
+- 热油将虾仁炒至不透明，转小火倒入蛋液，推炒至全部凝固。

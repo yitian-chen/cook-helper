@@ -1,0 +1,53 @@
+schema_version: 1
+id: tomato_beef_cantonese
+name: 广式番茄烩牛肉
+servings: 2
+time_minutes: 25
+cuisine: cantonese
+course: main
+tags: []
+ingredients:
+- ingredient_id: beef
+  amount: 270
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: tomato
+  amount: 300
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: onion
+  amount: 90
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: oyster_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 牛肉切片以酱油和淀粉拌匀、滑炒至熟后盛出。
+- 炒软洋葱和番茄，加蚝油、糖及少量水煮成汁。
+- 倒回牛肉翻匀。

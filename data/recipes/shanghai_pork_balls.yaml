@@ -1,0 +1,52 @@
+schema_version: 1
+id: shanghai_pork_balls
+name: 清炖狮子头
+servings: 2
+time_minutes: 70
+cuisine: jiangzhe
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork
+  amount: 380
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: napa_cabbage
+  amount: 200
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: egg
+  amount: 1
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: starch
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 猪肉剁碎，加蛋、淀粉、酒、葱姜和盐搅出黏性，团成大肉丸。
+- 白菜垫锅，加水，下肉丸小火炖至中心熟透。

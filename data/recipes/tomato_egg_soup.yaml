@@ -1,0 +1,39 @@
+schema_version: 1
+id: tomato_egg_soup
+name: 番茄蛋花汤
+servings: 2
+time_minutes: 15
+cuisine: chinese_home
+course: soup
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: tomato
+  amount: 220
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 番茄切丁炒软，加清水煮开。
+- 调小火淋入打散的鸡蛋，蛋花凝固后加盐和葱花。

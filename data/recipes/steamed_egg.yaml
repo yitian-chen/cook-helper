@@ -1,0 +1,34 @@
+schema_version: 1
+id: steamed_egg
+name: 家常蒸水蛋
+servings: 2
+time_minutes: 18
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: egg
+  amount: 3
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡蛋打匀，加入约同体积温水后过筛。
+- 盖盘小火蒸至蛋羹完全凝固，淋酱油、香油和葱花。

@@ -1,0 +1,33 @@
+schema_version: 1
+id: garlic_eggplant
+name: 蒜香茄子
+servings: 2
+time_minutes: 25
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+ingredients:
+- ingredient_id: eggplant
+  amount: 360
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 茄子切条，隔水蒸软。
+- 蒜末下油炒香，加入酱油拌成汁，趁热浇在茄子上。

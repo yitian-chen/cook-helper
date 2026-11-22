@@ -1,0 +1,48 @@
+schema_version: 1
+id: shandong_scallion_sea_cucumber
+name: 葱烧海参
+servings: 2
+time_minutes: 40
+cuisine: shandong
+course: main
+tags: []
+ingredients:
+- ingredient_id: sea_cucumber
+  amount: 320
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 95
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 23
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 9
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 泡发海参洗净焯水，葱切长段。
+- 将葱段煎香，加海参、酒、酱油、糖和少量水烧透。
+- 加水淀粉收汁。

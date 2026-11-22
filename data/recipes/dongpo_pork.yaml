@@ -1,0 +1,43 @@
+schema_version: 1
+id: dongpo_pork
+name: 东坡肉
+servings: 2
+time_minutes: 120
+cuisine: jiangzhe
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_belly
+  amount: 500
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 45
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 28
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 40
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 140
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 五花肉整块焯水后切成大方块。
+- 砂锅用葱姜垫底，肉皮朝下放入，加酒、酱油、糖和适量水。
+- 加盖小火炖至肉软、汤汁浓稠。

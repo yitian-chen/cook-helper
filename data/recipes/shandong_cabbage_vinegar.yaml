@@ -1,0 +1,49 @@
+schema_version: 1
+id: shandong_cabbage_vinegar
+name: 醋溜白菜
+servings: 2
+time_minutes: 14
+cuisine: shandong
+course: side
+tags:
+- 快手
+ingredients:
+- ingredient_id: napa_cabbage
+  amount: 430
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 白菜帮斜切薄片，菜叶切块。
+- 热油爆香蒜，先炒白菜帮再加叶。
+- 加醋、酱油、糖炒熟，水淀粉收汁。

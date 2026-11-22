@@ -1,0 +1,48 @@
+schema_version: 1
+id: dongbei_chicken_mushroom
+name: 东北小鸡炖蘑菇
+servings: 2
+time_minutes: 65
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: chicken
+  amount: 500
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: shiitake
+  amount: 180
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: sweet_potato_noodle
+  amount: 120
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡肉剁块，鲜香菇切片，粉条泡软。
+- 煸香葱姜和鸡块，加酱油及清水炖至鸡熟。
+- 下香菇和粉条继续炖透。

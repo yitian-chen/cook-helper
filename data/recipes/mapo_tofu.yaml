@@ -1,0 +1,59 @@
+schema_version: 1
+id: mapo_tofu
+name: 麻婆豆腐
+servings: 2
+time_minutes: 30
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: tofu
+  amount: 380
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: beef
+  amount: 100
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: chili_dry
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 豆腐切方块焯水，牛肉切成末。
+- 炒熟牛肉末，炒香豆瓣酱、干辣椒和姜蒜，加水下豆腐焖透。
+- 用水淀粉收汁，撒花椒碎。

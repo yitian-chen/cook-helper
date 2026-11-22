@@ -1,0 +1,43 @@
+schema_version: 1
+id: shandong_tomato_dough_soup
+name: 番茄疙瘩汤
+servings: 2
+time_minutes: 24
+cuisine: shandong
+course: staple
+tags: []
+ingredients:
+- ingredient_id: flour
+  amount: 150
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: tomato
+  amount: 260
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 向面粉少量多次加水，搅成细小面疙瘩。
+- 炒香葱和番茄，加水烧开，撒入面疙瘩搅散煮透。
+- 淋蛋液煮熟，加盐。

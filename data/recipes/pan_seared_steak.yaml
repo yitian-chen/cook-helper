@@ -1,0 +1,38 @@
+schema_version: 1
+id: pan_seared_steak
+name: 黑胡椒煎牛排
+servings: 2
+time_minutes: 24
+cuisine: western
+course: main
+tags: []
+ingredients:
+- ingredient_id: beef
+  amount: 380
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: butter
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 牛排擦干，表面均匀撒盐和胡椒。
+- 热锅煎到两面上色，加入黄油和蒜淋浇，整块牛排中心达到63℃后离火。
+- 静置至少3分钟后切片。

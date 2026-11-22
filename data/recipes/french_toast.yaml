@@ -1,0 +1,38 @@
+schema_version: 1
+id: french_toast
+name: 法式吐司
+servings: 2
+time_minutes: 18
+cuisine: western
+course: staple
+tags:
+- 快手
+ingredients:
+- ingredient_id: bread
+  amount: 160
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: milk
+  amount: 110
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: butter
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 蛋液与牛奶、糖搅匀，吐司两面蘸匀。
+- 黄油小火融化，下吐司煎至两面金黄、中心蛋液熟透。

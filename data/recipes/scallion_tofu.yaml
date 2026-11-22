@@ -1,0 +1,34 @@
+schema_version: 1
+id: scallion_tofu
+name: 小葱拌豆腐
+servings: 2
+time_minutes: 10
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: tofu
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 豆腐切小块，焯热后沥水。
+- 加葱花、盐和香油，轻轻拌匀。

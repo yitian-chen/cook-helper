@@ -1,0 +1,48 @@
+schema_version: 1
+id: cantonese_beef_rice_noodle
+name: 干炒牛河
+servings: 2
+time_minutes: 25
+cuisine: cantonese
+course: staple
+tags: []
+ingredients:
+- ingredient_id: rice_noodle
+  amount: 380
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: beef
+  amount: 220
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: mung_sprout
+  amount: 150
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: scallion
+  amount: 28
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 26
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 9
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 牛肉薄切，以部分酱油和淀粉拌匀，河粉理散。
+- 热油炒熟牛肉盛出，炒熟芽菜和葱段。
+- 下河粉和剩余酱油大火炒匀，拌回牛肉。

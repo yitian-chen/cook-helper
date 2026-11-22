@@ -1,0 +1,49 @@
+schema_version: 1
+id: hot_sour_noodles
+name: 酸辣粉
+servings: 2
+time_minutes: 25
+cuisine: sichuan
+course: staple
+tags:
+- 辣味
+ingredients:
+- ingredient_id: sweet_potato_noodle
+  amount: 180
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: peanut
+  amount: 30
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: chili_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 红薯粉按包装说明泡发煮透，花生炒熟。
+- 碗内调酱油、醋、辣椒油、蒜末和少量煮粉水。
+- 盛入粉条，撒葱和花生。

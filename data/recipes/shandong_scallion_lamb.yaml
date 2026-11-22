@@ -1,0 +1,39 @@
+schema_version: 1
+id: shandong_scallion_lamb
+name: 葱爆羊肉
+servings: 2
+time_minutes: 20
+cuisine: shandong
+course: main
+tags:
+- 快手
+ingredients:
+- ingredient_id: lamb
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 150
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 羊肉切薄片，加酒与少量酱油抓匀，大葱斜切。
+- 锅烧热下油，炒熟羊肉。
+- 放葱与剩余酱油大火快速翻炒。

@@ -1,0 +1,34 @@
+schema_version: 1
+id: scallion_egg_paste
+name: 东北鸡蛋酱
+servings: 2
+time_minutes: 14
+cuisine: dongbei
+course: side
+tags:
+- 快手
+ingredients:
+- ingredient_id: egg
+  amount: 3
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: soybean_paste
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 30
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡蛋打散炒熟盛出，葱切碎。
+- 炒香葱和黄豆酱，加少量水烧开。
+- 回锅拌匀鸡蛋并煮浓。

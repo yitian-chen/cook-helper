@@ -1,0 +1,39 @@
+schema_version: 1
+id: seaweed_egg_soup
+name: 紫菜蛋花汤
+servings: 2
+time_minutes: 12
+cuisine: chinese_home
+course: soup
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: seaweed
+  amount: 8
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 将紫菜撕碎，按包装说明清理。
+- 水煮开后下紫菜，淋蛋液煮至凝固，加盐、葱和香油。

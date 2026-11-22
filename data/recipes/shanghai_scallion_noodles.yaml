@@ -1,0 +1,38 @@
+schema_version: 1
+id: shanghai_scallion_noodles
+name: 上海葱油拌面
+servings: 2
+time_minutes: 22
+cuisine: jiangzhe
+course: staple
+tags: []
+ingredients:
+- ingredient_id: noodles
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 80
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 28
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 30
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 葱段擦干水，入油小火煎至焦黄。
+- 关小火加酱油和糖搅匀。
+- 面条煮熟沥干，用葱油汁拌匀。

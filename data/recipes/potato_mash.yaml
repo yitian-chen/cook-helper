@@ -1,0 +1,38 @@
+schema_version: 1
+id: potato_mash
+name: 黄油土豆泥
+servings: 2
+time_minutes: 26
+cuisine: western
+course: side
+tags: []
+ingredients:
+- ingredient_id: potato
+  amount: 500
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: milk
+  amount: 85
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: butter
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 土豆去皮切块，冷水下锅煮至轻松戳透，沥干。
+- 趁热压泥，拌入黄油和温牛奶。
+- 调盐和黑胡椒。

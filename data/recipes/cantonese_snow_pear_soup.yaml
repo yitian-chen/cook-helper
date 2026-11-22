@@ -1,0 +1,27 @@
+schema_version: 1
+id: cantonese_snow_pear_soup
+name: 雪梨银耳糖水
+servings: 2
+time_minutes: 65
+cuisine: cantonese
+course: dessert
+tags: []
+ingredients:
+- ingredient_id: pear
+  amount: 360
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: snow_fungus
+  amount: 35
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: sugar
+  amount: 28
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 银耳泡发后去蒂撕小朵，雪梨去芯切块。
+- 银耳加水煮至软糯，下雪梨炖软，再加糖化开。

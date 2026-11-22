@@ -1,0 +1,53 @@
+schema_version: 1
+id: braised_gluten
+name: 四喜烤麸
+servings: 2
+time_minutes: 45
+cuisine: jiangzhe
+course: side
+tags: []
+ingredients:
+- ingredient_id: wheat_gluten
+  amount: 240
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: wood_ear
+  amount: 70
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: mushroom
+  amount: 80
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: peanut
+  amount: 35
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 26
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 烤麸切块焯水挤干，木耳洗净，蘑菇切片。
+- 烤麸煎香，加入配菜、酱油、糖和水焖熟。
+- 收汁后拌香油。

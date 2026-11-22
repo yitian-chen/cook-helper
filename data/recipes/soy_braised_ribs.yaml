@@ -1,0 +1,48 @@
+schema_version: 1
+id: soy_braised_ribs
+name: 东北酱炖排骨
+servings: 2
+time_minutes: 72
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_rib
+  amount: 520
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: soybean_paste
+  amount: 35
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 排骨焯水冲净，葱姜切段片。
+- 葱姜和黄豆酱炒香，加入排骨、糖、酱油和水。
+- 小火炖至软熟，开盖收汁。

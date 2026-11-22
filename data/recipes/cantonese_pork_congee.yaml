@@ -1,0 +1,48 @@
+schema_version: 1
+id: cantonese_pork_congee
+name: 皮蛋瘦肉粥
+servings: 2
+time_minutes: 65
+cuisine: cantonese
+course: staple
+tags: []
+ingredients:
+- ingredient_id: raw_rice
+  amount: 130
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: pork
+  amount: 150
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: century_egg
+  amount: 2
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 米加足量清水煮成粥，皮蛋切丁，瘦肉切丝拌淀粉。
+- 下姜丝、皮蛋和瘦肉继续煮至肉熟粥稠。
+- 加盐和葱花。

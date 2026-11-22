@@ -13,7 +13,7 @@ from app.agent import execute
 from app.llm_client import LLMClient
 
 def test_scoring():
-    assert len(RECIPES)==12
+    assert len(RECIPES)==100
     items=[Item(ingredient_id=k,amount=a,unit=u) for k,a,u in [
         ("tomato",300,"g"),("egg",2,"piece"),("cooking_oil",10,"g"),("salt",2,"g")]]
     result=match_recipes(items,Preferences())
@@ -22,7 +22,7 @@ def test_scoring():
     blocked=match_recipes(items,Preferences(allergens=["egg"]))
     assert all(all(i["ingredient_id"]!="egg" for i in r["ingredients"]) for r in blocked["recipes"])
     assert any(e["id"]=="tomato_egg" for e in blocked["excluded"])
-    result=match_recipes([Item(ingredient_id="tomato",amount=2,unit="piece")],Preferences())
+    result=match_recipes([Item(ingredient_id="tomato",amount=2,unit="piece"), Item(ingredient_id="egg",amount=2,unit="piece")],Preferences())
     tomato=next(r for r in result["recipes"] if r["id"]=="tomato_egg")
     assert tomato["details"][0]["status"]=="unknown"
     assert tomato["details"][0]["missing"] is None
@@ -81,3 +81,20 @@ def test_pantry_defaults_respect_explicit_shortages():
     assert [(row["ingredient_id"], row["missing"]) for row in generate_shopping_list(updated)] == [
         ("cooking_oil", 10),
     ]
+
+def test_expanded_recipes_are_classified_and_filterable():
+    from collections import Counter
+    from app.domain import Preferences, RECIPES, allowed
+
+    assert Counter(recipe.cuisine for recipe in RECIPES) == {
+        "chinese_home": 30, "sichuan": 14, "jiangzhe": 14, "dongbei": 11,
+        "shandong": 10, "cantonese": 13, "western": 8,
+    }
+    assert len({recipe.name for recipe in RECIPES}) == len(RECIPES)
+    assert {recipe.course for recipe in RECIPES} == {"main", "side", "soup", "staple", "dessert"}
+    recipes = {recipe.id: recipe for recipe in RECIPES}
+    assert "快手" in recipes["garlic_bok_choy"].tags
+    assert "辣味" in recipes["kung_pao_chicken"].tags
+    assert not allowed(recipes["kung_pao_chicken"], Preferences(allergens=["peanut"]))
+    assert not allowed(recipes["potato_mash"], Preferences(allergens=["milk"]))
+    assert not allowed(recipes["oyster_sauce_broccoli"], Preferences(dietary_rules=["vegetarian"]))

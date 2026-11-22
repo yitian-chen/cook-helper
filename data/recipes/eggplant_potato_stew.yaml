@@ -1,0 +1,43 @@
+schema_version: 1
+id: eggplant_potato_stew
+name: 东北茄子炖土豆
+servings: 2
+time_minutes: 43
+cuisine: dongbei
+course: side
+tags: []
+ingredients:
+- ingredient_id: eggplant
+  amount: 320
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: potato
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: soybean_paste
+  amount: 24
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 茄子撕段，土豆切块。
+- 葱蒜与黄豆酱炒香，下茄子和土豆。
+- 加水小火炖透，略收汤汁。

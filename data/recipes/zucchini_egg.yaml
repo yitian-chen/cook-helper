@@ -1,0 +1,39 @@
+schema_version: 1
+id: zucchini_egg
+name: 西葫芦炒鸡蛋
+servings: 2
+time_minutes: 15
+cuisine: chinese_home
+course: main
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: zucchini
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: egg
+  amount: 3
+  unit: piece
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 西葫芦切片，鸡蛋打散并炒至凝固盛出。
+- 炒香葱花，下西葫芦炒熟，放回鸡蛋加盐翻匀。

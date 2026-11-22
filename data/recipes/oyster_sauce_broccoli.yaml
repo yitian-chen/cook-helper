@@ -1,0 +1,38 @@
+schema_version: 1
+id: oyster_sauce_broccoli
+name: 蚝油西兰花
+servings: 2
+time_minutes: 13
+cuisine: cantonese
+course: side
+tags:
+- 快手
+ingredients:
+- ingredient_id: broccoli
+  amount: 390
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: oyster_sauce
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 西兰花切成小朵，沸水焯熟沥干。
+- 炒香蒜，加入蚝油和水淀粉煮亮，浇在西兰花上。

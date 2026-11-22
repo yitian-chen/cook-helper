@@ -1,0 +1,38 @@
+schema_version: 1
+id: winter_melon_shrimp_soup
+name: 冬瓜虾仁汤
+servings: 2
+time_minutes: 24
+cuisine: chinese_home
+course: soup
+tags:
+- 家常
+ingredients:
+- ingredient_id: winter_melon
+  amount: 350
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: shrimp
+  amount: 140
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 冬瓜去皮切片，虾仁挑去虾线。
+- 姜片煮水，下冬瓜煮至透亮，加虾仁煮至全熟，撒葱和盐。

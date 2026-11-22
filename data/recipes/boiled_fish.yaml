@@ -1,0 +1,59 @@
+schema_version: 1
+id: boiled_fish
+name: 水煮鱼片
+servings: 2
+time_minutes: 40
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: white_fish
+  amount: 420
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: soybean_sprout
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: chili_dry
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鱼片用盐、姜和淀粉拌匀，豆芽煮透放入碗中。
+- 炒香豆瓣加水烧开，逐片下鱼煮熟，浇到豆芽上。
+- 干辣椒和花椒用热油煸香，连油浇在鱼上。

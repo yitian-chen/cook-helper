@@ -1,0 +1,44 @@
+schema_version: 1
+id: green_pepper_pork
+name: 青椒肉丝
+servings: 2
+time_minutes: 20
+cuisine: chinese_home
+course: main
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: pork
+  amount: 220
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: green_pepper
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 猪肉切丝拌酱油和淀粉，青椒去籽切丝。
+- 热油炒散肉丝，加入青椒炒至肉丝熟透，加盐。

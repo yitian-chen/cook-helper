@@ -1,0 +1,42 @@
+schema_version: 1
+id: baked_salmon
+name: 香烤三文鱼
+servings: 2
+time_minutes: 27
+cuisine: western
+course: main
+tags: []
+ingredients:
+- ingredient_id: salmon
+  amount: 340
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: lemon
+  amount: 90
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: olive_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: black_pepper
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鱼擦干，用橄榄油、蒜、盐和胡椒抹匀。
+- 摆上柠檬片，入预热烤箱，约200℃烤至鱼肉熟透。

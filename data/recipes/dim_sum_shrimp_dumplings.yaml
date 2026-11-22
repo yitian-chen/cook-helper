@@ -1,0 +1,48 @@
+schema_version: 1
+id: dim_sum_shrimp_dumplings
+name: 广式虾饺
+servings: 2
+time_minutes: 58
+cuisine: cantonese
+course: staple
+tags: []
+ingredients:
+- ingredient_id: shrimp
+  amount: 270
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: wheat_starch
+  amount: 130
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: starch
+  amount: 35
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: bamboo_shoot
+  amount: 55
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sesame_oil
+  amount: 5
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 3
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 虾仁剁粗馅，焯透的笋切丁，加盐和香油拌匀。
+- 澄面与淀粉用沸水烫拌，揉入油后分小剂擀薄。
+- 包入虾馅后上锅蒸至馅料熟透。

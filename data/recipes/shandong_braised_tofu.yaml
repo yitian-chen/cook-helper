@@ -1,0 +1,43 @@
+schema_version: 1
+id: shandong_braised_tofu
+name: 鲁式葱烧豆腐
+servings: 2
+time_minutes: 22
+cuisine: shandong
+course: side
+tags: []
+ingredients:
+- ingredient_id: tofu
+  amount: 380
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: scallion
+  amount: 60
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 7
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 4
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 豆腐切片煎至两面金黄，葱切段。
+- 葱段煎香，下豆腐、酱油、糖和水焖透。
+- 水淀粉收汁。

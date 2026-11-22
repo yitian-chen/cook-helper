@@ -1,0 +1,43 @@
+schema_version: 1
+id: ginger_scallion_clams
+name: 姜葱炒花蛤
+servings: 2
+time_minutes: 23
+cuisine: cantonese
+course: main
+tags: []
+ingredients:
+- ingredient_id: clam
+  amount: 600
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: ginger
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 35
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 花蛤吐沙后洗净，丢弃破壳或敲击后仍张口的。
+- 葱姜炒香，下花蛤和酒加盖煮至开口、肉熟。
+- 丢弃未打开的花蛤，调入酱油。

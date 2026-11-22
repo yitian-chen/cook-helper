@@ -1,0 +1,48 @@
+schema_version: 1
+id: pork_cabbage_noodles
+name: 白菜肉丝面
+servings: 2
+time_minutes: 24
+cuisine: chinese_home
+course: staple
+tags:
+- 家常
+ingredients:
+- ingredient_id: noodles
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: napa_cabbage
+  amount: 160
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: pork
+  amount: 140
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 白菜切条，猪肉切丝，葱切碎。
+- 炒香葱和肉丝，加白菜翻炒，注水烧开下面，煮至面条和猪肉熟透后调味。

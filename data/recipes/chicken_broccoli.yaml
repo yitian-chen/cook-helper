@@ -1,0 +1,43 @@
+schema_version: 1
+id: chicken_broccoli
+name: 西兰花炒鸡片
+servings: 2
+time_minutes: 23
+cuisine: chinese_home
+course: main
+tags:
+- 家常
+ingredients:
+- ingredient_id: chicken
+  amount: 260
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: broccoli
+  amount: 260
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: garlic
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 西兰花切朵焯水，鸡肉切薄片加酱油和淀粉拌匀。
+- 炒香蒜末，鸡片炒至熟透，放入西兰花翻匀。

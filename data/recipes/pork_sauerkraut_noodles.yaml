@@ -1,0 +1,43 @@
+schema_version: 1
+id: pork_sauerkraut_noodles
+name: 酸菜白肉炖粉条
+servings: 2
+time_minutes: 58
+cuisine: dongbei
+course: main
+tags: []
+ingredients:
+- ingredient_id: pork_belly
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: pickled_cabbage
+  amount: 330
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: sweet_potato_noodle
+  amount: 140
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: ginger
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 五花肉焯水后切片，酸菜切丝，粉条按包装说明泡软。
+- 肉、葱姜与清水炖至软熟。
+- 下酸菜和粉条煮透，尝味后加盐。

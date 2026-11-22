@@ -1,0 +1,34 @@
+schema_version: 1
+id: garlic_bok_choy
+name: 蒜蓉小白菜
+servings: 2
+time_minutes: 10
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: bok_choy
+  amount: 360
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 小白菜洗净沥干，切段，蒜剁碎。
+- 热油爆香蒜末，先下菜梗再下菜叶，大火炒熟后加盐。

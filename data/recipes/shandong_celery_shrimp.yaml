@@ -1,0 +1,43 @@
+schema_version: 1
+id: shandong_celery_shrimp
+name: 芹菜炒虾仁
+servings: 2
+time_minutes: 18
+cuisine: shandong
+course: main
+tags:
+- 快手
+ingredients:
+- ingredient_id: shrimp
+  amount: 240
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: celery
+  amount: 230
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: ginger
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 虾仁去线，拌盐和淀粉，芹菜切段。
+- 热油炒香姜末、炒熟虾仁，加入芹菜大火炒熟。

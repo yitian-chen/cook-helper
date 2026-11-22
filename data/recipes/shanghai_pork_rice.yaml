@@ -1,0 +1,38 @@
+schema_version: 1
+id: shanghai_pork_rice
+name: 上海菜饭
+servings: 2
+time_minutes: 42
+cuisine: jiangzhe
+course: staple
+tags: []
+ingredients:
+- ingredient_id: rice
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: bok_choy
+  amount: 240
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: cured_pork
+  amount: 100
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 咸肉切丁，青菜切碎，备好米饭。
+- 煸熟咸肉，加入青菜炒软。
+- 拌入米饭焖热，尝味后加盐。

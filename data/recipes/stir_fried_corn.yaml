@@ -1,0 +1,39 @@
+schema_version: 1
+id: stir_fried_corn
+name: 胡萝卜玉米粒
+servings: 2
+time_minutes: 15
+cuisine: chinese_home
+course: side
+tags:
+- 家常
+- 快手
+ingredients:
+- ingredient_id: corn
+  amount: 220
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: carrot
+  amount: 140
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: scallion
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 玉米取粒，胡萝卜切小丁。
+- 葱花炒香，下胡萝卜和玉米，加少量水焖熟后收干加盐。

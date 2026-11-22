@@ -1,0 +1,64 @@
+schema_version: 1
+id: kung_pao_chicken
+name: 宫保鸡丁
+servings: 2
+time_minutes: 28
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: chicken
+  amount: 300
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: peanut
+  amount: 45
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: scallion
+  amount: 35
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: chili_dry
+  amount: 6
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sichuan_pepper
+  amount: 2
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 9
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡肉切丁以少许酱油、淀粉拌匀，花生炒熟。
+- 爆香干辣椒、花椒和葱段，炒熟鸡肉。
+- 拌入剩余酱油、醋和糖，收汁后撒花生。

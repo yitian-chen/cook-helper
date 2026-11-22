@@ -5,6 +5,7 @@ servings: 2
 time_minutes: 10
 tags:
 - 家常
+- 快手
 ingredients:
 - ingredient_id: cabbage
   amount: 400
@@ -24,3 +25,5 @@ ingredients:
 steps:
 - 包菜洗净撕块。
 - 热油翻炒至熟，加盐调味。
+cuisine: chinese_home
+course: side

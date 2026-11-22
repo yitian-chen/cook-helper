@@ -1,0 +1,43 @@
+schema_version: 1
+id: celery_beef
+name: 芹菜炒牛肉
+servings: 2
+time_minutes: 22
+cuisine: chinese_home
+course: main
+tags:
+- 家常
+ingredients:
+- ingredient_id: beef
+  amount: 240
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: celery
+  amount: 180
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 7
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: salt
+  amount: 1
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 牛肉逆纹切薄片，以酱油和淀粉拌匀，芹菜切段。
+- 热油炒牛肉至断生，加入芹菜继续炒至牛肉熟透，补盐。

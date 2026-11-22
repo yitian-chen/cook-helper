@@ -1,0 +1,69 @@
+schema_version: 1
+id: fish_fragrant_pork
+name: 鱼香肉丝
+servings: 2
+time_minutes: 30
+cuisine: sichuan
+course: main
+tags:
+- 辣味
+ingredients:
+- ingredient_id: pork
+  amount: 250
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: wood_ear
+  amount: 80
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: carrot
+  amount: 80
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: doubanjiang
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: ginger
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: starch
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 16
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 肉切丝用少许酱油、淀粉上浆，木耳和胡萝卜切丝。
+- 先炒肉丝，再下豆瓣、姜蒜、木耳和胡萝卜。
+- 加剩余酱油、醋、糖，炒熟后以水淀粉收汁。

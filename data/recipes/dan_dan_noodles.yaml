@@ -1,0 +1,54 @@
+schema_version: 1
+id: dan_dan_noodles
+name: 担担面
+servings: 2
+time_minutes: 30
+cuisine: sichuan
+course: staple
+tags:
+- 辣味
+ingredients:
+- ingredient_id: noodles
+  amount: 200
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: pork
+  amount: 150
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: sesame_paste
+  amount: 25
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: chili_oil
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: vinegar
+  amount: 12
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 热油将猪肉末炒熟，加入少许酱油。
+- 用芝麻酱、辣椒油、醋和剩余酱油调碗汁，以煮面水调匀。
+- 面熟后放入碗里，盖肉末撒葱。

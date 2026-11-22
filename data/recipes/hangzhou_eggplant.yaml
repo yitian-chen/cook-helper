@@ -1,0 +1,42 @@
+schema_version: 1
+id: hangzhou_eggplant
+name: 杭州酱烧茄子
+servings: 2
+time_minutes: 30
+cuisine: jiangzhe
+course: side
+tags: []
+ingredients:
+- ingredient_id: eggplant
+  amount: 400
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 22
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: garlic
+  amount: 15
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 7
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 20
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: scallion
+  amount: 10
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 茄子切滚刀块，煎至表面金黄。
+- 下蒜末、酱油、糖和少量水焖软，收汁撒葱。

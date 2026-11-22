@@ -1,0 +1,53 @@
+schema_version: 1
+id: yellow_braised_chicken
+name: 黄焖鸡
+servings: 2
+time_minutes: 52
+cuisine: shandong
+course: main
+tags: []
+ingredients:
+- ingredient_id: chicken
+  amount: 450
+  unit: g
+  role: main
+  optional: false
+- ingredient_id: shiitake
+  amount: 160
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: green_pepper
+  amount: 120
+  unit: g
+  role: side
+  optional: false
+- ingredient_id: ginger
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: soy_sauce
+  amount: 28
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: rice_wine
+  amount: 18
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: sugar
+  amount: 8
+  unit: g
+  role: seasoning
+  optional: false
+- ingredient_id: cooking_oil
+  amount: 14
+  unit: g
+  role: seasoning
+  optional: false
+steps:
+- 鸡块擦干，鲜香菇切片，青椒切块。
+- 姜和鸡块煸香，加调料与水，放香菇焖至鸡肉熟透。
+- 下青椒炒熟后收汁。

@@ -25,6 +25,8 @@ class Recipe(Strict):
     name: str
     servings: int = Field(gt=0)
     time_minutes: int = Field(gt=0)
+    cuisine: Literal["chinese_home", "sichuan", "jiangzhe", "dongbei", "shandong", "cantonese", "western"]
+    course: Literal["main", "side", "soup", "staple", "dessert"]
     tags: list[str] = []
     ingredients: list[Requirement] = Field(min_length=1)
     steps: list[str] = Field(min_length=1)
@@ -39,7 +41,7 @@ RECIPES = [Recipe.model_validate(yaml.safe_load(p.read_text())) for p in sorted(
 assert len({r.id for r in RECIPES}) == len(RECIPES)
 assert all(i.ingredient_id in INGREDIENTS for r in RECIPES for i in r.ingredients)
 
-PANTRY_DEFAULTS = frozenset({"cooking_oil", "salt", "soy_sauce", "rice"})
+PANTRY_DEFAULTS = frozenset({"cooking_oil", "salt", "soy_sauce", "rice", "raw_rice", "sugar", "vinegar"})
 PANTRY_PROMPT = (
     "默认家里备有食用油、盐、酱油、糖、醋和大米。大米可以煮成米饭，但不代表已有熟饭或隔夜饭。"
     "这些是常备假设，不是已盘点的库存。用户明确说明缺少、用量不足或忌口时，以用户提供的信息为准。"
