@@ -175,7 +175,7 @@ async def assistant_turn(state,text,*,body,report=None):
                     names.append("undo_swap")
         prompt=messages
         if not names and not menu_confirmed(state):
-            prompt=[*messages,{"role":"system","content":"当前餐单还未确定。此轮只介绍建议或回答选菜，采购清单和营养留到用户选定餐单后。"}]
+            prompt=[*messages,{"role":"system","content":"当前餐单还未确定。此轮只介绍菜名、搭配和人数，或回答选菜。请勿列出缺少的食材、采购建议或营养，即使作为附注也留到用户选定餐单后。"}]
         elif not names and any(tool in outputs for tool in ("choose_dish","replace_dish","undo_swap")):
             prompt=[*messages,{"role":"system","content":"这是换菜交互。候选在原菜卡片下。请简述选择或实际变动。只有餐单已确定时才提采购和营养。"}]
         reply=await client.chat(prompt,[schema(n,state) for n in names] or None)
