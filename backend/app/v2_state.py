@@ -1,6 +1,7 @@
 """Session-local conversations with shared household settings."""
 import json
 import time
+from datetime import datetime
 from uuid import uuid4
 from fastapi import HTTPException
 from . import store
@@ -14,27 +15,49 @@ DEFAULT = "default"
 def state_key(session_id):
     return "v2:active" if session_id == DEFAULT else "v2:chat:" + session_id
 
+def record_session(db, session_id, created_at):
+    local = datetime.fromtimestamp(created_at)
+    period = "上午" if local.hour < 11 else "中午" if local.hour < 14 else "下午" if local.hour < 18 else "晚上"
+    label = f"{local:%Y-%m-%d} {period}"
+    number = db.execute("SELECT COALESCE(MAX(number),0)+1 FROM chat_names WHERE label=?", (label,)).fetchone()[0]
+    db.execute("INSERT INTO chat_names VALUES (?,?,?,?)", (session_id, created_at, label, number))
+    return label if number == 1 else f"{label} {number}"
+
+def prepare_names(db):
+    db.execute("BEGIN IMMEDIATE")
+    db.execute("""CREATE TABLE IF NOT EXISTS chat_names (
+        id TEXT PRIMARY KEY, created_at REAL NOT NULL, label TEXT NOT NULL,
+        number INTEGER NOT NULL, UNIQUE(label,number))""")
+    # Older versions recorded only the last update. Use it once when importing history.
+    missing = db.execute("""
+        WITH existing(id,stamp) AS (
+            SELECT 'default', (SELECT json_extract(value,'$.updated_at') FROM state WHERE key='v2:active')
+            UNION ALL
+            SELECT substr(key,9), json_extract(value,'$.updated_at') FROM state WHERE key GLOB 'v2:chat:*'
+        )
+        SELECT id,stamp FROM existing WHERE id NOT IN (SELECT id FROM chat_names)
+        ORDER BY stamp,id
+    """).fetchall()
+    for session_id, timestamp in missing:
+        record_session(db, session_id, timestamp or time.time())
+
 def list_sessions():
     with store.connect() as db:
-        rows = db.execute("""
-            SELECT key, COALESCE(json_extract(value,'$.title'),
-                                 substr(json_extract(value,'$.messages[0].content'),1,28)),
-                   COALESCE(json_extract(value,'$.updated_at'),0)
-            FROM state WHERE key='v2:active' OR key GLOB 'v2:chat:*'
-            ORDER BY 3 DESC
-        """).fetchall()
-    sessions = [{"id": DEFAULT if key == "v2:active" else key.removeprefix("v2:chat:"),
-                 "title": title or "新对话"} for key, title, _ in rows]
-    if not any(session["id"] == DEFAULT for session in sessions):
-        sessions.append({"id": DEFAULT, "title": "初始对话"})
-    return sessions
+        prepare_names(db)
+        rows = db.execute("SELECT id,label,number FROM chat_names ORDER BY created_at DESC,number DESC").fetchall()
+    return [{"id": session_id, "title": label if number == 1 else f"{label} {number}"}
+            for session_id, label, number in rows]
 
 def new_session():
     session_id = uuid4().hex
     state = fresh(store.preferences()["version"])
-    state.update(session_id=session_id, updated_at=time.time())
-    store.put(state_key(session_id), state)
-    return {"id": session_id, "title": "新对话"}
+    with store.connect() as db:
+        prepare_names(db)
+        now = time.time()
+        title = record_session(db, session_id, now)
+        state.update(session_id=session_id, updated_at=now)
+        db.execute("INSERT INTO state VALUES (?,?)", (state_key(session_id), json.dumps(state)))
+    return {"id": session_id, "title": title}
 
 def active(session_id=DEFAULT):
     prefs=store.preferences()
@@ -46,7 +69,6 @@ def active(session_id=DEFAULT):
     state=fresh(prefs["version"])
     state["session_id"]=session_id
     if value:
-        state["title"]=value.get("title") or next((m["content"][:28] for m in value["messages"]), None)
         state["messages"]=value["messages"]
         for key in ("items","extra_foods","questions"):
             state[key]=value[key]
@@ -76,8 +98,6 @@ def save(state,revision,kitchen=None):
                     other["revision"] += 1
                     db.execute("UPDATE state SET value=? WHERE key=?", (json.dumps(other,ensure_ascii=False),other_key))
             db.execute("INSERT OR REPLACE INTO state VALUES (?,?)",("v2:kitchen",json.dumps(kitchen)))
-        if not state.get("title") and state["messages"]:
-            state["title"]=state["messages"][0]["content"][:28]
         state["updated_at"]=time.time()
         state["revision"]=revision+1
         db.execute("INSERT OR REPLACE INTO state VALUES (?,?)",(key,json.dumps(state,ensure_ascii=False)))

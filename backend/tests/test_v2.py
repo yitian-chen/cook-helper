@@ -1,4 +1,5 @@
 from collections import Counter
+from datetime import datetime
 from fastapi.testclient import TestClient
 import pytest
 
@@ -116,12 +117,12 @@ def test_recent_beef_is_used_without_weighing(amount,unit):
 def test_sessions_isolate_inventory_and_share_household_settings(tmp_path, monkeypatch):
     from app.main import app
     monkeypatch.setattr(store, "DB", tmp_path / "sessions.db")
-    legacy = dict(revision=3, preferences_version=1, items=[{"ingredient_id":"beef","amount":1,"unit":"piece"}],
+    legacy = dict(updated_at=datetime(2026,11,20,12).timestamp(),revision=3, preferences_version=1, items=[{"ingredient_id":"beef","amount":1,"unit":"piece"}],
                   extra_foods=[], questions=[], menu=make_menu([],Preferences(),MenuOptions(),1), ready=True,
                   timeline={"id":"previous"}, messages=[{"role":"user","content":"还有一块牛肉"}])
     store.put("v2:active", legacy)
     with TestClient(app) as client:
-        assert client.get("/api/v2/sessions").json() == [{"id":"default","title":"还有一块牛肉"}]
+        assert client.get("/api/v2/sessions").json() == [{"id":"default","title":"2026-11-20 中午"}]
         other = client.post("/api/v2/sessions").json()["id"]
         def read(session_id):
             return client.get("/api/v2/current",params={"session_id":session_id}).json()
@@ -136,3 +137,21 @@ def test_sessions_isolate_inventory_and_share_household_settings(tmp_path, monke
         client.put("/api/preferences",json={"allergens":["egg"]}).raise_for_status()
         assert read(other)["preferences_version"] == read("default")["preferences_version"] == 2
         assert not read(other)["items"] and read("default")["items"] == legacy["items"]
+
+def test_session_names_across_periods_and_concurrent_creation(tmp_path, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from app import v2_state
+    monkeypatch.setattr(store, "DB", tmp_path / "names.db")
+    def at(day, hour):
+        timestamp = datetime(2026,11,day,hour).timestamp()
+        monkeypatch.setattr(v2_state.time,"time",lambda: timestamp)
+    at(22,10)
+    first = v2_state.list_sessions()[0]
+    assert first["title"] == "2026-11-22 上午"
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        duplicates = list(pool.map(lambda _: v2_state.new_session(), range(3)))
+    assert sorted(s["title"] for s in duplicates) == [first["title"]+f" {i}" for i in (2,3,4)]
+    for day,hour,period in [(22,11,"中午"),(22,14,"下午"),(22,18,"晚上"),(23,0,"上午")]:
+        at(day,hour)
+        assert v2_state.new_session()["title"] == f"2026-11-{day} {period}"
+    assert first in v2_state.list_sessions()

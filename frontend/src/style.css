@@ -21,10 +21,24 @@
 .menu-panel{width:100%;background:#fffefa;border:1px solid #d7dfd2;border-radius:16px;padding:18px}.menu-panel h2{margin:0;font-size:20px}.dish-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}.recipe-card small,.timeline-row small{font-size:12px;color:#526854}.timeline-row{padding:10px 0;border-top:1px solid #e1e6dd}.timeline-row small{display:block;margin-left:25px}.timeline-row input{margin-right:8px}.equipment{display:flex;align-items:center;justify-content:space-between}.equipment input[type=number]{margin:4px}.equipment:last-of-type{margin-bottom:16px}
 
 header nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-header select{max-width:min(28vw,20em);text-overflow:ellipsis}
-@media(max-width:650px){
- header{align-items:flex-start;flex-direction:column;gap:6px;padding:8px 12px}
- header nav{width:100%}
- header nav button,header nav select{padding:4px 6px;font-size:14px}
- header select{min-width:0;flex:1}
+
+.workspace{display:grid;grid-template-columns:clamp(210px,22vw,290px) minmax(0,1fr)}
+.session-sidebar,.session-drawer{background:#eff3eb;padding:24px 16px}
+.session-sidebar{height:100dvh;overflow-y:auto;border-right:1px solid #d6dfd2}
+.workspace h2{font-weight:650}
+.session-sidebar h2,.session-drawer h2{font-size:14px;margin:24px 8px 8px;color:#526854}
+.session-sidebar nav,.session-drawer nav{display:grid;gap:4px}
+.session-sidebar nav button,.session-drawer nav button{border:0;text-align:left;background:transparent;font-variant-numeric:tabular-nums}
+.workspace nav button[aria-current=page]{background:#dce8d7;color:#254833;font-weight:650}
+.new-session{width:100%}
+.history-toggle{display:none}
+.session-drawer{margin:0;height:100dvh;max-height:100dvh;width:min(82vw,290px);border-radius:0;border:0}
+.drawer-close{display:block;margin:0 0 12px auto}
+@media(max-width:700px){
+ .workspace{display:block}
+ .session-sidebar{display:none}
+ .history-toggle{display:inline-block;margin-right:10px}
+ header{padding:8px 12px;flex-wrap:wrap;gap:6px}
+ header button{padding:4px 6px;font-size:14px}
+ header small{display:none}
 }
