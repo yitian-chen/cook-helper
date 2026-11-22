@@ -1,0 +1,101 @@
+# USDA FoodData Central SR Legacy 2018-04. Values per 100 g edible portion. Egg: large.
+cucumber:
+  fdc_id: 168409
+  reference_food: Cucumber, with peel, raw
+  carbs: 3.63
+  kcal: 15.0
+  fat: 0.11
+  protein: 0.65
+rice:
+  fdc_id: 168878
+  reference_food: Rice, white, long-grain, regular, enriched, cooked
+  protein: 2.69
+  fat: 0.28
+  carbs: 28.17
+  kcal: 130.0
+noodles:
+  fdc_id: 168927
+  reference_food: Pasta, dry, unenriched
+  protein: 13.04
+  fat: 1.51
+  carbs: 74.67
+  kcal: 371.0
+mushroom:
+  fdc_id: 169251
+  reference_food: Mushrooms, white, raw
+  fat: 0.34
+  protein: 3.09
+  carbs: 3.26
+  kcal: 22.0
+cabbage:
+  fdc_id: 169975
+  reference_food: Cabbage, raw
+  fat: 0.1
+  carbs: 5.8
+  kcal: 25.0
+  protein: 1.28
+potato:
+  fdc_id: 170026
+  reference_food: Potatoes, flesh and skin, raw
+  fat: 0.09
+  kcal: 77.0
+  protein: 2.05
+  carbs: 17.49
+broccoli:
+  fdc_id: 170379
+  reference_food: Broccoli, raw
+  carbs: 6.64
+  kcal: 34.0
+  fat: 0.37
+  protein: 2.82
+carrot:
+  fdc_id: 170393
+  reference_food: Carrots, raw
+  protein: 0.93
+  fat: 0.24
+  carbs: 9.58
+  kcal: 41.0
+tomato:
+  fdc_id: 170457
+  reference_food: Tomatoes, red, ripe, raw, year round average
+  carbs: 3.89
+  kcal: 18.0
+  fat: 0.2
+  protein: 0.88
+egg:
+  fdc_id: 171287
+  reference_food: Egg, whole, raw, fresh
+  kcal: 143.0
+  protein: 12.56
+  fat: 9.51
+  carbs: 0.72
+  grams_per_piece: 50
+cooking_oil:
+  fdc_id: 172336
+  reference_food: Oil, canola
+  fat: 100.0
+  protein: 0.0
+  carbs: 0.0
+  kcal: 884.0
+tofu:
+  fdc_id: 172476
+  reference_food: Tofu, raw, regular, prepared with calcium sulfate
+  carbs: 1.87
+  fat: 4.78
+  kcal: 76.0
+  protein: 8.08
+salt:
+  fdc_id: 173468
+  reference_food: Salt, table
+  protein: 0.0
+  fat: 0.0
+  carbs: 0.0
+  kcal: 0.0
+chicken:
+  fdc_id: 171077
+  reference_food: Chicken, broiler or fryers, breast, skinless, boneless, meat only,
+    raw
+  fat: 2.62
+  kcal: 120.0
+  protein: 22.5
+  carbs: 0.0

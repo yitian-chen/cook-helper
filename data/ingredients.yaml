@@ -63,3 +63,11 @@ soy_sauce:
   - soy
   - wheat
   meat: false
+milk:
+  name: 牛奶
+  allergens: [milk]
+  meat: false
+soy_milk:
+  name: 豆浆
+  allergens: [soy]
+  meat: false

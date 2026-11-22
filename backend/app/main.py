@@ -19,6 +19,8 @@ async def lifespan(app):
     yield
 
 app = FastAPI(title="Cook Helper", lifespan=lifespan)
+from .meal import router as meal_router
+app.include_router(meal_router)
 class NewRun(Strict):
     image_id: str | None = None
 class Confirmation(Strict):

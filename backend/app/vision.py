@@ -55,7 +55,7 @@ async def recognize_ingredients(image_id):
         "同一食材合并为一项。仅使用下列标准 ID：" + json.dumps(catalog, ensure_ascii=False) +
         "。数清完整可见物体，不要猜测重量、体积、容器内部数量或未出现食材。"
         "单位只能是 piece；无法数清则 amount=null。不在字典的食材只写入 uncertain，不强行归类。"
-        "没有食材则 items=[]。不输出置信度。"
+        "身份不明的物品不要猜测或写入items，例如无法分辨豆浆和牛奶，在uncertain中用问句具体询问。仅数量未知无需询问。没有食材则 items=[]。"
     )
     reply = await client.chat([
         {"role": "system", "content": instruction},
