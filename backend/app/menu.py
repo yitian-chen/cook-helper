@@ -71,7 +71,7 @@ def rank(recipe, existing, items, people, slots):
             -sum(min(1,d["missing"]/d["required"]) for d in combined if d["missing"])
             -.003*recipe.time_minutes)
 
-def make_menu(items, prefs, options, revision, previous=None, replace=None, wanted=None):
+def make_menu(items, prefs, options, revision, previous=None, replace=None, wanted=None, preferred=()):
     people = options.people or prefs.servings
     slots = options.dishes if options.dishes is not None else min(8, 2+(people-1)//3)+int(options.soup)
     if people==1 and options.dishes is None and options.staple and not options.soup:
@@ -82,6 +82,7 @@ def make_menu(items, prefs, options, revision, previous=None, replace=None, want
             roles[-1]="soup"
         if options.staple:
             roles.append("rice")
+    unused_preferred = set(preferred) & {i["ingredient_id"] for i in items if i["amount"] != 0}
     chosen = []
     if replace:
         if not previous or replace not in [d["id"] for d in previous["dishes"]]:
@@ -104,7 +105,11 @@ def make_menu(items, prefs, options, revision, previous=None, replace=None, want
         if not candidates:
             raise ValueError("当前饮食限制或指定食材下没有合适的"+role+"，请调整餐单要求")
         count = len(previous["dishes"]) if replace else len(roles)
-        best=max(candidates,key=lambda r:rank(r,chosen,items,people,count))
+        def priority(recipe):
+            featured = {i.ingredient_id for i in recipe.ingredients if i.role != "seasoning"}
+            return len(featured & unused_preferred), rank(recipe,chosen,items,people,count)
+        best=max(candidates,key=priority)
+        unused_preferred.difference_update(i.ingredient_id for i in best.ingredients if i.role != "seasoning")
         chosen.append(portions(best,people,count))
     if replace:
         replacement=chosen[-1]

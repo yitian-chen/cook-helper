@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import Field
 from . import store, v2_state
 from .cooking import Kitchen, schedule
-from .domain import Preferences, Strict, PANTRY_PROMPT
+from .domain import Preferences, Strict, PANTRY_PROMPT, INGREDIENTS
 from .llm_client import LLMClient, LLMError
 from .meal import interpret, recognize_ingredients, respond_to_request
 from .menu import MenuOptions, make_menu, meal_reports
@@ -108,8 +108,8 @@ async def assistant_turn(state,text,*,body,report=None):
              "schedule":"使用已保存的厨房配置生成时间线。","replan":"按最新用餐人数和饮食偏好重新配餐。"}
     text=text or trigger.get(body.action,"请根据照片安排一餐")
     policy=("你是灶边整餐助手。用户报食材或澄清时调用write_inventory，图片先识别。仅身份或过敏有歧义时追问，"
-            "如有已知食材，重量不明不追问。依照当前请求给compose_menu参数：people人数、staple主食、soup汤、dishes菜数。"
-            "补充库存后保留上一餐偏好。要求替换时用replace_dish，想换成豆腐时ingredient_id用tofu。"
+            "用户说一块、一把、一些，表示该食材可直接入菜；无需称重、换算或确认是否够。菜谱克数只是参考用量。依照当前请求给compose_menu参数：people人数、staple主食、soup汤、dishes菜数。"
+            "用户补充食材先写库存，再优先安排使用它的合规菜。没有入选的食材不要归因于重量不明。补充库存后保留上一餐偏好。要求替换时用replace_dish，想换成豆腐时ingredient_id用tofu。"
             "菜单和清单由工具产生，以简洁中文Markdown说明实际菜名、必买缺量、全餐与每人营养，部分估算列出缺失。"
             "仅在用户明确表示食材已备齐时调用confirm_ready。厨房未设置就提示配置。时间线生成后简述总时长和并行安排。"
             "整套菜单以最新工具结果 dishes 数组为准，换下的菜不再呈现。食材份数是分享份量。营养未覆盖项不按零处理。不要仅在口头声称已完成工具操作。遵守过敏忌口限制，不推荐菜单外的配料。"+PANTRY_PROMPT)
@@ -172,6 +172,15 @@ async def assistant_turn(state,text,*,body,report=None):
                         change=await interpret(body.text,state["items"],state["extra_foods"],state["questions"])
                         if change.intent=="inventory":
                             state.update(items=[i.model_dump() for i in change.items],extra_foods=change.extra_foods,questions=change.questions)
+                    # Prefer newly added foods and foods explicitly restated in this turn.
+                    # Compare against inventory before text interpretation, including the photo.
+                    state["preferred_foods"] = [
+                        i["ingredient_id"] for i in state["items"]
+                        if i["amount"] != 0 and (
+                            items.get(i["ingredient_id"]) != i
+                            or INGREDIENTS[i["ingredient_id"]]["name"] in body.text
+                        )
+                    ]
                     if old:
                         state["prior_options"]=old["options"]
                     if not state["items"] and not state["extra_foods"] and not state["questions"]:
@@ -194,7 +203,8 @@ async def assistant_turn(state,text,*,body,report=None):
                             args["dish_id"]=body.dish_id
                         swap=Swap.model_validate(args)
                         replace,wanted=swap.dish_id,swap.ingredient_id
-                    output=make_menu(state["items"],prefs,options,(old or {}).get("version",0)+1,old,replace,wanted)
+                    output=make_menu(state["items"],prefs,options,(old or {}).get("version",0)+1,old,replace,wanted,
+                                     preferred=state.get("preferred_foods",[]))
                     state.update(menu=output,ready=False,timeline=None)
                     next_tools=["generate_shopping_list","analyze_nutrition"]
                 elif name in ("generate_shopping_list","analyze_nutrition"):

@@ -98,3 +98,17 @@ def test_preference_change_retains_inventory_and_invalidates_old_plan(tmp_path,m
         menu=reply.json()["menu"]
         assert menu["people"]==4 and all(i["ingredient_id"]!="egg" for d in menu["dishes"] for i in d["ingredients"])
         assert client.post("/api/v2/turn",json={"revision":1,"preferences_version":p["version"],"action":"schedule"}).status_code==409
+
+@pytest.mark.parametrize("amount,unit", [(1,"piece"), (None,"g")])
+def test_recent_beef_is_used_without_weighing(amount,unit):
+    inventory=[dict(ingredient_id=k,amount=2,unit="piece")
+               for k in ("tomato","egg","potato","carrot","cucumber")]
+    inventory.append(dict(ingredient_id="beef",amount=amount,unit=unit))
+    options=MenuOptions(dishes=3)
+    menu=make_menu(inventory,Preferences(),options,1,preferred=["beef"])
+    assert any(i["ingredient_id"]=="beef" for d in menu["dishes"] for i in d["ingredients"])
+    shopping,_=meal_reports(menu,inventory)
+    assert not any(i["ingredient_id"]=="beef" for i in shopping["buy"])
+    assert inventory[-1]["amount"]==amount
+    restricted=make_menu(inventory,Preferences(dietary_rules=["vegetarian"]),options,2,preferred=["beef"])
+    assert not any(i["ingredient_id"]=="beef" for d in restricted["dishes"] for i in d["ingredients"])
