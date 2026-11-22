@@ -1,0 +1,580 @@
+plain_rice:
+  - {"id": "s1", "action": "淘米加水", "minutes": 3, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "启动电饭锅", "minutes": 1, "hands": 1, "equipment": ["rice_cooker"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮饭", "minutes": 32, "hands": 0, "equipment": ["rice_cooker"], "after": ["s2"]}
+  - {"id": "s4", "action": "焖饭", "minutes": 9, "hands": 0, "equipment": ["rice_cooker"], "after": ["s3"]}
+  - {"id": "s5", "action": "翻松盛饭", "minutes": 1, "hands": 1, "equipment": ["rice_cooker"], "after": ["s4"]}
+baked_salmon:
+  - {"id": "s1", "action": "启动烤箱预热至200℃", "minutes": 1, "hands": 1, "equipment": ["oven"], "after": []}
+  - {"id": "s2", "action": "预热烤箱", "minutes": 9, "hands": 0, "equipment": ["oven"], "after": ["s1"]}
+  - {"id": "s3", "action": "擦干鱼，抹油、蒜和调料，摆柠檬片", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s4", "action": "放入烤盘", "minutes": 1, "hands": 1, "equipment": ["oven"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "烤至鱼肉熟透", "minutes": 14, "hands": 0, "equipment": ["oven"], "after": ["s4"]}
+  - {"id": "s6", "action": "检查并取出", "minutes": 1, "hands": 1, "equipment": ["oven"], "after": ["s5"]}
+boiled_beef:
+  - {"id": "s1", "action": "切牛肉薄片，用酱油和淀粉上浆", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏腌制", "minutes": 8, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "洗切小白菜、切蒜和辣椒", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "焯熟白菜沥水垫碗", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "炒香豆瓣加水煮滚", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s4"]}
+  - {"id": "s6", "action": "分散下牛肉煮熟，连汤盛碗", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+  - {"id": "s7", "action": "烧热油浇在辣椒、蒜和花椒上", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s6"]}
+boiled_fish:
+  - {"id": "s1", "action": "鱼切片并拌姜盐和淀粉", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 8, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "洗豆芽并煮透，沥水放碗", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s4", "action": "炒香豆瓣加水煮开", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "逐片放鱼煮熟，连汤盛碗", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+  - {"id": "s6", "action": "煸香干辣椒花椒，浇油", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+braised_gluten:
+  - {"id": "s1", "action": "烤麸切块焯水挤干", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "洗切已泡发木耳和蘑菇，备花生", "minutes": 7, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "煎香烤麸，加入配菜和调料", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加水焖至花生熟透", "minutes": 22, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "收汁拌香油", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+braised_yellow_croaker:
+  - {"id": "s1", "action": "处理鱼并擦干，切葱姜", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "两面煎定型", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加调味料与水煮开", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "小火烧透", "minutes": 14, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "检查鱼肉并收汁", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+broccoli:
+  - {"id": "s1", "action": "切小朵洗净", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "焯熟沥水", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "热油翻炒并加盐", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+cabbage:
+  - {"id": "s1", "action": "洗净撕块沥干", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "大火翻炒至熟，加盐", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+cantonese_beef_rice_noodle:
+  - {"id": "s1", "action": "牛肉薄切拌酱油淀粉", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 6, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "理散河粉，洗豆芽切葱", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒熟牛肉盛出", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "炒熟芽菜葱段，下河粉酱油，拌回牛肉", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+cantonese_claypot_rice:
+  - {"id": "s1", "action": "洗米加水浸泡", "minutes": 3, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "浸米", "minutes": 20, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切片腊肠，洗青菜并调汁", "minutes": 6, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "将米放入抹油砂锅加水烧开", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s5", "action": "小火煮至收水", "minutes": 10, "hands": 0, "equipment": ["burner", "pot"], "after": ["s4"]}
+  - {"id": "s6", "action": "摆上腊肠，加盖", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3", "s5"]}
+  - {"id": "s7", "action": "焖至米饭和腊肠熟透", "minutes": 15, "hands": 0, "equipment": ["burner", "pot"], "after": ["s6"]}
+  - {"id": "s8", "action": "用另一锅焯青菜，摆盘淋汁", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s7"]}
+cantonese_pork_congee:
+  - {"id": "s1", "action": "淘米加足水", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "煮开米汤", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火熬粥", "minutes": 35, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "皮蛋切丁，瘦肉切丝拌淀粉，切姜葱", "minutes": 8, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s5", "action": "搅拌检查，下姜丝、蛋和肉", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3", "s4"]}
+  - {"id": "s6", "action": "小火煮稠", "minutes": 7, "hands": 0, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "检查肉熟透，加盐葱花", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s6"]}
+cantonese_snow_pear_soup:
+  - {"id": "s1", "action": "干银耳加水泡发", "minutes": 2, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "泡至完全舒展", "minutes": 60, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "去蒂撕朵，雪梨去芯切块", "minutes": 6, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s4", "action": "银耳加水煮开", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "炖软银耳", "minutes": 40, "hands": 0, "equipment": ["burner", "pot"], "after": ["s4"]}
+  - {"id": "s6", "action": "下雪梨", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "炖软雪梨", "minutes": 12, "hands": 0, "equipment": ["burner", "pot"], "after": ["s6"]}
+  - {"id": "s8", "action": "加糖化开", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s7"]}
+cantonese_steamed_fish:
+  - {"id": "s1", "action": "处理鱼，划刀摆姜，切葱丝", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "烧开蒸锅，放鱼", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "蒸至鱼最厚处熟透", "minutes": 13, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "出锅倒掉多余汤汁", "minutes": 1, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+  - {"id": "s5", "action": "加葱酱油，淋热油", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+cantonese_steamed_pork_ribs:
+  - {"id": "s1", "action": "排骨切块沥干，剁蒜豆豉，拌调料", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "摆盘，烧开蒸锅", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "蒸至排骨熟透", "minutes": 26, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查熟度后出锅", "minutes": 2, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+cantonese_turnip_cake:
+  - {"id": "s1", "action": "浸泡虾米", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "泡软", "minutes": 15, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "萝卜擦丝，切腊肠丁", "minutes": 8, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "煮软萝卜留汁", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "炒熟腊肠虾米，拌萝卜和粘米粉浆", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s4"]}
+  - {"id": "s6", "action": "装盘，放入烧开的蒸锅", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s5"]}
+  - {"id": "s7", "action": "蒸至凝固", "minutes": 35, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s6"]}
+  - {"id": "s8", "action": "取出", "minutes": 1, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s7"]}
+  - {"id": "s9", "action": "放凉定型", "minutes": 20, "hands": 0, "equipment": [], "after": ["s8"]}
+  - {"id": "s10", "action": "切片煎香", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s9"]}
+carrot_rice:
+  - {"id": "s1", "action": "胡萝卜切丁，备好熟米饭", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒熟胡萝卜", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加入米饭翻炒至充分热透，加盐", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+celery_beef:
+  - {"id": "s1", "action": "牛肉逆纹切片加酱油和淀粉", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 7, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "洗芹菜切段", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒熟牛肉，加入芹菜翻炒加盐", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+chicken_broccoli:
+  - {"id": "s1", "action": "鸡肉薄切拌酱油淀粉，清洗刀板", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 6, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "西兰花切朵焯水沥干", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s4", "action": "炒香蒜，鸡片炒熟后加西兰花", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+chicken_mushroom:
+  - {"id": "s1", "action": "切鸡块和蘑菇", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "翻炒鸡肉，加蘑菇与水", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加盖炖至鸡肉全熟", "minutes": 20, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查并加盐", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+chongqing_chili_chicken:
+  - {"id": "s1", "action": "鸡肉切丁拌酱油盐和淀粉", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 10, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切姜蒜与辣椒", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "煎熟鸡丁至金黄，盛出", "minutes": 12, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "煸香椒料，回锅炒匀", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+cold_wood_ear:
+  - {"id": "s1", "action": "洗净已泡发的木耳并去根", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "沸水煮熟沥干", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "切蒜，调醋、酱油、香油", "minutes": 4, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s4", "action": "拌匀装盘", "minutes": 2, "hands": 1, "equipment": [], "after": ["s3"]}
+corn_pork_rib_soup:
+  - {"id": "s1", "action": "排骨焯水冲净", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "加姜与水煮开", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火炖排骨", "minutes": 30, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "切玉米和胡萝卜", "minutes": 5, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s5", "action": "加入配菜", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3", "s4"]}
+  - {"id": "s6", "action": "炖至软熟", "minutes": 18, "hands": 0, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "检查加盐", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s6"]}
+cucumber_egg:
+  - {"id": "s1", "action": "切黄瓜，打散鸡蛋", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒凝鸡蛋", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加黄瓜炒熟并调味", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+dan_dan_noodles:
+  - {"id": "s1", "action": "剁肉末、切葱，调芝麻酱辣椒油醋和酱油", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒熟肉末调味", "minutes": 9, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮熟面条，留面水调汁", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "拌面，盖肉末撒葱", "minutes": 3, "hands": 1, "equipment": [], "after": ["s3"]}
+di_san_xian:
+  - {"id": "s1", "action": "切土豆、茄子、青椒，调芡汁", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "分批煎熟土豆和茄子", "minutes": 15, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒香蒜和青椒，放回土豆茄子勾芡", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+dim_sum_shrimp_dumplings:
+  - {"id": "s1", "action": "笋焯透沥干切丁", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "虾剁粗馅拌笋、盐和香油", "minutes": 9, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "烧开水烫澄面淀粉", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "揉入油，分剂擀薄", "minutes": 8, "hands": 1, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "包入虾馅", "minutes": 18, "hands": 1, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "烧开蒸锅，摆入虾饺", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s5"]}
+  - {"id": "s7", "action": "蒸熟虾饺", "minutes": 9, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s6"]}
+  - {"id": "s8", "action": "检查馅料熟透取出", "minutes": 2, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s7"]}
+dongbei_chicken_mushroom:
+  - {"id": "s1", "action": "粉条按包装要求加水浸泡", "minutes": 2, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "泡软粉条", "minutes": 20, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "鸡切块，香菇切片，切葱姜", "minutes": 8, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒香葱姜鸡块，加香菇酱油清水", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "炖鸡", "minutes": 30, "hands": 0, "equipment": ["burner", "wok"], "after": ["s4"]}
+  - {"id": "s6", "action": "加粉条", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s5"]}
+  - {"id": "s7", "action": "炖透", "minutes": 10, "hands": 0, "equipment": ["burner", "wok"], "after": ["s6"]}
+  - {"id": "s8", "action": "检查鸡肉和粉条", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s7"]}
+dongbei_stew:
+  - {"id": "s1", "action": "排骨焯水洗净", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "葱姜排骨炒香，加酱油水", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炖排骨", "minutes": 30, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "玉米土豆茄子切块，豆角去筋", "minutes": 9, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s5", "action": "下蔬菜", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3", "s4"]}
+  - {"id": "s6", "action": "加盖炖透", "minutes": 18, "hands": 0, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "检查肉熟、豆角熟透", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s6"]}
+dongpo_pork:
+  - {"id": "s1", "action": "五花肉焯水切大块", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "葱姜垫锅摆肉，配酒糖酱油", "minutes": 6, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "加水烧开", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "小火炖肉", "minutes": 60, "hands": 0, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "检查水量并翻面", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s4"]}
+  - {"id": "s6", "action": "继续炖软", "minutes": 38, "hands": 0, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "收汁", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s6"]}
+dry_fried_green_beans:
+  - {"id": "s1", "action": "摘豆角切蒜，备肉末", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "沸水煮透豆角，沥干", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "热油煸豆角至起皱", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加肉末、蒜和干辣椒炒熟调味", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+dry_fried_potato:
+  - {"id": "s1", "action": "切土豆厚片、洋葱丝和蒜", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "土豆焯至半透明沥干", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "煎黄土豆盛出", "minutes": 9, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "炒香配料、豆瓣，回锅炒熟", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+egg_rice:
+  - {"id": "s1", "action": "切胡萝卜丁、打蛋，备熟米饭", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒熟鸡蛋与胡萝卜", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加米饭翻炒至热透并加盐", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+eggplant_potato_stew:
+  - {"id": "s1", "action": "茄子撕段土豆切块，切葱蒜", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香葱蒜和酱，下蔬菜翻炒", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加水炖熟", "minutes": 24, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查并略收汁", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+fish_fragrant_eggplant:
+  - {"id": "s1", "action": "切茄条、剁葱姜蒜，调鱼香汁", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "蒸锅烧开摆入茄条", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "蒸软", "minutes": 10, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "取出", "minutes": 1, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+  - {"id": "s5", "action": "炒香豆瓣姜蒜，加汁焖茄条，勾芡撒葱", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+fish_fragrant_pork:
+  - {"id": "s1", "action": "肉切丝用酱油淀粉上浆", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 6, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切木耳胡萝卜丝，调鱼香汁", "minutes": 6, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "翻炒肉丝、豆瓣和配菜", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "加醋糖酱油汁，炒熟勾芡", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+french_toast:
+  - {"id": "s1", "action": "打匀蛋奶糖，吐司浸匀", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "黄油小火煎第一面", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "翻面煎至中心蛋液凝固", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+garlic_bok_choy:
+  - {"id": "s1", "action": "洗净切段，剁蒜沥水", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "蒜爆香，先下菜梗再炒熟菜叶加盐", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+garlic_eggplant:
+  - {"id": "s1", "action": "切茄条剁蒜", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "烧水，放茄条入蒸锅", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "蒸软", "minutes": 13, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "取出", "minutes": 1, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+  - {"id": "s5", "action": "炒蒜调酱油，浇茄条", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+garlic_spinach:
+  - {"id": "s1", "action": "洗菠菜剁蒜", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "焯熟菠菜并沥干", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒香蒜，加菠菜翻匀加盐", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+ginger_scallion_clams:
+  - {"id": "s1", "action": "花蛤加水吐沙，挑去破壳的", "minutes": 3, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "等待吐沙（已吐沙可略过）", "minutes": 45, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "洗净花蛤，切姜葱", "minutes": 6, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s4", "action": "炒香葱姜，下花蛤和酒", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "盖锅煮开口", "minutes": 5, "hands": 0, "equipment": ["burner", "wok"], "after": ["s4"]}
+  - {"id": "s6", "action": "确认熟透，丢弃未开口花蛤，调味", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+green_pepper_pork:
+  - {"id": "s1", "action": "切肉丝，酱油淀粉上浆", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 5, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "青椒去籽切丝", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒散肉丝，加入青椒炒熟", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+guo_bao_rou:
+  - {"id": "s1", "action": "肉切薄片调盐，裹淀粉糊", "minutes": 10, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "分批炸熟炸脆沥油", "minutes": 18, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "切配葱姜胡萝卜丝，调醋糖汁", "minutes": 5, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s4", "action": "炒香配菜，熬汁快速裹肉", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+hangzhou_eggplant:
+  - {"id": "s1", "action": "切茄子、蒜与葱", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "煎茄子至金黄", "minutes": 10, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "下蒜酱油糖与水", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "焖软", "minutes": 7, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "收汁撒葱", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+hot_sour_noodles:
+  - {"id": "s1", "action": "粉条按包装要求泡发", "minutes": 2, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "等粉条泡软", "minutes": 20, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "调蒜醋辣汁，切葱", "minutes": 5, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒熟花生", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "煮透粉条，入碗调汤撒花生葱", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2", "s4"]}
+kung_pao_chicken:
+  - {"id": "s1", "action": "鸡肉切丁，酱油淀粉上浆，清洁刀板", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏腌鸡丁", "minutes": 8, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切葱姜椒，调醋糖酱汁", "minutes": 5, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "炒熟花生盛出", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "爆香干椒花椒葱段，炒熟鸡丁", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s4"]}
+  - {"id": "s6", "action": "调汁收浓撒花生", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+lemon_chicken:
+  - {"id": "s1", "action": "拍匀鸡胸，拌柠檬汁、蒜盐胡椒", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏腌制", "minutes": 10, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "两面煎香", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "翻面检查最厚处熟透", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "离火静置", "minutes": 3, "hands": 0, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "切片挤柠檬", "minutes": 1, "hands": 1, "equipment": [], "after": ["s5"]}
+longjing_shrimp:
+  - {"id": "s1", "action": "挑虾线，虾仁以蛋清盐和淀粉上浆", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 6, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "泡龙井茶", "minutes": 2, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "浸茶", "minutes": 3, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "滤茶汤", "minutes": 1, "hands": 1, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "滑炒虾仁至熟，加酒、茶汤与茶叶", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s5"]}
+mapo_tofu:
+  - {"id": "s1", "action": "切豆腐剁牛肉末，切香料", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "豆腐焯水", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒熟肉末，炒香豆瓣姜蒜辣椒", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加水下豆腐", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "焖透", "minutes": 7, "hands": 0, "equipment": ["burner", "wok"], "after": ["s4"]}
+  - {"id": "s6", "action": "勾芡撒花椒", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+mushroom_cream_pasta:
+  - {"id": "s1", "action": "煮熟意面沥水", "minutes": 10, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "蘑菇切片剁蒜", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s3", "action": "黄油炒蒜和蘑菇，倒入淡奶油", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "煮浓酱汁", "minutes": 5, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "拌面加盐胡椒", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1", "s4"]}
+mushroom_tofu:
+  - {"id": "s1", "action": "蘑菇豆腐切块", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香蘑菇，加豆腐和水", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "焖熟", "minutes": 8, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加盐盛盘", "minutes": 1, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+nanjing_salted_duck:
+  - {"id": "s1", "action": "干炒盐花椒", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": []}
+  - {"id": "s2", "action": "晾凉椒盐", "minutes": 5, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "抹鸭肉", "minutes": 5, "hands": 1, "equipment": [], "after": ["s2"]}
+  - {"id": "s4", "action": "冷藏腌制", "minutes": 120, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "洗去浮盐，备葱姜酒", "minutes": 5, "hands": 1, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "加水煮开", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "小火浸煮", "minutes": 52, "hands": 0, "equipment": ["burner", "pot"], "after": ["s6"]}
+  - {"id": "s8", "action": "确认鸭肉熟透后取出", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s7"]}
+  - {"id": "s9", "action": "放凉", "minutes": 12, "hands": 0, "equipment": [], "after": ["s8"]}
+  - {"id": "s10", "action": "斩块", "minutes": 4, "hands": 1, "equipment": [], "after": ["s9"]}
+northeast_cold_noodles:
+  - {"id": "s1", "action": "煮熟鸡蛋", "minutes": 10, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "黄瓜切丝番茄切片，调冷面汤", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s3", "action": "鸡蛋放凉剥壳切半", "minutes": 3, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "煮透冷面", "minutes": 7, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "用凉开水冷却，入汤摆配菜撒芝麻", "minutes": 3, "hands": 1, "equipment": [], "after": ["s4"]}
+onion_beef:
+  - {"id": "s1", "action": "牛肉切薄拌酱油淀粉", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 7, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "洋葱切丝", "minutes": 4, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "热油炒洋葱，加牛肉炒熟撒黑胡椒", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+oyster_sauce_broccoli:
+  - {"id": "s1", "action": "洗切西兰花剁蒜", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "焯熟沥水", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒香蒜，加蚝油和水淀粉煮亮浇汁", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+pan_seared_steak:
+  - {"id": "s1", "action": "擦干牛排撒盐胡椒", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "煎至上色，加黄油蒜淋浇", "minutes": 10, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "检查中心温度达到菜谱要求，离火", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "静置", "minutes": 3, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "切片", "minutes": 2, "hands": 1, "equipment": [], "after": ["s4"]}
+pork_cabbage_noodles:
+  - {"id": "s1", "action": "白菜切条猪肉切丝，切葱", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香葱和肉丝，下白菜翻炒", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "加水煮开下面", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "煮至面和猪肉熟透并调味", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+pork_sauerkraut_noodles:
+  - {"id": "s1", "action": "粉条加水泡软", "minutes": 2, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "等待泡软", "minutes": 20, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "五花肉焯水切片", "minutes": 7, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s4", "action": "酸菜切丝备葱姜", "minutes": 5, "hands": 1, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "将肉葱姜放锅内加水烧开", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s4"]}
+  - {"id": "s6", "action": "小火炖软", "minutes": 26, "hands": 0, "equipment": ["burner", "pot"], "after": ["s5"]}
+  - {"id": "s7", "action": "加入酸菜粉条", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2", "s6"]}
+  - {"id": "s8", "action": "煮透", "minutes": 10, "hands": 0, "equipment": ["burner", "pot"], "after": ["s7"]}
+  - {"id": "s9", "action": "尝味后调盐", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s8"]}
+pork_vermicelli:
+  - {"id": "s1", "action": "粉条加水泡软", "minutes": 2, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "等待泡软", "minutes": 20, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切五花肉、白菜和葱姜", "minutes": 7, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "煸香肉片葱姜，加白菜酱油和水", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "炖肉白菜", "minutes": 24, "hands": 0, "equipment": ["burner", "pot"], "after": ["s4"]}
+  - {"id": "s6", "action": "下粉条", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2", "s5"]}
+  - {"id": "s7", "action": "煮透", "minutes": 10, "hands": 0, "equipment": ["burner", "pot"], "after": ["s6"]}
+  - {"id": "s8", "action": "检查并收汁", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s7"]}
+potato_carrot:
+  - {"id": "s1", "action": "土豆胡萝卜切丝", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "热油翻炒并加水", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加盖焖熟", "minutes": 5, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加盐盛盘", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+potato_chicken:
+  - {"id": "s1", "action": "切土豆和鸡块", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "热油炒鸡肉，下土豆和水", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炖煮", "minutes": 24, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查鸡肉全熟并调味", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+potato_mash:
+  - {"id": "s1", "action": "土豆去皮切块", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷水下锅烧开", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮至可戳透", "minutes": 13, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "沥水", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+  - {"id": "s5", "action": "压泥拌黄油、温牛奶和调味料", "minutes": 4, "hands": 1, "equipment": [], "after": ["s4"]}
+pumpkin_cream_soup:
+  - {"id": "s1", "action": "去籽切南瓜、洋葱切丁", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "黄油炒软洋葱，加南瓜与水", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮软南瓜", "minutes": 18, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "用工具压碎或搅打细泥", "minutes": 5, "hands": 1, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "加入淡奶油再加热调味", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s4"]}
+red_braised_bamboo:
+  - {"id": "s1", "action": "春笋去壳切块", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "充分焯煮后沥干", "minutes": 10, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "热油煸笋，加调味和水", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "小火焖透", "minutes": 9, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "收汁撒葱", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+scallion_egg_paste:
+  - {"id": "s1", "action": "葱切碎，打散鸡蛋", "minutes": 3, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒熟鸡蛋盛出", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒香葱和黄豆酱，加水和鸡蛋煮浓", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+scallion_tofu:
+  - {"id": "s1", "action": "切豆腐和葱花", "minutes": 3, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "焯热豆腐沥水", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "拌盐香油和葱花", "minutes": 3, "hands": 1, "equipment": [], "after": ["s2"]}
+seaweed_egg_soup:
+  - {"id": "s1", "action": "清理紫菜，打散鸡蛋切葱", "minutes": 4, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "水开下紫菜", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "淋蛋液煮熟，加盐香油和葱", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+shandong_braised_tofu:
+  - {"id": "s1", "action": "豆腐切片葱切段", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "将豆腐煎黄并煎香葱", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加入酱油糖水", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "焖透", "minutes": 5, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "勾芡", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+shandong_cabbage_vinegar:
+  - {"id": "s1", "action": "白菜帮斜切，叶切块，调醋芡汁", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "蒜爆香，先炒帮再下叶", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒熟加调味汁收芡", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+shandong_celery_shrimp:
+  - {"id": "s1", "action": "虾去线拌淀粉和盐，芹菜切段", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香姜末，炒熟虾仁", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加芹菜炒熟", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+shandong_oil_braised_prawns:
+  - {"id": "s1", "action": "去虾线擦干，切葱姜", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香葱姜，两面煎虾，加酒糖酱油水", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "焖熟虾", "minutes": 8, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "收汁至亮", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+shandong_scallion_lamb:
+  - {"id": "s1", "action": "羊肉切薄片用酒酱油拌匀", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 4, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "大葱斜切", "minutes": 3, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "热油炒熟羊肉，下葱快速翻炒", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+shandong_scallion_sea_cucumber:
+  - {"id": "s1", "action": "洗净已泡发海参，切葱", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "海参焯水沥干", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "煎香葱段，加海参和汁", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "小火烧透", "minutes": 19, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "勾芡收汁", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+shandong_stir_fried_liver:
+  - {"id": "s1", "action": "猪肝切薄，用酒姜淀粉拌匀", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 5, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "备木耳青椒", "minutes": 5, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "先炒肝片至熟透，再炒熟配菜调味", "minutes": 9, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+shandong_tomato_dough_soup:
+  - {"id": "s1", "action": "少量加水搅面疙瘩，切番茄葱打蛋", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香葱番茄，加水烧开", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "撒入面疙瘩搅散煮透", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "淋入蛋液煮熟加盐", "minutes": 3, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+shanghai_pork_balls:
+  - {"id": "s1", "action": "猪肉剁碎，拌蛋淀粉酒葱姜盐，团肉丸", "minutes": 14, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "白菜垫锅，加水下丸子烧开", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火炖煮", "minutes": 45, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查肉丸中心熟透", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+shanghai_pork_rice:
+  - {"id": "s1", "action": "咸肉切丁，青菜切碎，备熟米饭", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "煸熟咸肉，下青菜炒软", "minutes": 13, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "拌入熟米饭", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加盖焖热", "minutes": 5, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "尝味调盐", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+shanghai_scallion_noodles:
+  - {"id": "s1", "action": "葱切段擦干", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "小火煎葱至焦黄，拌酱油糖盛出", "minutes": 7, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮面沥干", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "拌葱油汁", "minutes": 2, "hands": 1, "equipment": [], "after": ["s3"]}
+shrimp_eel_noodles:
+  - {"id": "s1", "action": "鳝鱼切片，虾去线拌淀粉，切姜蒜", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "姜蒜爆香，鳝片虾仁炒熟", "minutes": 9, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加酒酱油水煮汤", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "炖入味", "minutes": 8, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "另煮面沥水", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s6", "action": "面入碗，浇鳝虾汤", "minutes": 2, "hands": 1, "equipment": [], "after": ["s4", "s5"]}
+shrimp_egg:
+  - {"id": "s1", "action": "虾仁去线打蛋加盐葱花", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒虾至不透明", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "转小火入蛋液推炒至凝固", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+sichuan_mouthwatering_chicken:
+  - {"id": "s1", "action": "鸡肉姜葱加水烧开", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "小火浸煮", "minutes": 24, "hands": 0, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "检查全熟，捞出", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "放凉", "minutes": 8, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "炒熟花生压碎", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s6", "action": "切鸡，拌醋酱油辣油花椒，浇汁撒花生", "minutes": 5, "hands": 1, "equipment": [], "after": ["s4", "s5"]}
+smashed_cucumber:
+  - {"id": "s1", "action": "洗净黄瓜拍裂切段", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "蒜剁末，混合醋、酱油、辣油和糖拌匀", "minutes": 5, "hands": 1, "equipment": [], "after": ["s1"]}
+soy_braised_ribs:
+  - {"id": "s1", "action": "排骨焯水冲净", "minutes": 10, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "炒香葱姜和黄豆酱，加排骨糖酱油和水", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "炖至软熟", "minutes": 50, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "收汁", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+spicy_braised_tofu_skin:
+  - {"id": "s1", "action": "干豆腐切条青椒切片", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "爆蒜，下干豆腐酱油和水", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮入味", "minutes": 6, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加青椒炒熟，淋水淀粉", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+steamed_egg:
+  - {"id": "s1", "action": "蛋液加温水打匀过筛盖盘", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "蒸锅水烧开，放蛋液", "minutes": 4, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火蒸至凝固", "minutes": 10, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "检查出锅，淋酱油香油撒葱", "minutes": 2, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+steamed_egg_with_shrimp:
+  - {"id": "s1", "action": "蛋液兑温水过筛，虾仁去线切段", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "烧开蒸锅，放蛋液", "minutes": 3, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s1"]}
+  - {"id": "s3", "action": "蒸至半凝固", "minutes": 6, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s2"]}
+  - {"id": "s4", "action": "加入虾仁", "minutes": 2, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s3"]}
+  - {"id": "s5", "action": "继续蒸至蛋羹凝固虾熟透", "minutes": 6, "hands": 0, "equipment": ["burner", "steamer"], "after": ["s4"]}
+  - {"id": "s6", "action": "淋酱油香油撒葱", "minutes": 1, "hands": 1, "equipment": ["burner", "steamer"], "after": ["s5"]}
+stir_fried_corn:
+  - {"id": "s1", "action": "玉米取粒，胡萝卜切丁", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒香葱花，下蔬菜加水", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "加盖焖熟", "minutes": 4, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "收干调盐", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+sweet_sour_carp:
+  - {"id": "s1", "action": "清理鲤鱼打花刀，以姜盐腌制", "minutes": 12, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏入味", "minutes": 8, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "擦干裹粉，分面煎炸至肉熟透", "minutes": 17, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "葱爆香，加醋糖酱油熬汁浇鱼", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+sweet_sour_ribs:
+  - {"id": "s1", "action": "排骨焯水沥干", "minutes": 8, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "煎黄加姜酒酱油糖醋水", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火炖熟", "minutes": 30, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "收汁，补余醋", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+tomato_basil_pasta:
+  - {"id": "s1", "action": "煮熟意面，留面汤", "minutes": 10, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "切番茄、罗勒，剁蒜", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s3", "action": "炒香蒜和番茄", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "煮成酱", "minutes": 8, "hands": 0, "equipment": ["burner", "wok"], "after": ["s3"]}
+  - {"id": "s5", "action": "拌意面、罗勒面汤和盐", "minutes": 3, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1", "s4"]}
+tomato_beef_cantonese:
+  - {"id": "s1", "action": "牛肉切片，以酱油淀粉上浆", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "冷藏上浆", "minutes": 6, "hands": 0, "equipment": [], "after": ["s1"]}
+  - {"id": "s3", "action": "切洋葱与番茄", "minutes": 5, "hands": 1, "equipment": [], "after": ["s1"]}
+  - {"id": "s4", "action": "滑炒熟牛肉盛出", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2", "s3"]}
+  - {"id": "s5", "action": "炒软洋葱番茄，加蚝油糖，回锅拌牛肉", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s4"]}
+tomato_egg:
+  - {"id": "s1", "action": "番茄切块，鸡蛋打散", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "热油炒熟鸡蛋盛出", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒软番茄，加蛋和盐翻炒", "minutes": 5, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
+tomato_egg_soup:
+  - {"id": "s1", "action": "番茄切丁，鸡蛋打散切葱", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "热油炒软番茄，加水煮开", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "转小火淋蛋液，蛋花凝固后加盐葱花", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+tomato_noodles:
+  - {"id": "s1", "action": "切番茄打蛋", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒软番茄加水煮沸", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "下面条煮熟", "minutes": 6, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "淋蛋液煮熟加盐", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+tomato_tofu:
+  - {"id": "s1", "action": "番茄豆腐切块", "minutes": 6, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "热油炒软番茄，加豆腐和水", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火炖透", "minutes": 8, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "加盐", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+twice_cooked_pork:
+  - {"id": "s1", "action": "五花肉加姜水烧开", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "煮熟五花肉", "minutes": 22, "hands": 0, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "取出沥干", "minutes": 1, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "稍放凉", "minutes": 6, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "肉切薄片，蒜苗切段", "minutes": 5, "hands": 1, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "煸肉至油卷，炒豆瓣蒜苗糖", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+west_lake_beef_soup:
+  - {"id": "s1", "action": "牛肉蘑菇切末，鸡蛋打散", "minutes": 7, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "焯牛肉洗净", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "清水煮熟牛肉和蘑菇", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "水淀粉勾芡，淋蛋液煮凝固后加葱盐胡椒", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+white_cut_chicken:
+  - {"id": "s1", "action": "葱姜水烧开，下鸡", "minutes": 5, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "小火浸煮", "minutes": 29, "hands": 0, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "确认中心熟透取出", "minutes": 2, "hands": 1, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "沥凉", "minutes": 10, "hands": 0, "equipment": [], "after": ["s3"]}
+  - {"id": "s5", "action": "斩件，切蘸汁用的葱姜末加盐", "minutes": 6, "hands": 1, "equipment": [], "after": ["s4"]}
+  - {"id": "s6", "action": "热油浇葱姜", "minutes": 2, "hands": 1, "equipment": ["burner", "wok"], "after": ["s5"]}
+winter_melon_shrimp_soup:
+  - {"id": "s1", "action": "冬瓜去皮切片，虾仁去线，切姜葱", "minutes": 8, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "加姜煮水，下冬瓜", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s1"]}
+  - {"id": "s3", "action": "煮至透亮", "minutes": 8, "hands": 0, "equipment": ["burner", "pot"], "after": ["s2"]}
+  - {"id": "s4", "action": "加虾仁煮熟，撒葱盐", "minutes": 4, "hands": 1, "equipment": ["burner", "pot"], "after": ["s3"]}
+wuxi_ribs:
+  - {"id": "s1", "action": "排骨焯水沥干", "minutes": 9, "hands": 1, "equipment": ["burner", "pot"], "after": []}
+  - {"id": "s2", "action": "略煎排骨加葱姜酒酱油糖水", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "小火炖软", "minutes": 50, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "开盖收汁", "minutes": 8, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+yellow_braised_chicken:
+  - {"id": "s1", "action": "鸡块擦干，切香菇青椒姜", "minutes": 9, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "煸鸡块和姜片，加香菇调料和水", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "焖熟鸡块", "minutes": 30, "hands": 0, "equipment": ["burner", "wok"], "after": ["s2"]}
+  - {"id": "s4", "action": "下青椒炒熟收汁", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s3"]}
+zucchini_egg:
+  - {"id": "s1", "action": "切西葫芦片，鸡蛋打散", "minutes": 5, "hands": 1, "equipment": [], "after": []}
+  - {"id": "s2", "action": "炒蛋至凝固盛出", "minutes": 4, "hands": 1, "equipment": ["burner", "wok"], "after": ["s1"]}
+  - {"id": "s3", "action": "炒香葱花和西葫芦，回锅拌蛋调盐", "minutes": 6, "hands": 1, "equipment": ["burner", "wok"], "after": ["s2"]}
