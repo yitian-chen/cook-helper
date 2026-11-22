@@ -9,3 +9,6 @@ __pycache__/
 runtime/
 node_modules/
 dist/
+
+/LLM_DEBUG.md
+/.llm-debug-*

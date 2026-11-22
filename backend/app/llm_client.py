@@ -1,6 +1,10 @@
 """OpenAI-compatible chat and native tool calling. Never log credentials."""
 import asyncio
+import logging
 import os
+import re
+import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 import httpx
 from dotenv import load_dotenv
@@ -8,6 +12,34 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(ROOT / ".env")
 load_dotenv(ROOT / "docs/.env")
+
+def record_exchange(request, response=None, error=None):
+    """Replace the local snapshot atomically after each finished HTTP attempt."""
+    request_text = request.content.decode("utf-8")
+    response_text = response.text if response is not None else ""
+    longest = max((len(run) for body in (request_text, response_text)
+                   for run in re.findall(r"`{3,}", body)), default=2)
+    fence = "`" * (longest + 1)
+    status = f"HTTP {response.status_code}" if response is not None else f"{error}（未收到响应体）"
+    timestamp = datetime.now(timezone.utc).isoformat()
+    snapshot = (
+        f"# 最近一次 LLM 调用\n\n完成时间（UTC） {timestamp}\n\n结果 {status}\n\n"
+        f"## 请求体\n\n{fence}json\n{request_text}\n{fence}\n\n"
+        f"## 返回体\n\n{fence}\n{response_text}\n{fence}\n"
+    )
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=ROOT,
+                                         prefix=".llm-debug-", delete=False) as handle:
+            temp_path = Path(handle.name)
+            handle.write(snapshot)
+        os.replace(temp_path, ROOT / "LLM_DEBUG.md")
+    except OSError:
+        logging.getLogger(__name__).exception("无法写入 LLM_DEBUG.md")
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+
 
 class LLMError(RuntimeError):
     pass
@@ -46,8 +78,10 @@ class LLMClient:
             body.update(tools=tools, tool_choice="auto")
         async with httpx.AsyncClient(timeout=60) as client:
             for attempt in range(3):
+                request = client.build_request("POST", self.url, headers={"Authorization": f"Bearer {self.key}"}, json=body)
                 try:
-                    response = await client.post(self.url, headers={"Authorization": f"Bearer {self.key}"}, json=body)
+                    response = await client.send(request)
+                    record_exchange(request, response)
                     if response.status_code == 429 or response.status_code >= 500:
                         if attempt < 2:
                             await asyncio.sleep(2 ** attempt)
@@ -59,7 +93,8 @@ class LLMClient:
                         raise ValueError()
                     # Only preserve protocol fields; don't persist provider reasoning.
                     return {k: v for k, v in message.items() if k in {"role", "content", "tool_calls"}}
-                except (httpx.TimeoutException, httpx.NetworkError):
+                except httpx.RequestError as exc:
+                    record_exchange(request, error=type(exc).__name__)
                     if attempt == 2:
                         raise LLMError("模型网络请求超时或连接失败") from None
                     await asyncio.sleep(2 ** attempt)
