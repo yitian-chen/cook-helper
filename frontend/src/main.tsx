@@ -243,13 +243,12 @@ function App(){
  {run.timeline.steps.map(t=>{
   const timeline=run.timeline!;
   const checked=timeline.done.includes(t.id);
-  const waiting=t.after.filter(id=>!timeline.done.includes(id));
+  const waiting=t.after.some(id=>!timeline.done.includes(id));
   const locked=checked&&timeline.steps.some(s=>s.after.includes(t.id)&&timeline.done.includes(s.id));
   const parallel=timeline.steps.filter(s=>!s.hands&&s.dish!==t.dish&&s.start<t.end&&t.start<s.end);
   return <div className="timeline-row" key={t.id}><label><input type="checkbox" checked={checked}
-   disabled={busy||locked||waiting.length>0} onChange={e=>mark(t,e.target.checked)}/>
+   disabled={busy||locked||waiting} onChange={e=>mark(t,e.target.checked)}/>
    <b>{t.start}–{t.end} 分</b> {t.dish} · {t.action}</label>
-   {waiting.length>0&&<small>先完成：{waiting.map(id=>timeline.steps.find(s=>s.id===id)?.action).join('、')}</small>}
    {!!t.hands&&parallel.length>0&&<small>同时进行：{parallel.map(s=>s.dish+' · '+s.action).join('、')}</small>}
   </div>})}</section>}
  {progress && <div className="bubble assistant tool-progress" role="status">
