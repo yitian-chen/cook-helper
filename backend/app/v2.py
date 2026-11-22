@@ -12,6 +12,7 @@ from .menu import MenuOptions, make_menu, meal_reports
 router=APIRouter(prefix="/api/v2")
 
 class Versioned(Strict):
+    session_id:str = v2_state.DEFAULT
     revision:int = Field(ge=0)
     preferences_version:int
 
@@ -34,14 +35,22 @@ class Swap(Strict):
     ingredient_id:str|None=None
 
 def current(body):
-    state=v2_state.active()
+    state=v2_state.active(body.session_id)
     if (state["revision"],state["preferences_version"])!=(body.revision,body.preferences_version):
         raise HTTPException(409,"餐单已变化，请刷新")
     return state
 
+@router.get("/sessions")
+def sessions():
+    return v2_state.list_sessions()
+
+@router.post("/sessions",status_code=201)
+def create_session():
+    return v2_state.new_session()
+
 @router.get("/current")
-def get_current():
-    return {**v2_state.active(),"kitchen":store.get("v2:kitchen")}
+def get_current(session_id:str=v2_state.DEFAULT):
+    return {**v2_state.active(session_id),"kitchen":store.get("v2:kitchen")}
 
 @router.put("/kitchen")
 def configure(body:Settings):
@@ -51,7 +60,7 @@ def configure(body:Settings):
 
 @router.put("/progress")
 def progress(body:Progress):
-    state=v2_state.active()
+    state=v2_state.active(body.session_id)
     timeline=state["timeline"]
     if state["preferences_version"]!=body.preferences_version or not timeline or timeline["id"]!=body.timeline_id:
         raise HTTPException(409,"时间线已更新")

@@ -10,7 +10,9 @@ type Dish={id:string;name:string;course:string;portions:number;ingredients:Ingre
 type Kitchen={cooks:number;burner:number;wok:number;pot:number;steamer:number;rice_cooker:number;oven:number};
 type Task={id:string;dish:string;action:string;start:number;end:number;after:string[];hands:number};
 type Message={role:'user'|'assistant';content:string;image?:string};
-type Run={revision:number;preferences_version:number;messages:Message[];ready:boolean;
+type Session={id:string;title:string};
+const currentRun=(id:string)=>api<Run>('/v2/current?session_id='+encodeURIComponent(id));
+type Run={session_id:string;title?:string;revision:number;preferences_version:number;messages:Message[];ready:boolean;
  menu:{version:number;people:number;dishes:Dish[]}|null;
  timeline:{id:string;minutes:number;steps:Task[];done:string[]}|null;kitchen?:Kitchen|null};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
@@ -72,6 +74,7 @@ const initialKitchen:Kitchen={cooks:1,burner:1,wok:1,pot:1,steamer:0,rice_cooker
 
 const welcome:Message={role:'assistant',content:'今天想做什么菜？可以告诉我手边有哪些食材，或发一张厨房台面的照片。'};
 function App(){
+ const [sessions,setSessions]=useState<Session[]>([]);
  const [catalog,setCatalog]=useState<Record<string,{name:string}>>({});
  const [prefs,setPrefs]=useState<Pref|null>(null),[saved,setSaved]=useState<Pref|null>(null);
  const [messages,setMessages]=useState<Message[]>([welcome]),[draft,setDraft]=useState('');
@@ -83,19 +86,44 @@ function App(){
  const [equipment,setEquipment]=useState<Kitchen>(initialKitchen);
  const [storedKitchen,setStoredKitchen]=useState<Kitchen|null>(null);
  function applyState(next:Run){
+  if(next.title)setSessions(entries=>entries.map(entry=>entry.id===next.session_id?{...entry,title:next.title!}:entry));
   setRun(next);setMessages([welcome,...next.messages]);
  }
  function openKitchen(){setEquipment(storedKitchen??initialKitchen);kitchenDialog.current?.showModal()}
  const dirty=JSON.stringify(prefs)!==JSON.stringify(saved);
  const append=(m:Message)=>setMessages(previous=>[...previous,m]);
  const working=busy;
- useEffect(()=>{Promise.all([api<typeof catalog>('/ingredients'),api<Pref>('/preferences'),api<Run>('/v2/current')]).then(([c,p,state])=>{setCatalog(c);setSaved(p);setPrefs(p);setStoredKitchen(state.kitchen??null);applyState(state)}).catch(e=>setError(e.message))},[]);
+ async function loadSession(id:string){
+  const [state,p]=await Promise.all([currentRun(id),api<Pref>('/preferences')]);
+  setSaved(p);setPrefs(p);setStoredKitchen(state.kitchen??null);applyState(state);
+  localStorage.setItem('cook-helper.session',id);
+  setDraft('');setFile(null);setProgress(null);
+ }
+ useEffect(()=>{
+  async function initialize(){
+   const [c,entries]=await Promise.all([api<typeof catalog>('/ingredients'),api<Session[]>('/v2/sessions')]);
+   setCatalog(c);setSessions(entries);
+   const last=localStorage.getItem('cook-helper.session');
+   await loadSession(entries.find(entry=>entry.id===last)?.id??entries[0].id);
+  }
+  initialize().catch(e=>setError(e.message));
+ },[]);
+ async function switchSession(id?:string){
+  await action(async()=>{
+   if(!id){
+    const entry=await api<Session>('/v2/sessions',{},'POST');
+    setSessions(entries=>[entry,...entries]);
+    id=entry.id;
+   }
+   await loadSession(id);
+  });
+ }
  useEffect(()=>{end.current?.scrollIntoView({block:'end'})},[messages,run?.revision,busy,progress]);
- async function action(fn:()=>Promise<void>){setError('');setBusy(true);try{await fn()}catch(e){setError((e as Error).message);try{const state=await api<Run>('/v2/current');applyState(state);setStoredKitchen(state.kitchen??null)}catch{/* keep the original error */}}finally{setBusy(false)}}
+ async function action(fn:()=>Promise<void>){setError('');setBusy(true);try{await fn()}catch(e){setError((e as Error).message);try{const [state,p]=await Promise.all([currentRun(run!.session_id),api<Pref>('/preferences')]);applyState(state);setStoredKitchen(state.kitchen??null);setSaved(p);setPrefs(p)}catch{/* keep the original error */}}finally{setBusy(false)}}
  async function askAgent(path: string, body: object) {
   setProgress([]);
   try {
-   return await agentRequest(path, body, event => setProgress(current => {
+   return await agentRequest(path, {...body,session_id:run!.session_id}, event => setProgress(current => {
     const tools = current ?? [];
     return tools.some(tool => tool.id === event.id)
      ? tools.map(tool => tool.id === event.id ? event : tool)
@@ -110,7 +138,7 @@ function App(){
   const {version,...body}=prefs;
   const updated=await api<Pref>('/preferences',body,'PUT');
   setSaved(updated);setPrefs(updated);
-  const next=await api<Run>('/v2/current');applyState(next);dialog.current?.close();
+  const next=await currentRun(run!.session_id);applyState(next);dialog.current?.close();
   if(run?.menu)applyState(await askAgent('/v2/turn',{action:'replan',revision:next.revision,preferences_version:updated.version}));
  }
  const change=(patch:Partial<Pref>)=>{if(prefs)setPrefs({...prefs,...patch})};
@@ -140,17 +168,21 @@ function App(){
  async function saveKitchen(){
   if(!run)return;
   await action(async()=>{
-   const next=await api<Run>('/v2/kitchen',{kitchen:equipment,revision:run.revision,preferences_version:run.preferences_version},'PUT');
+   const next=await api<Run>('/v2/kitchen',{session_id:run.session_id,kitchen:equipment,revision:run.revision,preferences_version:run.preferences_version},'PUT');
    setStoredKitchen(equipment);applyState(next);kitchenDialog.current?.close();
    if(next.ready)applyState(await askAgent('/v2/turn',{action:'schedule',revision:next.revision,preferences_version:next.preferences_version}));
   })
  }
  async function mark(t:Task,done:boolean){
   if(!run?.timeline)return;
-  const body={timeline_id:run.timeline.id,step_id:t.id,done,revision:run.revision,preferences_version:run.preferences_version};
+  const body={session_id:run.session_id,timeline_id:run.timeline.id,step_id:t.id,done,revision:run.revision,preferences_version:run.preferences_version};
   await action(async()=>applyState(await api<Run>('/v2/progress',body,'PUT')));
  }
- return <div className="chat"><header><div><strong>灶边</strong><small>厨房助手</small></div><nav><button disabled={working||!run} onClick={openKitchen}>厨房配置</button> <button disabled={working||!saved} onClick={()=>{setPrefs(saved);dialog.current?.showModal()}}>饮食偏好</button></nav></header>
+ return <div className="chat"><header><div><strong>灶边</strong><small>厨房助手</small></div><nav aria-label="对话与设置">
+ <select aria-label="切换对话" value={run?.session_id??''} disabled={working||!run} onChange={e=>switchSession(e.target.value)}>
+ {sessions.map(s=><option key={s.id} value={s.id}>{s.title}</option>)}</select>
+ <button disabled={working||!run} onClick={()=>switchSession()}>＋ 新对话</button>
+ <button disabled={working||!run} onClick={openKitchen}>厨房配置</button> <button disabled={working||!saved} onClick={()=>{setPrefs(saved);dialog.current?.showModal()}}>饮食偏好</button></nav></header>
  <main aria-label="对话记录" aria-live="polite"><div className="thread">
  {messages.map((m,i)=><article key={i} className={'bubble '+m.role}><small>{m.role==='user'?'我':'灶边'}</small>{m.image&&<img src={'/api/images/'+m.image} alt="上传的厨房照片"/>}{m.role==='assistant'?<Markdown remarkPlugins={[remarkGfm]} components={{img:()=>null}}>{m.content}</Markdown>:<p>{m.content}</p>}</article>)}
  {run?.menu&&<section className="menu-panel" aria-label="当前餐单">
@@ -195,7 +227,7 @@ function App(){
  <button disabled={working} onClick={()=>picker.current?.click()}>＋ 图片</button>
  <button className="primary send" disabled={working||(!draft.trim()&&!file)||!saved} onClick={send}>发送 ↑</button></div></div></footer>
  <dialog ref={kitchenDialog} aria-labelledby="kitchen-title"><div className="bar"><h2 id="kitchen-title">厨房配置</h2><button className="close" onClick={()=>kitchenDialog.current?.close()}>关闭</button></div>
- <p>填写可同时使用的数量，没有的设备填 0。</p>
+ <p>厨房配置在所有对话中共享。填写可同时使用的数量，没有的设备填 0。</p>
  {(Object.keys(kitchenLabels) as (keyof Kitchen)[]).map(key=><label className="equipment" key={key}>{kitchenLabels[key]}<input type="number" min={key==='cooks'?1:0} max={['steamer','rice_cooker','oven'].includes(key)?4:8} value={equipment[key]} onChange={e=>setEquipment({...equipment,[key]:Number(e.target.value)})}/></label>)}
  <button className="primary" disabled={busy} onClick={saveKitchen}>{run?.ready?'保存并生成时间线':'保存厨房配置'}</button>
  {error&&<p role="alert">{error}</p>}</dialog>
@@ -205,7 +237,7 @@ function App(){
  <h3>不吃的食材</h3><div className="chips">{Object.entries(catalog).map(([id,v])=><button key={id} className={prefs.excluded_ingredient_ids.includes(id)?'selected':''} onClick={()=>change({excluded_ingredient_ids:toggle(prefs.excluded_ingredient_ids,id)})}>{v.name}</button>)}</div>
  <label className="check"><input type="checkbox" checked={prefs.dietary_rules.includes('vegetarian')} onChange={e=>change({dietary_rules:e.target.checked?['vegetarian']:[]})}/>蛋奶素（不含肉鱼）</label>
  <button disabled={!dirty||busy} onClick={()=>action(save)}>保存偏好{dirty?' · 有修改':''}</button>
- <p className="hint">过敏与忌口会直接排除冲突菜谱。照片无法确认包装成分与交叉接触，请核对标签。</p></>}
+ <p className="hint">饮食偏好在所有对话中共享。过敏与忌口会直接排除冲突菜谱。照片无法确认包装成分与交叉接触，请核对标签。</p></>}
  {error&&<p role="alert">{error}</p>}</dialog></div>
 }
 createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

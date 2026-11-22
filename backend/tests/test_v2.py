@@ -112,3 +112,27 @@ def test_recent_beef_is_used_without_weighing(amount,unit):
     assert inventory[-1]["amount"]==amount
     restricted=make_menu(inventory,Preferences(dietary_rules=["vegetarian"]),options,2,preferred=["beef"])
     assert not any(i["ingredient_id"]=="beef" for d in restricted["dishes"] for i in d["ingredients"])
+
+def test_sessions_isolate_inventory_and_share_household_settings(tmp_path, monkeypatch):
+    from app.main import app
+    monkeypatch.setattr(store, "DB", tmp_path / "sessions.db")
+    legacy = dict(revision=3, preferences_version=1, items=[{"ingredient_id":"beef","amount":1,"unit":"piece"}],
+                  extra_foods=[], questions=[], menu=make_menu([],Preferences(),MenuOptions(),1), ready=True,
+                  timeline={"id":"previous"}, messages=[{"role":"user","content":"还有一块牛肉"}])
+    store.put("v2:active", legacy)
+    with TestClient(app) as client:
+        assert client.get("/api/v2/sessions").json() == [{"id":"default","title":"还有一块牛肉"}]
+        other = client.post("/api/v2/sessions").json()["id"]
+        def read(session_id):
+            return client.get("/api/v2/current",params={"session_id":session_id}).json()
+        blank = read(other)
+        assert not any(blank[k] for k in ("items","questions","messages","menu","timeline","ready"))
+        settings = dict(session_id=other,revision=0,preferences_version=1,kitchen=KITCHEN)
+        assert client.put("/api/v2/kitchen",json=settings).status_code == 200
+        first = read("default")
+        assert first["items"] == legacy["items"] and first["messages"] == legacy["messages"]
+        assert first["menu"] == legacy["menu"] and first["timeline"] is None and first["kitchen"] == KITCHEN
+        assert client.get("/api/v2/current?session_id=unknown").status_code == 404
+        client.put("/api/preferences",json={"allergens":["egg"]}).raise_for_status()
+        assert read(other)["preferences_version"] == read("default")["preferences_version"] == 2
+        assert not read(other)["items"] and read("default")["items"] == legacy["items"]
