@@ -155,3 +155,46 @@ def test_session_names_across_periods_and_concurrent_creation(tmp_path, monkeypa
         at(day,hour)
         assert v2_state.new_session()["title"] == f"2026-11-{day} {period}"
     assert first in v2_state.list_sessions()
+
+
+def test_first_inventory_tool_uses_request_then_waits_for_menu_confirmation(tmp_path, monkeypatch):
+    import json
+    from app import v2
+    from app.main import app
+    from app.meal import InventoryChange
+
+    monkeypatch.setattr(store, "DB", tmp_path / "first-meal.db")
+    monkeypatch.setenv("REASONING_PROVIDER", "mock")
+    used_tools = []
+    mock_chat = v2.LLMClient.chat
+
+    async def chat(self, messages, tools=None):
+        reply = await mock_chat(self, messages, tools)
+        if tools:
+            call = reply["tool_calls"][0]["function"]
+            used_tools.append(call["name"])
+            if call["name"] == "write_inventory":
+                call["arguments"] = json.dumps({"items": [{"ingredient_id":"garlic","amount":0}]})
+        return reply
+
+    async def interpret(text, items, extras, questions):
+        assert text == "有一块牛肉"
+        return InventoryChange(intent="inventory", items=[
+            {"ingredient_id":"beef","amount":1,"unit":"piece"},
+        ])
+
+    monkeypatch.setattr(v2.LLMClient, "chat", chat)
+    monkeypatch.setattr(v2, "interpret", interpret)
+    with TestClient(app) as client:
+        draft = client.post("/api/v2/turn", json={"revision":0,"preferences_version":1,
+                                                "text":"有一块牛肉"}).json()
+        assert used_tools == ["write_inventory","compose_menu"]
+        assert [i["ingredient_id"] for i in draft["items"]] == ["beef"]
+        assert draft["menu"] and not draft["confirmed"] and not draft["shopping"] and not draft["nutrition"]
+        used_tools.clear()
+        confirmed = client.post("/api/v2/turn", json={"revision":draft["revision"],"preferences_version":1,
+                                                    "action":"confirm"}).json()
+        assert used_tools == ["confirm_menu","generate_shopping_list","analyze_nutrition"]
+        assert confirmed["confirmed"] and not confirmed["ready"]
+        assert not {"scallion","ginger","garlic"} & {item["ingredient_id"] for item in confirmed["shopping"]["buy"]}
+        assert confirmed["nutrition"]["per_person"]

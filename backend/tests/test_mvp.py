@@ -77,7 +77,8 @@ def test_pantry_defaults_respect_explicit_shortages():
     }
 
     inventory.append(Item(ingredient_id="cooking_oil", amount=0, unit="ml"))
-    updated = match_recipes(inventory, Preferences())["recipes"][0]
+    updated = next(recipe for recipe in match_recipes(inventory, Preferences())["recipes"]
+                   if recipe["id"] == "tomato_egg")
     assert [(row["ingredient_id"], row["missing"]) for row in generate_shopping_list(updated)] == [
         ("cooking_oil", 10),
     ]

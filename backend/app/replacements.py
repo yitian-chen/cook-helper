@@ -91,6 +91,7 @@ def apply_swap(state, source, target, kitchen):
     dishes = [replacement if d["id"] == source else d for d in menu["dishes"]]
     state["undo_swap"] = {k:state[k] for k in ("menu","ready","timeline")}
     state["undo_swap"]["kitchen"] = kitchen
+    state["confirmed"] = state.get("confirmed", state["ready"])
     state.update(menu={**menu,"version":menu["version"]+1,"dishes":dishes},
                  ready=False,timeline=None,swap_preview=None)
 

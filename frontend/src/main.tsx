@@ -15,7 +15,7 @@ const currentRun=(id:string)=>api<Run>('/v2/current?session_id='+encodeURICompon
 type Quantity={name:string;unit:string;amount:number};
 type Alternative={id:string;name:string;reason:string;minutes:number;added:Quantity[];saved:Quantity[];needs_shopping:boolean;equipment:string[]};
 type Preview={dish_id:string;options:Alternative[]};
-type Run={swap_preview?:Preview|null;undo_swap?:{menu:{dishes:Dish[]}}|null;session_id:string;revision:number;preferences_version:number;messages:Message[];ready:boolean;
+type Run={swap_preview?:Preview|null;undo_swap?:{menu:{dishes:Dish[]}}|null;session_id:string;revision:number;preferences_version:number;messages:Message[];confirmed?:boolean;ready:boolean;
  menu:{version:number;people:number;dishes:Dish[]}|null;
  timeline:{id:string;minutes:number;steps:Task[];done:string[]}|null;kitchen?:Kitchen|null};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
@@ -28,7 +28,7 @@ type AgentEvent = ({type: 'tool'} & ToolProgress) | {type: 'result'; result: Run
 const toolLabels: Record<string, string> = {
  recognize_ingredients: '识别食材',
  write_inventory: '更新食材库存',
- compose_menu:'搭配整餐',replace_dish:'比较替代菜',choose_dish:'更新餐单',undo_swap:'恢复原菜',confirm_ready:'确认备餐',generate_timeline:'编排烹饪时间线',
+ compose_menu:'搭配整餐',replace_dish:'比较替代菜',choose_dish:'更新餐单',undo_swap:'恢复原菜',confirm_menu:'确定餐单',confirm_ready:'确认备餐',generate_timeline:'编排烹饪时间线',
  generate_shopping_list: '生成待买清单',
  analyze_nutrition: '估算营养',
 };
@@ -70,7 +70,6 @@ async function agentRequest(path: string, body: object, onTool: (tool: ToolProgr
 }
 
 const allergyLabels:Record<string,string>={egg:'蛋类',soy:'大豆',wheat:'小麦',milk:'乳制品',peanut:'花生',fish:'鱼类',shellfish:'甲壳贝类',sesame:'芝麻'};
-const units:Record<string,string>={g:'克',piece:'个',ml:'毫升'};
 const roles:Record<string,string>={main:'主菜',side:'配菜',soup:'汤',staple:'主食'};
 const kitchenLabels:Record<keyof Kitchen,string>={cooks:'下厨人数',burner:'灶眼',wok:'炒锅',pot:'汤锅',steamer:'蒸锅',rice_cooker:'电饭锅',oven:'烤箱'};
 const initialKitchen:Kitchen={cooks:1,burner:1,wok:1,pot:1,steamer:0,rice_cooker:1,oven:0};
@@ -180,7 +179,7 @@ function App(){
    setSwapRequest('');setPreview(options);
   });
  }
- async function menuAction(kind:'replace'|'choose'|'undo'|'ready'|'schedule',dish?:Dish,target?:Alternative){
+ async function menuAction(kind:'replace'|'choose'|'undo'|'confirm'|'ready'|'schedule',dish?:Dish,target?:Alternative){
   if(!run)return;
   await action(async()=>{
    const next=await askAgent('/v2/turn',{...version(),action:kind,dish_id:dish?.id,target_id:target?.id,
@@ -189,7 +188,7 @@ function App(){
    if(kind==='ready'&&next.ready&&!next.timeline&&!storedKitchen)openKitchen();
   });
  }
- const quantities=(rows:Quantity[])=>rows.map(q=>q.name+' '+q.amount+(units[q.unit]??q.unit)).join('、');
+ const quantities=(rows:Quantity[])=>rows.map(q=>q.name).join('、');
  async function saveKitchen(){
   if(!run)return;
   await action(async()=>{
@@ -220,7 +219,6 @@ function App(){
  <h2>{run.menu.people} 人餐单</h2>
  <div className="dish-grid">{run.menu.dishes.map(d=><article className="recipe-card" key={d.id}>
  <small>{roles[d.course]??d.course} · {d.portions} 标准份</small><h3>{d.name}</h3>
- <p>{d.ingredients.map(i=>i.name+' '+i.amount+(units[i.unit]??i.unit)).join('、')}</p>
  <button disabled={busy} aria-expanded={preview?.dish_id===d.id} onClick={()=>openAlternatives(d)}>{preview?.dish_id===d.id?'收起候选':'换这道'}</button>
  {preview?.dish_id===d.id&&<div className="swap-panel" ref={panel} aria-label={d.name+'的替代菜'}>
  <h4>挑一道替代菜</h4>
@@ -232,11 +230,12 @@ function App(){
  {preview.options.map(option=><section className="swap-option" key={option.id}>
  <strong>{option.name}</strong><small>约 {option.minutes} 分钟</small>
  <p>{option.reason}{option.equipment.length?' · '+option.equipment.map(e=>kitchenLabels[e as keyof Kitchen]).join('、'):''}</p>
- <p>{option.added.length?'多买 '+quantities(option.added):option.needs_shopping?'无需额外添购':'整餐无需添购'}{option.saved.length?'；少买 '+quantities(option.saved):''}</p>
+ <p>{(run.confirmed??run.ready)&&option.added.length?'多买 '+quantities(option.added):option.added.length?'需要额外采购':option.needs_shopping?'无需额外添购':'整餐无需添购'}{(run.confirmed??run.ready)&&option.saved.length?'；少买 '+quantities(option.saved):''}</p>
  <button disabled={busy} aria-label={'换成'+option.name} onClick={()=>menuAction('choose',d,option)}>换成这道</button></section>)}
  </div>}</article>)}</div>
  {run.undo_swap&&<div className="undo-swap">已换成{run.menu.dishes.find(d=>!run.undo_swap!.menu.dishes.some(old=>old.id===d.id))?.name} <button disabled={busy} onClick={()=>menuAction('undo')}>撤销换菜</button></div>}
- {!run.ready&&<button className="primary" disabled={busy} onClick={()=>menuAction('ready')}>食材已备齐</button>}
+ {!(run.confirmed??run.ready)&&<button className="primary" disabled={busy} onClick={()=>menuAction('confirm')}>就做这套</button>}
+ {(run.confirmed??run.ready)&&!run.ready&&<button className="primary" disabled={busy} onClick={()=>menuAction('ready')}>食材已备齐</button>}
  {run.ready&&!run.timeline&&<button disabled={busy} onClick={()=>storedKitchen?menuAction('schedule'):openKitchen()}>{storedKitchen?'生成时间线':'配置厨房并生成时间线'}</button>}
  </section>}
  {run?.timeline&&<section className="menu-panel" aria-label="烹饪时间线">

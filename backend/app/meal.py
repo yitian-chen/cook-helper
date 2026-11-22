@@ -42,6 +42,19 @@ class InventoryChange(Strict):
     extra_foods: list[str] = Field(default_factory=list, max_length=100)
     questions: list[str] = Field(default_factory=list, max_length=20)
 
+    @field_validator("items", mode="before")
+    @classmethod
+    def normalize_unknown_units(cls, value):
+        if not isinstance(value, list):
+            return value
+        normalized = []
+        for item in value:
+            if isinstance(item, dict) and item.get("amount") is None and item.get("unit") is None:
+                # With no amount, the Item default is a placeholder, not a measured unit.
+                item = {key: field for key, field in item.items() if key != "unit"}
+            normalized.append(item)
+        return normalized
+
     @field_validator("extra_foods", mode="before")
     @classmethod
     def normalize_extra_foods(cls, value):
@@ -68,20 +81,28 @@ async def interpret(text, items, extras, questions):
         "items 和 extra_foods 返回修改后的完整库存。保留未提及食材；还有/再加表示新增数量，实际共有表示更正。"
         "用户排除或跳过的物品移除。若明确表示某项默认常备食材没有、用完或用量为零，"
         "以其标准 ID 记录 amount=0 并保留这项记录，直到用户更新。不要主动把默认常备食材加入实测库存。"
-        "其余食材只记录实际拥有的东西，未给数量用null，不能猜重量，"
+        "其余食材只记录实际拥有的东西，未给数量时 amount 填 null，单位也未知时省略 unit。"
+        "有明确数量时填写对应的 piece、g 或 ml，不能猜重量。"
         "数量未知无需询问。只移除已回答或明确跳过的问题，其他疑问保留。"
     )
-    reply = await client.chat([{"role":"system","content":instruction},
-                               {"role":"user","content":json.dumps(context,ensure_ascii=False)}])
-    try:
-        raw = reply["content"].strip()
-        if raw.startswith("```"):
-            raw = "\n".join(raw.splitlines()[1:-1])
-        change = InventoryChange.model_validate_json(raw)
-        validate_items(change.items)
-        return change
-    except (ValueError, KeyError, AttributeError):
-        raise LLMError("食材消息解析失败，请重新发送") from None
+    messages = [{"role":"system","content":instruction},
+                {"role":"user","content":json.dumps(context,ensure_ascii=False)}]
+    for attempt in range(2):
+        reply = await client.chat(messages)
+        try:
+            raw = (reply.get("content") or "").strip()
+            if raw.startswith("```"):
+                raw = "\n".join(raw.splitlines()[1:-1])
+            change = InventoryChange.model_validate_json(raw)
+            validate_items(change.items)
+            return change
+        except (ValueError, AttributeError):
+            if attempt == 0:
+                messages.append({"role":"user","content":
+                    "请重新解析原始消息。只返回一个 JSON 对象，食材 ID 取自字典，不得重复。"
+                    "字典外食材放入 extra_foods；未知数量用 null，未知单位省略。"})
+    raise LLMError("食材消息解析失败，请重新发送")
+
 
 def load_meal(meal_id, version):
     prefs = store.preferences()

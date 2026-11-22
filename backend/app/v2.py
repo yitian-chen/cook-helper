@@ -20,7 +20,7 @@ class Versioned(Strict):
 class Turn(Versioned):
     text:str=Field(default="",max_length=12000)
     image_id:str|None=None
-    action:Literal["chat","replace","choose","undo","ready","schedule","replan"]="chat"
+    action:Literal["chat","replace","choose","undo","confirm","ready","schedule","replan"]="chat"
     dish_id:str|None=None
     target_id:str|None=None
 
@@ -94,16 +94,28 @@ def progress(body:Progress):
 
 HELP={
  "recognize_ingredients":"识别上传的图片",
- "write_inventory":"保存这条消息中的食材及身份澄清",
+ "write_inventory":"保存这条消息中的食材及身份澄清。工具直接读取照片和原始消息，请传空对象 {}。",
  "compose_menu":"按人数和用户明确要求生成整餐。dishes 为菜数，不含白饭；soup 包含于菜数。",
  "replace_dish":"比较替代菜，指定原菜 ID。可选主要食材、排除食材、避用设备或快手。仅用户点名目标菜时传 target_name 中文菜名",
  "choose_dish":"应用用户选中的替代菜",
  "undo_swap":"撤销上次换菜",
  "generate_shopping_list":"计算整餐采买和余量未知项",
  "analyze_nutrition":"计算整餐及每人营养",
+ "confirm_menu":"仅在用户明确选定当前餐单并决定做这些菜时调用。",
  "confirm_ready":"仅在用户明确表示当前餐单食材已经备齐时调用",
  "generate_timeline":"按已确认餐单和厨房配置生成时间线",
 }
+
+def menu_confirmed(state):
+    return state.get("confirmed", state["ready"])
+
+
+def menu_summary(menu):
+    if not menu:
+        return None
+    return {"people":menu["people"],"dishes":[
+        {k:dish[k] for k in ("id","name","course")} for dish in menu["dishes"]]}
+
 
 def schema(name,state):
     params={"type":"object","properties":{},"additionalProperties":False}
@@ -125,7 +137,7 @@ async def assistant_turn(state,text,*,body,report=None):
         raise HTTPException(409,"请先确认食材备齐并配置厨房")
     if body.action in ("replace","choose") and body.dish_id not in [d["id"] for d in old["dishes"]]:
         raise HTTPException(409,"请选择当前餐单中的菜")
-    trigger={"replace":"换这道菜 "+(CATALOG[body.dish_id].name if body.dish_id in CATALOG else ""),"ready":"这套餐单的食材已经备齐了。",
+    trigger={"confirm":"就做这套餐单，请告诉我需要买什么，以及这一餐的营养。","replace":"换这道菜 "+(CATALOG[body.dish_id].name if body.dish_id in CATALOG else ""),"ready":"这套餐单的食材已经备齐了。",
              "schedule":"使用已保存的厨房配置生成时间线。","replan":"按最新用餐人数和饮食偏好重新配餐。"}
     if body.action=="choose":
         if body.target_id not in CATALOG:
@@ -136,13 +148,13 @@ async def assistant_turn(state,text,*,body,report=None):
     trigger["undo"]="撤销刚才的换菜"
     text=text or trigger.get(body.action,"请根据照片安排一餐")
     policy=("你是灶边整餐助手。用户报食材或澄清时调用write_inventory，图片先识别。仅身份或过敏有歧义时追问，"
-            "用户说一块、一把、一些，表示该食材可直接入菜；无需称重、换算或确认是否够。菜谱克数只是参考用量。依照当前请求给compose_menu参数：people人数、staple主食、soup汤、dishes菜数。"
+            "用户说一块、一把、一些，表示该食材可直接入菜；无需称重、换算或确认是否够。依照当前请求给compose_menu参数：people人数、staple主食、soup汤、dishes菜数。"
             "用户补充食材先写库存，再优先安排使用它的合规菜。没有入选的食材不要归因于重量不明。补充库存后保留上一餐偏好。要求替换时用replace_dish，想换成豆腐时ingredient_id用tofu。"
-            "比较换菜只调用replace_dish，按本轮要求填写ingredient_id、exclude_ingredients、avoid_equipment、quick，仅用户明确指定目标菜名或选定已有候选序号才填target_name。没有明确原菜时先询问。候选只供选择，勿称已换菜。换菜完成后简述菜名和采购变化，勿复述整份报告。首次配餐时，根据工具结果以简洁中文Markdown说明实际菜名、必买缺量、全餐与每人营养，部分估算列出缺失。"
+            "比较换菜只调用replace_dish，按本轮要求填写ingredient_id、exclude_ingredients、avoid_equipment、quick，仅用户明确指定目标菜名或选定已有候选序号才填target_name。没有明确原菜时先询问。候选只供选择，勿称已换菜。首次配餐只介绍菜名、搭配和人数，并邀请用户确定餐单。换一道菜不等于确定整餐。确认整餐后才调用清单及营养工具，并用简洁 Markdown 汇报采购和每人营养，标明估算及未覆盖项。不要逐项报食材克数或列出库存量。"
             "仅在用户明确表示食材已备齐时调用confirm_ready。厨房未设置就提示配置。时间线生成后简述总时长和并行安排。"
             "整套菜单以最新工具结果 dishes 数组为准，换下的菜不再呈现。食材份数是分享份量。营养未覆盖项不按零处理。不要仅在口头声称已完成工具操作。遵守过敏忌口限制，不推荐菜单外的配料。"+PANTRY_PROMPT)
     context={"偏好":prefs.model_dump(),"当前库存":state["items"],"未决问题":state["questions"],
-             "候选菜":state.get("swap_preview"),"当前菜单":old,"食材备齐":state["ready"],"厨房":kitchen,"有图片":bool(body.image_id)}
+             "候选菜":[{"id":x["id"],"name":x["name"]} for x in (state.get("swap_preview") or {}).get("options",[])],"当前菜单":menu_summary(old),"已确定餐单":menu_confirmed(state),"食材备齐":state["ready"],"厨房":kitchen,"有图片":bool(body.image_id)}
     messages=[{"role":"system","content":policy},{"role":"system","content":json.dumps(context,ensure_ascii=False)}]
     messages.extend({k:m[k] for k in ("role","content")} for m in state["messages"][-12:])
     messages.append({"role":"user","content":text})
@@ -152,18 +164,20 @@ async def assistant_turn(state,text,*,body,report=None):
     if body.image_id:
         pending=["recognize_ingredients","write_inventory"]
     elif body.action!="chat":
-        pending=[{"ready":"confirm_ready","schedule":"generate_timeline","replace":"replace_dish","choose":"choose_dish","undo":"undo_swap","replan":"compose_menu"}[body.action]]
+        pending=[{"confirm":"confirm_menu","ready":"confirm_ready","schedule":"generate_timeline","replace":"replace_dish","choose":"choose_dish","undo":"undo_swap","replan":"compose_menu"}[body.action]]
     for iteration in range(12):
         names=pending[:1] if pending else []
         if not outputs and not pending:
             names=["write_inventory","compose_menu"]
             if old:
-                names.extend(["replace_dish","confirm_ready"])
+                names.extend(["replace_dish","confirm_menu","confirm_ready"])
                 if state.get("undo_swap"):
                     names.append("undo_swap")
         prompt=messages
-        if not names and any(tool in outputs for tool in ("choose_dish","replace_dish","undo_swap")):
-            prompt=[*messages,{"role":"system","content":"这是换菜交互。候选已显示在原菜卡片下。预览时只引导选择；确认或撤销后仅用一两句说明实际变化和采购差额。营养已同步，用户主动问时再展开。"}]
+        if not names and not menu_confirmed(state):
+            prompt=[*messages,{"role":"system","content":"当前餐单还未确定。此轮只介绍建议或回答选菜，采购清单和营养留到用户选定餐单后。"}]
+        elif not names and any(tool in outputs for tool in ("choose_dish","replace_dish","undo_swap")):
+            prompt=[*messages,{"role":"system","content":"这是换菜交互。候选在原菜卡片下。请简述选择或实际变动。只有餐单已确定时才提采购和营养。"}]
         reply=await client.chat(prompt,[schema(n,state) for n in names] or None)
         calls=reply.get("tool_calls") or []
         if not calls:
@@ -187,9 +201,8 @@ async def assistant_turn(state,text,*,body,report=None):
             try:
                 if name not in names or (pending and pending[0]!=name) or (not pending and outputs):
                     raise ValueError("当前阶段无法使用此工具")
-                args=json.loads(fn["arguments"])
-                if name not in ("compose_menu","replace_dish") and args!={}:
-                    raise ValueError("参数由当前餐单绑定")
+                # Bound tools read the request and session, never model-supplied payloads.
+                args=json.loads(fn["arguments"]) if name in ("compose_menu","replace_dish") else {}
                 if report:
                     report("tool",id=event_id,name=name,status="running")
                 next_tools=[]
@@ -197,28 +210,32 @@ async def assistant_turn(state,text,*,body,report=None):
                     output=await recognize_ingredients(body.image_id)
                 elif name=="write_inventory":
                     vision=outputs.get("recognize_ingredients",{})
-                    items={i["ingredient_id"]:i for i in state["items"]}
-                    items.update({i["ingredient_id"]:i for i in vision.get("items",[])})
-                    state["items"]=list(items.values())
-                    state["questions"]=list(dict.fromkeys(state["questions"]+vision.get("uncertain",[])))
+                    previous={i["ingredient_id"]:i for i in state["items"]}
+                    items={**previous, **{i["ingredient_id"]:i for i in vision.get("items",[])}}
+                    questions=list(dict.fromkeys(state["questions"]+vision.get("uncertain",[])))
                     if body.text:
-                        change=await interpret(body.text,state["items"],state["extra_foods"],state["questions"])
+                        change=await interpret(body.text,list(items.values()),state["extra_foods"],questions)
                         if change.intent=="inventory":
-                            state.update(items=[i.model_dump() for i in change.items],extra_foods=change.extra_foods,questions=change.questions)
-                    # Prefer newly added foods and foods explicitly restated in this turn.
-                    # Compare against inventory before text interpretation, including the photo.
-                    state["preferred_foods"] = [
-                        i["ingredient_id"] for i in state["items"]
-                        if i["amount"] != 0 and (
-                            items.get(i["ingredient_id"]) != i
-                            or INGREDIENTS[i["ingredient_id"]]["name"] in body.text
-                        )
+                            items={i.ingredient_id:i.model_dump() for i in change.items}
+                            questions=change.questions
+                            state["extra_foods"]=change.extra_foods
+                        elif not vision:
+                            outputs[name]={"库存未变更":True}
+                            messages.append({"role":"tool","tool_call_id":call["id"],
+                                             "content":json.dumps(outputs[name],ensure_ascii=False)})
+                            if report:
+                                report("tool",id=event_id,name=name,status="completed")
+                            continue
+                    state.update(items=list(items.values()),questions=questions)
+                    state["preferred_foods"]=[
+                        key for key,item in items.items() if item["amount"]!=0
+                        and (previous.get(key)!=item or INGREDIENTS[key]["name"] in body.text)
                     ]
                     if old:
                         state["prior_options"]=old["options"]
                     if not state["items"] and not state["extra_foods"] and not state["questions"]:
                         state["questions"]=["手边有哪些可以用的食材？"]
-                    state.update(swap_preview=None,undo_swap=None,menu=None,ready=False,timeline=None,shopping=None,nutrition=None)
+                    state.update(swap_preview=None,undo_swap=None,menu=None,confirmed=False,ready=False,timeline=None,shopping=None,nutrition=None)
                     output={"库存":state["items"],"其他":state["extra_foods"],"需澄清身份":state["questions"]}
                     if not state["questions"]:
                         next_tools=["compose_menu"]
@@ -240,15 +257,17 @@ async def assistant_turn(state,text,*,body,report=None):
                     if preview["options"] and (name=="choose_dish" or explicit):
                         target=preview["options"][0]
                         apply_swap(state,swap.dish_id,target["id"],kitchen)
-                        output={"已换成":target,"原菜":CATALOG[swap.dish_id].name}
-                        next_tools=["generate_shopping_list","analyze_nutrition"]
+                        output={"已换成":target["name"],"原菜":CATALOG[swap.dish_id].name}
+                        if menu_confirmed(state):
+                            next_tools=["generate_shopping_list","analyze_nutrition"]
                     else:
                         state["swap_preview"]=preview
-                        output={"尚未换菜":True,"候选":preview["options"],"已有时间线":bool(state["timeline"])}
+                        output={"尚未换菜":True,"候选":[option["name"] for option in preview["options"]],"已有时间线":bool(state["timeline"])}
                 elif name=="undo_swap":
                     undo_swap(state,kitchen)
-                    output={"已恢复餐单":state["menu"]}
-                    next_tools=["generate_shopping_list","analyze_nutrition"]
+                    output={"已恢复餐单":menu_summary(state["menu"])}
+                    if menu_confirmed(state):
+                        next_tools=["generate_shopping_list","analyze_nutrition"]
                 elif name=="compose_menu":
                     if state["questions"]:
                         raise ValueError("先澄清食材身份")
@@ -258,18 +277,28 @@ async def assistant_turn(state,text,*,body,report=None):
                     options=MenuOptions.model_validate({**options.model_dump(),**args})
                     output=make_menu(state["items"],prefs,options,(old or {}).get("version",0)+1,
                                      preferred=state.get("preferred_foods",[]))
-                    state.update(swap_preview=None,undo_swap=None,menu=output,ready=False,timeline=None)
+                    state.update(swap_preview=None,undo_swap=None,menu=output,confirmed=False,ready=False,
+                                 timeline=None,shopping=None,nutrition=None)
+                    output=menu_summary(output)
+                elif name=="confirm_menu":
+                    state["confirmed"]=True
+                    output={"已确定餐单":menu_summary(state["menu"])}
                     next_tools=["generate_shopping_list","analyze_nutrition"]
                 elif name in ("generate_shopping_list","analyze_nutrition"):
                     shopping,nutrition=meal_reports(state["menu"],state["items"])
                     key,output=("shopping",shopping) if name=="generate_shopping_list" else ("nutrition",nutrition)
                     state[key]=output
+                    if name=="generate_shopping_list":
+                        output={"待买食材":[row["name"] for row in shopping["buy"]]}
                 elif name=="confirm_ready":
                     state["undo_swap"]=None
+                    if not menu_confirmed(state):
+                        next_tools=["generate_shopping_list","analyze_nutrition"]
+                    state["confirmed"]=True
                     state["ready"]=True
                     output={"食材备齐":True,"需要配置厨房":not kitchen}
                     if kitchen and not state["timeline"]:
-                        next_tools=["generate_timeline"]
+                        next_tools.append("generate_timeline")
                 else:
                     if not state["ready"] or not kitchen:
                         raise ValueError("请先确认食材备齐并配置厨房")
