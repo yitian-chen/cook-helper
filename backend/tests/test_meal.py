@@ -79,3 +79,23 @@ def test_selection_sends_both_tool_results_back_before_publishing(monkeypatch,tm
         ]
         assert events[-1]["type"] == "result"
         assert events[-1]["result"]["content"] == final
+
+def test_inventory_accepts_structured_food_outside_catalog(monkeypatch):
+    import asyncio
+    from app.llm_client import LLMClient
+    from app.meal import interpret
+
+    monkeypatch.setenv("REASONING_PROVIDER", "live")
+    monkeypatch.setenv("REASONING_BASE_URL", "https://example.invalid/v1")
+    monkeypatch.setenv("REASONING_API_KEY", "test")
+
+    async def reply(self, messages, tools=None):
+        return {"content": (
+            '{"intent":"inventory","items":[{"ingredient_id":"egg","amount":3,"unit":"piece"}],'
+            '"extra_foods":["一把香菜",{"name":"牛肉","amount":1.0,"unit":"piece"}],"questions":[]}'
+        )}
+
+    monkeypatch.setattr(LLMClient, "chat", reply)
+    change = asyncio.run(interpret("我冰箱里还有一块牛肉", [], ["一把香菜"], []))
+    assert change.extra_foods == ["一把香菜", "牛肉 1份"]
+    assert change.items[0].amount == 3

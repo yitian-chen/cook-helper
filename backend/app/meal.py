@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from . import store
 from .domain import PANTRY_DEFAULTS, PANTRY_PROMPT, Preferences, match_recipes
@@ -24,11 +24,34 @@ class MealTurn(Strict):
     text: str = Field(default="", max_length=12000)
     preferences_version: int
 
+class ExtraFood(Strict):
+    name: str = Field(min_length=1)
+    amount: float | None = Field(default=None, ge=0, le=100000)
+    unit: Literal["piece", "g", "ml"] | None = None
+
+    def inventory_label(self) -> str:
+        if self.amount is None:
+            return self.name
+        unit = {"piece": "份", "g": "克", "ml": "毫升"}.get(self.unit, "")
+        return f"{self.name} {self.amount:g}{unit}"
+
+
 class InventoryChange(Strict):
     intent: Literal["inventory", "chat"]
     items: list[Item] = Field(default_factory=list, max_length=100)
     extra_foods: list[str] = Field(default_factory=list, max_length=100)
     questions: list[str] = Field(default_factory=list, max_length=20)
+
+    @field_validator("extra_foods", mode="before")
+    @classmethod
+    def normalize_extra_foods(cls, value):
+        if not isinstance(value, list):
+            return value
+        return [
+            ExtraFood.model_validate(item).inventory_label() if isinstance(item, dict) else item
+            for item in value
+        ]
+
 
 async def interpret(text, items, extras, questions):
     client = LLMClient()
@@ -41,6 +64,7 @@ async def interpret(text, items, extras, questions):
         '{"intent":"chat"}。声明、补充、更正、回答食材问题或要求根据库存推荐时返回'
         '{"intent":"inventory","items":[{"ingredient_id":"标准ID","amount":数值或null,"unit":"piece或g或ml"}],'
         '"extra_foods":["字典外已知食材及数量"],"questions":["剩余需要询问的食材身份问题"]}。'
+        "extra_foods 中每项可以是名称及数量的字符串，也可以是包含 name、amount、unit 的对象。"
         "items 和 extra_foods 返回修改后的完整库存。保留未提及食材；还有/再加表示新增数量，实际共有表示更正。"
         "用户排除或跳过的物品移除。若明确表示某项默认常备食材没有、用完或用量为零，"
         "以其标准 ID 记录 amount=0 并保留这项记录，直到用户更新。不要主动把默认常备食材加入实测库存。"
