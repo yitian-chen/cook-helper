@@ -32,11 +32,14 @@ header nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .workspace nav button[aria-current=page]{background:#dce8d7;color:#254833;font-weight:650}
 .new-session{width:100%}
 .history-toggle{display:none}
+.sidebar-toggle{margin-right:12px}
+.workspace.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}
+.sidebar-collapsed .session-sidebar,.sidebar-toggle{display:none}
 .session-drawer{margin:0;height:100dvh;max-height:100dvh;width:min(82vw,290px);border-radius:0;border:0}
 .drawer-close{display:block;margin:0 0 12px auto}
 @media(max-width:700px){
  .workspace{display:block}
- .session-sidebar{display:none}
+ .session-sidebar,.sidebar-toggle{display:none}
  .history-toggle{display:inline-block;margin-right:10px}
  header{padding:8px 12px;flex-wrap:wrap;gap:6px}
  header button{padding:4px 6px;font-size:14px}

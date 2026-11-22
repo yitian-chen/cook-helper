@@ -77,6 +77,12 @@ const initialKitchen:Kitchen={cooks:1,burner:1,wok:1,pot:1,steamer:0,rice_cooker
 
 const welcome:Message={role:'assistant',content:'今天想做什么菜？可以告诉我手边有哪些食材，或发一张厨房台面的照片。'};
 function App(){
+ const [sidebarCollapsed,setSidebarCollapsed]=useState(()=>localStorage.getItem('cook-helper.sidebar-collapsed')==='true');
+ function toggleSidebar(){
+  const collapsed=!sidebarCollapsed;
+  setSidebarCollapsed(collapsed);
+  localStorage.setItem('cook-helper.sidebar-collapsed',String(collapsed));
+ }
  const sessionDrawer=useRef<HTMLDialogElement>(null);
  const [sessions,setSessions]=useState<Session[]>([]);
  const [catalog,setCatalog]=useState<Record<string,{name:string}>>({});
@@ -203,10 +209,10 @@ function App(){
     <button key={entry.id} disabled={working||!run} aria-current={entry.id===run?.session_id?'page':undefined}
       onClick={()=>switchSession(entry.id)}>{entry.title}</button>)}</nav></>
  }
- return <div className="workspace"><aside className="session-sidebar">{sessionList()}</aside>
+ return <div className={sidebarCollapsed?"workspace sidebar-collapsed":"workspace"}><aside id="session-sidebar" className="session-sidebar">{sessionList()}</aside>
  <dialog className="session-drawer" ref={sessionDrawer} aria-label="历史对话">
  <button className="drawer-close" onClick={()=>sessionDrawer.current?.close()}>关闭</button>{sessionList()}</dialog>
- <div className="chat"><header><div><button className="history-toggle" onClick={()=>sessionDrawer.current?.showModal()}>历史对话</button><strong>灶边</strong><small>厨房助手</small></div><nav aria-label="设置">
+ <div className="chat"><header><div><button className="sidebar-toggle" aria-controls="session-sidebar" aria-expanded={!sidebarCollapsed} onClick={toggleSidebar}>{sidebarCollapsed?'展开对话栏':'收起对话栏'}</button><button className="history-toggle" onClick={()=>sessionDrawer.current?.showModal()}>历史对话</button><strong>灶边</strong><small>厨房助手</small></div><nav aria-label="设置">
  <button disabled={working||!run} onClick={openKitchen}>厨房配置</button> <button disabled={working||!saved} onClick={()=>{setPrefs(saved);dialog.current?.showModal()}}>饮食偏好</button></nav></header>
  <main aria-label="对话记录" aria-live="polite"><div className="thread">
  {messages.map((m,i)=><article key={i} className={'bubble '+m.role}><small>{m.role==='user'?'我':'灶边'}</small>{m.image&&<img src={'/api/images/'+m.image} alt="上传的厨房照片"/>}{m.role==='assistant'?<Markdown remarkPlugins={[remarkGfm]} components={{img:()=>null}}>{m.content}</Markdown>:<p>{m.content}</p>}</article>)}
