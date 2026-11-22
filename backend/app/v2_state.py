@@ -1,0 +1,28 @@
+"""One current menu for the single-user app. Commit turns using optimistic concurrency."""
+import json
+from fastapi import HTTPException
+from . import store
+
+def fresh(version):
+    return dict(revision=0,preferences_version=version,items=[],extra_foods=[],questions=[],menu=None,
+                ready=False,timeline=None,messages=[])
+
+def active():
+    prefs=store.preferences()
+    value=store.get("v2:active")
+    return value if value and value["preferences_version"]==prefs["version"] else fresh(prefs["version"])
+
+def save(state,revision):
+    with store.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
+        def read(key):
+            row=db.execute("SELECT value FROM state WHERE key=?",(key,)).fetchone()
+            return json.loads(row[0]) if row else {}
+        prefs=read("preferences").get("version",1)
+        old=read("v2:active")
+        current=old.get("revision",0) if old.get("preferences_version")==prefs else 0
+        if prefs!=state["preferences_version"] or current!=revision:
+            raise HTTPException(409,"餐单已更新，请刷新查看最新进度")
+        state["revision"]=revision+1
+        db.execute("INSERT OR REPLACE INTO state VALUES (?,?)",("v2:active",json.dumps(state,ensure_ascii=False)))
+    return state
