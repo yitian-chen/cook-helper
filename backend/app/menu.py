@@ -1,6 +1,6 @@
 """Portion and rank whole menus against one shared inventory."""
 import math
-from collections import Counter, defaultdict
+from collections import defaultdict
 from typing import Literal
 
 from pydantic import Field
@@ -92,7 +92,7 @@ def make_menu(items, prefs, options, revision, previous=None, replace=None, want
         candidates = [r for r in CATALOG.values() if allowed(r,prefs)
                       and r.id not in {replace, *(d["id"] for d in chosen)}]
         if role=="rice":
-            candidates = [r for r in candidates if r.id==RICE.id]
+            candidates = [r for r in candidates if r.id==RICE.id and "rice" not in prefs.excluded_ingredient_ids]
             if not candidates:
                 candidates=[r for r in RECIPES if r.course=="staple" and allowed(r,prefs)]
         elif role=="mixed_staple":

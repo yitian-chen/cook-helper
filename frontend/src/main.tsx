@@ -5,9 +5,14 @@ import remarkGfm from 'remark-gfm';
 import './style.css';
 
 type Pref={version:number;allergens:string[];excluded_ingredient_ids:string[];dietary_rules:string[];servings:number};
-type Detail={name:string;required:number;unit:string;missing:number|null;status:string};
-type Recipe={id:string;name:string;score:number;time_minutes:number;coverage:number;adequacy:number;details:Detail[];steps:string[]};
-type Run={card_id?:string;content:string;id:string;status:string;preferences_version:number;result?:{recipes:Recipe[]}|null};
+type Ingredient={ingredient_id:string;name:string;amount:number;unit:string};
+type Dish={id:string;name:string;course:string;portions:number;ingredients:Ingredient[]};
+type Kitchen={cooks:number;burner:number;wok:number;pot:number;steamer:number;rice_cooker:number;oven:number};
+type Task={id:string;dish:string;action:string;start:number;end:number;after:string[];hands:number};
+type Message={role:'user'|'assistant';content:string;image?:string};
+type Run={revision:number;preferences_version:number;messages:Message[];ready:boolean;
+ menu:{version:number;people:number;dishes:Dish[]}|null;
+ timeline:{id:string;minutes:number;steps:Task[];done:string[]}|null;kitchen?:Kitchen|null};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
  const res=await fetch('/api'+path,{method:method??(body?'POST':'GET'),headers:body instanceof FormData?{}:{'Content-Type':'application/json'},body:body instanceof FormData?body:body?JSON.stringify(body):undefined});
  const data=await res.json(); if(!res.ok)throw new Error(typeof data.detail==='string'?data.detail:'输入无效，请检查后重试'); return data;
@@ -18,7 +23,7 @@ type AgentEvent = ({type: 'tool'} & ToolProgress) | {type: 'result'; result: Run
 const toolLabels: Record<string, string> = {
  recognize_ingredients: '识别食材',
  write_inventory: '更新食材库存',
- match_recipes: '匹配菜谱',
+ compose_menu:'搭配整餐',replace_dish:'替换菜品',confirm_ready:'确认备餐',generate_timeline:'编排烹饪时间线',
  generate_shopping_list: '生成待买清单',
  analyze_nutrition: '估算营养',
 };
@@ -61,7 +66,10 @@ async function agentRequest(path: string, body: object, onTool: (tool: ToolProgr
 
 const allergyLabels:Record<string,string>={egg:'蛋类',soy:'大豆',wheat:'小麦',milk:'乳制品',peanut:'花生',fish:'鱼类',shellfish:'甲壳贝类',sesame:'芝麻'};
 const units:Record<string,string>={g:'克',piece:'个',ml:'毫升'};
-type Message={meal?:Run;role:'assistant'|'user';content:string;image?:string};
+const roles:Record<string,string>={main:'主菜',side:'配菜',soup:'汤',staple:'主食'};
+const kitchenLabels:Record<keyof Kitchen,string>={cooks:'下厨人数',burner:'灶眼',wok:'炒锅',pot:'汤锅',steamer:'蒸锅',rice_cooker:'电饭锅',oven:'烤箱'};
+const initialKitchen:Kitchen={cooks:1,burner:1,wok:1,pot:1,steamer:0,rice_cooker:1,oven:0};
+
 const welcome:Message={role:'assistant',content:'今天想做什么菜？可以告诉我手边有哪些食材，或发一张厨房台面的照片。'};
 function App(){
  const [catalog,setCatalog]=useState<Record<string,{name:string}>>({});
@@ -71,12 +79,19 @@ function App(){
  const [busy,setBusy]=useState(false),[error,setError]=useState('');
  const [progress,setProgress]=useState<ToolProgress[]|null>(null);
  const dialog=useRef<HTMLDialogElement>(null),end=useRef<HTMLDivElement>(null),picker=useRef<HTMLInputElement>(null);
+ const kitchenDialog=useRef<HTMLDialogElement>(null);
+ const [equipment,setEquipment]=useState<Kitchen>(initialKitchen);
+ const [storedKitchen,setStoredKitchen]=useState<Kitchen|null>(null);
+ function applyState(next:Run){
+  setRun(next);setMessages([welcome,...next.messages]);
+ }
+ function openKitchen(){setEquipment(storedKitchen??initialKitchen);kitchenDialog.current?.showModal()}
  const dirty=JSON.stringify(prefs)!==JSON.stringify(saved);
  const append=(m:Message)=>setMessages(previous=>[...previous,m]);
  const working=busy;
- useEffect(()=>{Promise.all([api<typeof catalog>('/ingredients'),api<Pref>('/preferences')]).then(([c,p])=>{setCatalog(c);setSaved(p);setPrefs(p)}).catch(e=>setError(e.message))},[]);
- useEffect(()=>{end.current?.scrollIntoView({block:'end'})},[messages,run?.status,busy,progress]);
- async function action(fn:()=>Promise<void>){setError('');setBusy(true);try{await fn()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+ useEffect(()=>{Promise.all([api<typeof catalog>('/ingredients'),api<Pref>('/preferences'),api<Run>('/v2/current')]).then(([c,p,state])=>{setCatalog(c);setSaved(p);setPrefs(p);setStoredKitchen(state.kitchen??null);applyState(state)}).catch(e=>setError(e.message))},[]);
+ useEffect(()=>{end.current?.scrollIntoView({block:'end'})},[messages,run?.revision,busy,progress]);
+ async function action(fn:()=>Promise<void>){setError('');setBusy(true);try{await fn()}catch(e){setError((e as Error).message);try{const state=await api<Run>('/v2/current');applyState(state);setStoredKitchen(state.kitchen??null)}catch{/* keep the original error */}}finally{setBusy(false)}}
  async function askAgent(path: string, body: object) {
   setProgress([]);
   try {
@@ -94,7 +109,9 @@ function App(){
   if(!prefs)return;
   const {version,...body}=prefs;
   const updated=await api<Pref>('/preferences',body,'PUT');
-  setSaved(updated);setPrefs(updated);setRun(null);setMessages([welcome]);dialog.current?.close();
+  setSaved(updated);setPrefs(updated);
+  const next=await api<Run>('/v2/current');applyState(next);dialog.current?.close();
+  if(run?.menu)applyState(await askAgent('/v2/turn',{action:'replan',revision:next.revision,preferences_version:updated.version}));
  }
  const change=(patch:Partial<Pref>)=>{if(prefs)setPrefs({...prefs,...patch})};
  const toggle=(list:string[],value:string)=>list.includes(value)?list.filter(x=>x!==value):[...list,value];
@@ -104,24 +121,61 @@ function App(){
    const content=draft.trim();
    let image_id:string|undefined;
    if(file){const form=new FormData();form.append('file',file);image_id=(await api<{image_id:string}>('/images',form)).image_id}
-   const message:Message={role:'user',content:content||'请识别照片中的食材。',image:image_id?'/api/images/'+image_id:undefined};
+   const message:Message={role:'user',content:content||'请识别照片中的食材。',image:image_id};
    append(message);setDraft('');setFile(null);
-   const next=await askAgent('/meal-turn',{meal_id:run?.id,image_id,text:content,preferences_version:saved.version});
-   setRun(next);
-   append({role:'assistant',content:next.content,meal:next});
+   const next=await askAgent('/v2/turn',{revision:run?.revision??0,image_id,text:content,preferences_version:saved.version});
+   applyState(next);
+   if(next.ready&&!next.timeline&&!storedKitchen) openKitchen();
   })
  }
- async function selectRecipe(meal:Run,recipe:Recipe){
+ async function menuAction(kind:'replace'|'ready'|'schedule',dish?:Dish){
+  if(!run)return;
   await action(async()=>{
-   append({role:'user',content:'选 '+recipe.name});
-   const next=await askAgent('/meals/'+(run?.id??meal.id)+'/select',{recipe_id:recipe.id,preferences_version:meal.preferences_version});
-   setRun(next);
-   append({role:'assistant',content:next.content});
+   if(dish)append({role:'user',content:'换掉'+dish.name});
+   const next=await askAgent('/v2/turn',{revision:run.revision,preferences_version:run.preferences_version,action:kind,dish_id:dish?.id});
+   applyState(next);
+   if(next.ready&&!next.timeline&&!storedKitchen)openKitchen();
   });
  }
- return <div className="chat"><header><div><strong>灶边</strong><small>厨房助手</small></div><button disabled={working||!saved} onClick={()=>{setPrefs(saved);dialog.current?.showModal()}}>饮食偏好</button></header>
+ async function saveKitchen(){
+  if(!run)return;
+  await action(async()=>{
+   const next=await api<Run>('/v2/kitchen',{kitchen:equipment,revision:run.revision,preferences_version:run.preferences_version},'PUT');
+   setStoredKitchen(equipment);applyState(next);kitchenDialog.current?.close();
+   if(next.ready)applyState(await askAgent('/v2/turn',{action:'schedule',revision:next.revision,preferences_version:next.preferences_version}));
+  })
+ }
+ async function mark(t:Task,done:boolean){
+  if(!run?.timeline)return;
+  const body={timeline_id:run.timeline.id,step_id:t.id,done,revision:run.revision,preferences_version:run.preferences_version};
+  await action(async()=>applyState(await api<Run>('/v2/progress',body,'PUT')));
+ }
+ return <div className="chat"><header><div><strong>灶边</strong><small>厨房助手</small></div><nav><button disabled={working||!run} onClick={openKitchen}>厨房配置</button> <button disabled={working||!saved} onClick={()=>{setPrefs(saved);dialog.current?.showModal()}}>饮食偏好</button></nav></header>
  <main aria-label="对话记录" aria-live="polite"><div className="thread">
- {messages.map((m,i)=><article key={i} className={'bubble '+m.role}><small>{m.role==='user'?'我':'灶边'}</small>{m.image&&<img src={m.image} alt="上传的厨房照片"/>}{m.role==='assistant'?<Markdown remarkPlugins={[remarkGfm]} components={{img:()=>null}}>{m.content}</Markdown>:<p>{m.content}</p>}{m.meal?.result?.recipes.map(r=><section className="recipe-card" key={r.id}><h3>{r.name}</h3><p>{r.time_minutes} 分钟 · 匹配 {r.score} 分</p><p>{r.details.map(d=>d.name+' '+d.required+units[d.unit]).join('、')}</p><button disabled={busy||m.meal?.id!==run?.card_id} onClick={()=>selectRecipe(m.meal!,r)}>选这道菜</button></section>)}</article>)}
+ {messages.map((m,i)=><article key={i} className={'bubble '+m.role}><small>{m.role==='user'?'我':'灶边'}</small>{m.image&&<img src={'/api/images/'+m.image} alt="上传的厨房照片"/>}{m.role==='assistant'?<Markdown remarkPlugins={[remarkGfm]} components={{img:()=>null}}>{m.content}</Markdown>:<p>{m.content}</p>}</article>)}
+ {run?.menu&&<section className="menu-panel" aria-label="当前餐单">
+ <h2>{run.menu.people} 人餐单</h2>
+ <div className="dish-grid">{run.menu.dishes.map(d=><article className="recipe-card" key={d.id}>
+ <small>{roles[d.course]??d.course} · {d.portions} 标准份</small><h3>{d.name}</h3>
+ <p>{d.ingredients.map(i=>i.name+' '+i.amount+(units[i.unit]??i.unit)).join('、')}</p>
+ <button disabled={busy} onClick={()=>menuAction('replace',d)}>换这道</button></article>)}</div>
+ {!run.ready&&<button className="primary" disabled={busy} onClick={()=>menuAction('ready')}>食材已备齐</button>}
+ {run.ready&&!run.timeline&&<button disabled={busy} onClick={()=>storedKitchen?menuAction('schedule'):openKitchen()}>{storedKitchen?'生成时间线':'配置厨房并生成时间线'}</button>}
+ </section>}
+ {run?.timeline&&<section className="menu-panel" aria-label="烹饪时间线">
+ <h2>烹饪时间线</h2><p>预计 {run.timeline.minutes} 分钟上桌 · 已完成 {run.timeline.done.length}/{run.timeline.steps.length} 步</p>
+ {run.timeline.steps.map(t=>{
+  const timeline=run.timeline!;
+  const checked=timeline.done.includes(t.id);
+  const waiting=t.after.filter(id=>!timeline.done.includes(id));
+  const locked=checked&&timeline.steps.some(s=>s.after.includes(t.id)&&timeline.done.includes(s.id));
+  const parallel=timeline.steps.filter(s=>!s.hands&&s.dish!==t.dish&&s.start<t.end&&t.start<s.end);
+  return <div className="timeline-row" key={t.id}><label><input type="checkbox" checked={checked}
+   disabled={busy||locked||waiting.length>0} onChange={e=>mark(t,e.target.checked)}/>
+   <b>{t.start}–{t.end} 分</b> {t.dish} · {t.action}</label>
+   {waiting.length>0&&<small>先完成：{waiting.map(id=>timeline.steps.find(s=>s.id===id)?.action).join('、')}</small>}
+   {!!t.hands&&parallel.length>0&&<small>同时进行：{parallel.map(s=>s.dish+' · '+s.action).join('、')}</small>}
+  </div>})}</section>}
  {progress && <div className="bubble assistant tool-progress" role="status">
   {progress.length === 0 ? '灶边正在处理…' : <>
    <small>本轮工具</small>
@@ -140,6 +194,11 @@ function App(){
  <div className="bar"><input ref={picker} hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{setFile(e.target.files?.[0]??null);e.target.value=''}}/>
  <button disabled={working} onClick={()=>picker.current?.click()}>＋ 图片</button>
  <button className="primary send" disabled={working||(!draft.trim()&&!file)||!saved} onClick={send}>发送 ↑</button></div></div></footer>
+ <dialog ref={kitchenDialog} aria-labelledby="kitchen-title"><div className="bar"><h2 id="kitchen-title">厨房配置</h2><button className="close" onClick={()=>kitchenDialog.current?.close()}>关闭</button></div>
+ <p>填写可同时使用的数量，没有的设备填 0。</p>
+ {(Object.keys(kitchenLabels) as (keyof Kitchen)[]).map(key=><label className="equipment" key={key}>{kitchenLabels[key]}<input type="number" min={key==='cooks'?1:0} max={['steamer','rice_cooker','oven'].includes(key)?4:8} value={equipment[key]} onChange={e=>setEquipment({...equipment,[key]:Number(e.target.value)})}/></label>)}
+ <button className="primary" disabled={busy} onClick={saveKitchen}>{run?.ready?'保存并生成时间线':'保存厨房配置'}</button>
+ {error&&<p role="alert">{error}</p>}</dialog>
  <dialog ref={dialog} aria-labelledby="prefs-title"><div className="bar"><h2 id="prefs-title">饮食偏好</h2><button className="close" onClick={()=>dialog.current?.close()}>关闭</button></div>
  {prefs&&<><label>用餐人数<input type="number" min="1" max="20" value={prefs.servings} onChange={e=>change({servings:Number(e.target.value)})}/></label>
  <h3>过敏信息</h3><div className="chips">{Object.entries(allergyLabels).map(([id,label])=><button className={prefs.allergens.includes(id)?'selected':''} key={id} onClick={()=>change({allergens:toggle(prefs.allergens,id)})}>{label}</button>)}</div>

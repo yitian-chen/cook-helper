@@ -220,10 +220,10 @@ async def respond(previous, text, image_id=None, recipe=None, report=None):
             messages.append({"role":"tool","tool_call_id":call["id"],"content":json.dumps(output,ensure_ascii=False)})
     raise LLMError("助手未能完成本轮工具调用，请重试")
 
-async def respond_to_request(request, previous, text, **options):
+async def respond_to_request(request, previous, text, runner=respond, **options):
     if request.headers.get("accept") != "application/x-ndjson":
         try:
-            return await respond(previous, text, **options)
+            return await runner(previous, text, **options)
         except LLMError as exc:
             raise HTTPException(502, str(exc)) from None
 
@@ -235,7 +235,7 @@ async def respond_to_request(request, previous, text, **options):
 
         async def run():
             try:
-                result = await respond(previous, text, report=report, **options)
+                result = await runner(previous, text, report=report, **options)
                 report("result", result=result)
             except LLMError as exc:
                 report("error", detail=str(exc))
