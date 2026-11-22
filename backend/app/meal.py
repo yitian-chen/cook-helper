@@ -1,9 +1,12 @@
 """Conversation inventory and meal-selection tools."""
+import asyncio
 import json
+import logging
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from pydantic import Field
 
 from . import store
@@ -78,7 +81,7 @@ def tool_schema(name):
     return {"type":"function","function":{"name":name,"description":TOOL_HELP[name],
             "parameters":{"type":"object","properties":{},"additionalProperties":False}}}
 
-async def respond(previous, text, image_id=None, recipe=None):
+async def respond(previous, text, image_id=None, recipe=None, report=None):
     run = {**previous, "id":str(uuid4()), "events":[]}
     run.pop("caption_question", None)
     version = run["preferences_version"]
@@ -102,7 +105,7 @@ async def respond(previous, text, image_id=None, recipe=None):
                 user_turn]
     client = LLMClient()
     results = {}
-    for _ in range(10):
+    for round_index in range(10):
         if recipe:
             available = [n for n in ("generate_shopping_list","analyze_nutrition") if n not in results]
             required = bool(available)
@@ -138,12 +141,17 @@ async def respond(previous, text, image_id=None, recipe=None):
             return {"card_id":run.get("card_id"),"id":run["id"],"status":run["status"],"preferences_version":version,"content":content,
                     "result":run.get("result") if "match_recipes" in results else None}
         messages.append(reply)
-        for call in calls:
+        for call_index, call in enumerate(calls):
+            event_id = f"{round_index}-{call_index}"
             fn = call["function"]
             name = fn["name"]
+            started = False
             try:
                 if name not in available or json.loads(fn["arguments"]) != {}:
                     raise ValueError("工具或参数在当前阶段无效")
+                started = True
+                if report:
+                    report("tool", id=event_id, name=name, status="running")
                 if name in results:
                     output = results[name]
                 elif name == "recognize_ingredients":
@@ -174,29 +182,71 @@ async def respond(previous, text, image_id=None, recipe=None):
                     output = analyze_nutrition(recipe)
                 results[name]=output
                 run["events"].append({"tool":name,"ok":True})
-            except (ValueError,TypeError) as exc:
+            except (ValueError,TypeError,LLMError) as exc:
+                if report and started:
+                    report("tool", id=event_id, name=name, status="failed")
+                if isinstance(exc, LLMError):
+                    raise
                 output={"error":str(exc)}
+            else:
+                if report:
+                    report("tool", id=event_id, name=name, status="completed")
             messages.append({"role":"tool","tool_call_id":call["id"],"content":json.dumps(output,ensure_ascii=False)})
     raise LLMError("助手未能完成本轮工具调用，请重试")
 
+async def respond_to_request(request, previous, text, **options):
+    if request.headers.get("accept") != "application/x-ndjson":
+        try:
+            return await respond(previous, text, **options)
+        except LLMError as exc:
+            raise HTTPException(502, str(exc)) from None
+
+    async def stream():
+        events = asyncio.Queue()
+
+        def report(kind, **payload):
+            events.put_nowait({"type": kind, **payload})
+
+        async def run():
+            try:
+                result = await respond(previous, text, report=report, **options)
+                report("result", result=result)
+            except LLMError as exc:
+                report("error", detail=str(exc))
+            except HTTPException as exc:
+                report("error", detail=exc.detail)
+            except Exception:
+                logging.getLogger(__name__).exception("Agent stream failed")
+                report("error", detail="本轮处理失败，请重试")
+            finally:
+                events.put_nowait(None)
+
+        task = asyncio.create_task(run())
+        try:
+            while (event := await events.get()) is not None:
+                yield json.dumps(event, ensure_ascii=False) + "\n"
+        finally:
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+
+    return StreamingResponse(stream(), media_type="application/x-ndjson",
+                             headers={"X-Accel-Buffering": "no", "Vary": "Accept"})
+
 @router.post("/api/meal-turn")
-async def meal_turn(body: MealTurn):
-    try:
-        return await respond(load_meal(body.meal_id,body.preferences_version),body.text,body.image_id)
-    except LLMError as exc:
-        raise HTTPException(502,str(exc)) from None
+async def meal_turn(body: MealTurn, request: Request):
+    previous = load_meal(body.meal_id, body.preferences_version)
+    return await respond_to_request(request, previous, body.text, image_id=body.image_id)
 
 class Selection(Strict):
     recipe_id: str
     preferences_version: int
 
 @router.post("/api/meals/{meal_id}/select")
-async def select(meal_id: str, body: Selection):
+async def select(meal_id: str, body: Selection, request: Request):
     meal=load_meal(meal_id,body.preferences_version)
     recipe=next((r for r in (meal.get("result") or {}).get("recipes",[]) if r["id"]==body.recipe_id),None)
     if not recipe:
         raise HTTPException(422,"请选择本轮推荐中的菜谱")
-    try:
-        return await respond(meal,"我选"+recipe["name"]+"，请帮我准备这道菜。",recipe=recipe)
-    except LLMError as exc:
-        raise HTTPException(502,str(exc)) from None
+    return await respond_to_request(
+        request, meal, "我选" + recipe["name"] + "，请帮我准备这道菜。", recipe=recipe
+    )

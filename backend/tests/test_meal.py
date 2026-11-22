@@ -63,3 +63,19 @@ def test_selection_sends_both_tool_results_back_before_publishing(monkeypatch,tm
         result=client.post("/api/meals/prior/select",json={"recipe_id":recipe["id"],"preferences_version":1})
         assert result.status_code==200
         assert result.json()["content"]==final
+
+        response = client.post(
+            "/api/meals/prior/select",
+            json={"recipe_id": recipe["id"], "preferences_version": 1},
+            headers={"Accept": "application/x-ndjson"},
+        )
+        assert response.status_code == 200
+        events = [json.loads(line) for line in response.text.splitlines()]
+        assert [(event["name"], event["status"]) for event in events[:-1]] == [
+            ("analyze_nutrition", "running"),
+            ("analyze_nutrition", "completed"),
+            ("generate_shopping_list", "running"),
+            ("generate_shopping_list", "completed"),
+        ]
+        assert events[-1]["type"] == "result"
+        assert events[-1]["result"]["content"] == final
