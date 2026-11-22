@@ -39,6 +39,13 @@ RECIPES = [Recipe.model_validate(yaml.safe_load(p.read_text())) for p in sorted(
 assert len({r.id for r in RECIPES}) == len(RECIPES)
 assert all(i.ingredient_id in INGREDIENTS for r in RECIPES for i in r.ingredients)
 
+PANTRY_DEFAULTS = frozenset({"cooking_oil", "salt", "soy_sauce", "rice"})
+PANTRY_PROMPT = (
+    "默认家里备有食用油、盐、酱油、糖、醋和大米。大米可以煮成米饭，但不代表已有熟饭或隔夜饭。"
+    "这些是常备假设，不是已盘点的库存。用户明确说明缺少、用量不足或忌口时，以用户提供的信息为准。"
+    "工具标记为 assumed_pantry 的食材无需列入待买清单，不要声称已核实其库存数量。"
+)
+
 def validate_items(items):
     if len(items) > 100 or len({x.ingredient_id for x in items}) != len(items):
         raise ValueError("食材不能重复，且最多 100 项")
@@ -74,16 +81,18 @@ def match_recipes(items, prefs):
             weight = {"main": 3, "side": 2, "seasoning": 1}[req.role]
             need = req.amount * prefs.servings / recipe.servings
             have = inventory.get(req.ingredient_id)
-            present = have is not None and (have.amount is None or have.amount > 0)
-            known = have is not None and have.amount is not None and have.unit == req.unit
+            assumed_pantry = have is None and req.ingredient_id in PANTRY_DEFAULTS
+            present = assumed_pantry or (have is not None and (have.amount is None or have.amount > 0))
+            known = have is not None and have.amount is not None and (have.amount == 0 or have.unit == req.unit)
             available = have.amount if known else 0
             coverage += weight * present
-            adequacy += weight * min(available / need, 1)
+            adequacy += weight * (1 if assumed_pantry else min(available / need, 1))
             total += weight
             details.append({"ingredient_id": req.ingredient_id, "name": INGREDIENTS[req.ingredient_id]["name"],
                             "required": need, "unit": req.unit, "available": available if known else None,
-                            "missing": max(need - available, 0) if known or not present else None,
-                            "status": "missing" if not present else "unknown" if not known else "enough" if available >= need else "short"})
+                            "missing": 0 if assumed_pantry else max(need - available, 0) if known or not present else None,
+                            "assumed_pantry": assumed_pantry,
+                            "status": "enough" if assumed_pantry else "missing" if not present else "unknown" if not known else "enough" if available >= need else "short"})
         matches.append({**recipe.model_dump(), "servings": prefs.servings,
                         "score": round(100 * (.7 * coverage / total + .3 * adequacy / total), 2),
                         "coverage": round(coverage / total, 3), "adequacy": round(adequacy / total, 3),

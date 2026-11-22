@@ -1,6 +1,6 @@
 from typing import Literal
 from .llm_client import LLMClient, LLMError
-from .domain import RECIPES, allowed
+from .domain import PANTRY_PROMPT, RECIPES, allowed
 import io
 import uuid
 from contextlib import asynccontextmanager
@@ -46,7 +46,7 @@ async def chat(body: ChatRequest):
     candidates = [r for r in RECIPES if allowed(r, rules)]
     prompt = ("你是灶边厨房助手，用简体中文 Markdown 回答用户的厨房问题。"
               "遵守服务端饮食偏好，只推荐合规候选菜谱。没有看到照片时不要声称看到了。"
-              "推荐、替换及步骤都必须符合限制。偏好：" + rules.model_dump_json()
+              "推荐、替换及步骤都必须符合限制。" + PANTRY_PROMPT + "偏好：" + rules.model_dump_json()
               + "。合规候选：" + "、".join(r.name for r in candidates))
     try:
         client = LLMClient()

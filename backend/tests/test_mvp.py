@@ -60,3 +60,24 @@ def test_cancel_and_budget(monkeypatch):
         asyncio.run(execute(run["id"],"match"))
         result=store.get("run:"+run["id"])
         assert result["status"]=="failed" and len(result["events"])==8
+
+def test_pantry_defaults_respect_explicit_shortages():
+    from app.domain import Item, Preferences, match_recipes
+    from app.meal_lists import generate_shopping_list
+
+    inventory = [
+        Item(ingredient_id="tomato", amount=300, unit="g"),
+        Item(ingredient_id="egg", amount=2, unit="piece"),
+    ]
+    defaults = match_recipes(inventory, Preferences())["recipes"][0]
+    assert defaults["id"] == "tomato_egg"
+    assert generate_shopping_list(defaults) == []
+    assert {row["ingredient_id"] for row in defaults["details"] if row["assumed_pantry"]} == {
+        "cooking_oil", "salt",
+    }
+
+    inventory.append(Item(ingredient_id="cooking_oil", amount=0, unit="ml"))
+    updated = match_recipes(inventory, Preferences())["recipes"][0]
+    assert [(row["ingredient_id"], row["missing"]) for row in generate_shopping_list(updated)] == [
+        ("cooking_oil", 10),
+    ]
