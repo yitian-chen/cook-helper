@@ -1,0 +1,15 @@
+.venv*/
+.deps/
+.env
+.env.*
+!.env.example
+runtime/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.wav
+*.mp3
+*.mp4
+*.log
+.DS_Store
+*私密配置*.zip

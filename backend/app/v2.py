@@ -29,8 +29,13 @@ class Settings(Versioned):
 
 class Progress(Versioned):
     timeline_id:str
-    step_id:str
     done:bool
+
+class SingleStepProgress(Progress):
+    step_id:str
+
+class GroupProgress(Progress):
+    step_ids:set[str] = Field(min_length=1)
 
 class Preview(Versioned):
     dish_id:str
@@ -68,28 +73,30 @@ def configure(body:Settings):
     return v2_state.save(state,body.revision,body.kitchen.model_dump())
 
 @router.put("/progress")
-def progress(body:Progress):
+def progress(body:SingleStepProgress|GroupProgress):
     state=v2_state.active(body.session_id)
     timeline=state["timeline"]
     if state["preferences_version"]!=body.preferences_version or not timeline or timeline["id"]!=body.timeline_id:
         raise HTTPException(409,"时间线已更新")
     steps={s["id"]:s for s in timeline["steps"]}
-    if body.step_id not in steps:
+    selected=body.step_ids if isinstance(body,GroupProgress) else {body.step_id}
+    if selected-steps.keys():
         raise HTTPException(404,"步骤不存在")
     done=set(timeline["done"])
-    if (body.step_id in done)==body.done:
+    updated=done|selected if body.done else done-selected
+    if updated==done:
         return state
     if body.revision!=state["revision"]:
         raise HTTPException(409,"进度已更新，请刷新")
     if body.done:
-        if set(steps[body.step_id]["after"])-done:
+        added=updated-done
+        if any(parent not in updated for step in added for parent in steps[step]["after"]):
             raise HTTPException(409,"请先完成前置步骤")
-        done.add(body.step_id)
     else:
-        if any(body.step_id in steps[s]["after"] for s in done):
+        removed=done-updated
+        if any(parent in removed for step in updated for parent in steps[step]["after"]):
             raise HTTPException(409,"请先撤销后续步骤")
-        done.remove(body.step_id)
-    timeline["done"]=sorted(done)
+    timeline["done"]=sorted(updated)
     return v2_state.save(state,body.revision)
 
 HELP={
@@ -131,8 +138,11 @@ async def assistant_turn(state,text,*,body,report=None):
     prefs=Preferences.model_validate({k:v for k,v in store.preferences().items() if k!="version"})
     kitchen=store.get("v2:kitchen")
     old=state["menu"]
+    supplementing=bool(old and menu_confirmed(state) and not state["ready"])
     if body.action not in ("chat","replan") and not old:
         raise HTTPException(409,"请先生成餐单")
+    if state["questions"] and body.action!="chat":
+        raise HTTPException(409,"请先确认食材身份")
     if body.action=="schedule" and (not state["ready"] or not kitchen):
         raise HTTPException(409,"请先确认食材备齐并配置厨房")
     if body.action in ("replace","choose") and body.dish_id not in [d["id"] for d in old["dishes"]]:
@@ -149,7 +159,8 @@ async def assistant_turn(state,text,*,body,report=None):
     text=text or trigger.get(body.action,"请根据照片安排一餐")
     policy=("你是灶边整餐助手。用户报食材或澄清时调用write_inventory，图片先识别。仅身份或过敏有歧义时追问，"
             "用户说一块、一把、一些，表示该食材可直接入菜；无需称重、换算或确认是否够。依照当前请求给compose_menu参数：people人数、staple主食、soup汤、dishes菜数。"
-            "用户补充食材先写库存，再优先安排使用它的合规菜。没有入选的食材不要归因于重量不明。补充库存后保留上一餐偏好。要求替换时用replace_dish，想换成豆腐时ingredient_id用tofu。"
+            "用户补充食材先写库存。选定餐单后的备料阶段仅更新库存与采购情况；用户明确要求重选餐单时再调用compose_menu。"
+            "未选定餐单时，优先安排使用新食材的合规菜。没有入选的食材不要归因于重量不明。补充库存后保留上一餐偏好。要求替换时用replace_dish，想换成豆腐时ingredient_id用tofu。"
             "比较换菜只调用replace_dish，按本轮要求填写ingredient_id、exclude_ingredients、avoid_equipment、quick，仅用户明确指定目标菜名或选定已有候选序号才填target_name。没有明确原菜时先询问。候选只供选择，勿称已换菜。首次配餐只介绍菜名、搭配和人数，并邀请用户确定餐单。换一道菜不等于确定整餐。确认整餐后才调用清单及营养工具，并用简洁 Markdown 汇报采购和每人营养，标明估算及未覆盖项。不要逐项报食材克数或列出库存量。"
             "仅在用户明确表示食材已备齐时调用confirm_ready。厨房未设置就提示配置。时间线生成后简述总时长和并行安排。"
             "整套菜单以最新工具结果 dishes 数组为准，换下的菜不再呈现。食材份数是分享份量。营养未覆盖项不按零处理。不要仅在口头声称已完成工具操作。遵守过敏忌口限制，不推荐菜单外的配料。"+PANTRY_PROMPT)
@@ -168,11 +179,13 @@ async def assistant_turn(state,text,*,body,report=None):
     for iteration in range(12):
         names=pending[:1] if pending else []
         if not outputs and not pending:
-            names=["write_inventory","compose_menu"]
-            if old:
-                names.extend(["replace_dish","confirm_menu","confirm_ready"])
-                if state.get("undo_swap"):
-                    names.append("undo_swap")
+            names=["write_inventory"]
+            if not state["questions"]:
+                names.append("compose_menu")
+                if old:
+                    names.extend(["replace_dish","confirm_menu","confirm_ready"])
+                    if state.get("undo_swap"):
+                        names.append("undo_swap")
         prompt=messages
         if not names and not menu_confirmed(state):
             prompt=[*messages,{"role":"system","content":"当前餐单还未确定。此轮只介绍菜名、搭配和人数，或回答选菜。请勿列出缺少的食材、采购建议或营养，即使作为附注也留到用户选定餐单后。"}]
@@ -235,10 +248,12 @@ async def assistant_turn(state,text,*,body,report=None):
                         state["prior_options"]=old["options"]
                     if not state["items"] and not state["extra_foods"] and not state["questions"]:
                         state["questions"]=["手边有哪些可以用的食材？"]
-                    state.update(swap_preview=None,undo_swap=None,menu=None,confirmed=False,ready=False,timeline=None,shopping=None,nutrition=None)
+                    state.update(swap_preview=None,undo_swap=None,ready=False,timeline=None,shopping=None,nutrition=None)
+                    if not supplementing:
+                        state.update(menu=None,confirmed=False)
                     output={"库存":state["items"],"其他":state["extra_foods"],"需澄清身份":state["questions"]}
                     if not state["questions"]:
-                        next_tools=["compose_menu"]
+                        next_tools=(["generate_shopping_list","analyze_nutrition"] if supplementing else ["compose_menu"])
                 elif name in ("choose_dish","replace_dish"):
                     if body.action in ("replace","choose"):
                         args["dish_id"]=body.dish_id

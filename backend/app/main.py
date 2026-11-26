@@ -23,6 +23,8 @@ from .meal import router as meal_router
 app.include_router(meal_router)
 from .v2 import router as v2_router
 app.include_router(v2_router)
+from .voice_input import router as voice_router
+app.include_router(voice_router)
 class NewRun(Strict):
     image_id: str | None = None
 class Confirmation(Strict):

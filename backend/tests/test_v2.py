@@ -83,6 +83,40 @@ def test_restore_dependencies_and_stale_actions(tmp_path,monkeypatch):
         assert client.get("/api/v2/current").json()["timeline"]["done"]==[first["id"]]
         assert turn("ready").status_code==409
 
+def test_grouped_cooking_progress_updates_atomically(tmp_path,monkeypatch):
+    from app.main import app
+    monkeypatch.setattr(store,"DB",tmp_path/"grouped-progress.db")
+    timeline={
+        "id":"timeline",
+        "steps":[
+            {"id":"wash","after":[]},
+            {"id":"slice","after":["wash"]},
+            {"id":"season","after":["slice"]},
+            {"id":"cook","after":["season"]},
+            {"id":"rice","after":[]},
+        ],
+        "done":[],
+    }
+    with TestClient(app) as client:
+        initial=client.get("/api/v2/current").json()
+        store.put("v2:active",{**initial,"timeline":timeline})
+
+        def mark(ids,revision,done=True):
+            return client.put("/api/v2/progress",json={
+                "revision":revision,"preferences_version":1,"timeline_id":"timeline",
+                "step_ids":ids,"done":done,
+            })
+
+        assert mark(["rice","season"],0).status_code==409
+        assert client.get("/api/v2/current").json()["timeline"]["done"]==[]
+        grouped=mark(["season","wash","slice"],0).json()
+        assert grouped["timeline"]["done"]==["season","slice","wash"]
+        assert mark(["wash","slice","season"],0).json()["revision"]==grouped["revision"]
+        cooked=mark(["cook"],grouped["revision"]).json()
+        assert mark(["wash","slice","season"],cooked["revision"],done=False).status_code==409
+        assert client.get("/api/v2/current").json()["timeline"]["done"]==cooked["timeline"]["done"]
+        assert mark(["wash","slice","season","cook"],cooked["revision"],done=False).json()["timeline"]["done"]==[]
+
 def test_preference_change_retains_inventory_and_invalidates_old_plan(tmp_path,monkeypatch):
     from app.main import app
     monkeypatch.setattr(store,"DB",tmp_path/"pref.db")
@@ -198,3 +232,49 @@ def test_first_inventory_tool_uses_request_then_waits_for_menu_confirmation(tmp_
         assert confirmed["confirmed"] and not confirmed["ready"]
         assert not {"scallion","ginger","garlic"} & {item["ingredient_id"] for item in confirmed["shopping"]["buy"]}
         assert confirmed["nutrition"]["per_person"]
+
+
+def test_supplementing_a_confirmed_menu_keeps_dishes_and_refreshes_reports(tmp_path, monkeypatch):
+    from app import v2, v2_state
+    from app.main import app
+    from app.meal import InventoryChange
+
+    monkeypatch.setattr(store, "DB", tmp_path / "confirmed-meal.db")
+    monkeypatch.setenv("REASONING_PROVIDER", "mock")
+    dish = portions(CATALOG["tomato_egg"], 2, 1)
+    menu = {"version": 1, "people": 2, "dishes": [dish], "options": MenuOptions().model_dump()}
+    shopping, nutrition = meal_reports(menu, [])
+    store.put("v2:active", {**v2_state.fresh(1), "menu": menu, "confirmed": True,
+                            "shopping": shopping, "nutrition": nutrition})
+
+    async def recognize_ingredients(image_id):
+        assert image_id == "photo"
+        return {"items": [], "uncertain": ["这是番茄吗？"]}
+
+    async def interpret(text, items, extras, questions):
+        assert text == "是番茄，已经买了两颗"
+        assert questions == ["这是番茄吗？"]
+        return InventoryChange(intent="inventory", items=[
+            {"ingredient_id": "tomato", "amount": 2, "unit": "piece"},
+        ])
+
+    monkeypatch.setattr(v2, "recognize_ingredients", recognize_ingredients)
+    monkeypatch.setattr(v2, "interpret", interpret)
+    with TestClient(app) as client:
+        def turn(revision, **payload):
+            return client.post("/api/v2/turn", json={
+                "revision": revision, "preferences_version": 1, **payload,
+            })
+
+        unclear = turn(0, image_id="photo").json()
+        assert unclear["confirmed"] and unclear["menu"] == menu
+        assert unclear["questions"] == ["这是番茄吗？"]
+        assert unclear["shopping"] is None and unclear["nutrition"] is None
+        assert turn(unclear["revision"], action="ready").status_code == 409
+
+        updated = turn(unclear["revision"], text="是番茄，已经买了两颗").json()
+        assert updated["confirmed"] and updated["menu"] == menu
+        assert not updated["questions"] and not updated["ready"]
+        assert {item["ingredient_id"] for item in updated["shopping"]["buy"]} == {"egg"}
+        assert updated["nutrition"] == nutrition
+        assert not turn(updated["revision"], action="replan").json()["confirmed"]
