@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import type {ChangeEvent} from 'react';
+import {recognizeVoice, type VoicePhase} from './voice-input';
 import './meal-input.css';
 
 type MealInputProps = {
@@ -14,28 +15,13 @@ type MealInputProps = {
   sessionId?: string;
 };
 
-type Recognition = {
-  lang: string;
-  onresult: ((event: {resultIndex: number; results: SpeechRecognitionResultList}) => void) | null;
-  onerror: ((event: {error: string}) => void) | null;
-  onend: (() => void) | null;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-};
+type VoiceAttempt = {controller: AbortController; stop?: () => void};
 
-type SpeechWindow = Window & {
-  SpeechRecognition?: new () => Recognition;
-  webkitSpeechRecognition?: new () => Recognition;
-};
-
-const speechErrors: Record<string, string> = {
-  'not-allowed': '请在浏览器中允许麦克风访问，或直接输入文字。',
-  'service-not-allowed': '浏览器限制了语音输入，可以直接输入文字。',
-  'audio-capture': '未检测到可用的麦克风。',
-  'no-speech': '没有听清，可以再试一次。',
-  'network': '语音识别服务暂时无法连接，请重试或直接输入文字。',
-  'language-not-supported': '当前语音服务不支持中文识别，可以直接输入文字。',
+const voiceStatus: Record<VoicePhase, string> = {
+  idle: '',
+  starting: '正在启动麦克风…',
+  listening: '正在听，点停止后会把识别结果填入输入框。',
+  transcribing: '正在转写录音…',
 };
 
 const supportedImages = 'image/jpeg,image/png,image/webp';
@@ -44,14 +30,14 @@ const maxTextLength = 12000;
 export default function MealInput({
   draft, onDraft, file, onFile, onSend, busy, disabled, placeholder, sessionId,
 }: MealInputProps) {
-  const [listening, setListening] = useState(false);
+  const [voicePhase, setVoicePhase] = useState<VoicePhase>('idle');
   const [notice, setNotice] = useState('');
-  const recognitionRef = useRef<Recognition | null>(null);
+  const voiceAttempt = useRef<VoiceAttempt | null>(null);
   const latestDraft = useRef(draft);
   const camera = useRef<HTMLInputElement>(null);
   const picker = useRef<HTMLInputElement>(null);
   const blocked = busy || disabled;
-  const canSend = !blocked && !listening && !!(draft.trim() || file);
+  const canSend = !blocked && voicePhase === 'idle' && !!(draft.trim() || file);
 
   useEffect(() => {
     latestDraft.current = draft;
@@ -62,11 +48,11 @@ export default function MealInput({
   }, [sessionId]);
 
   useEffect(() => {
-    setListening(false);
+    setVoicePhase('idle');
     return () => {
-      const recognition = recognitionRef.current;
-      recognitionRef.current = null;
-      recognition?.abort();
+      const attempt = voiceAttempt.current;
+      voiceAttempt.current = null;
+      attempt?.controller.abort();
     };
   }, [sessionId, blocked]);
 
@@ -82,52 +68,64 @@ export default function MealInput({
     onFile(selected);
   }
 
-  function toggleVoice() {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      return;
-    }
-    const browser = window as SpeechWindow;
-    const SpeechRecognition = browser.SpeechRecognition ?? browser.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setNotice('当前浏览器不支持语音输入，可以直接输入文字。');
+  async function toggleVoice() {
+    const active = voiceAttempt.current;
+    if (active) {
+      if (active.stop) {
+        const stop = active.stop;
+        active.stop = undefined;
+        setVoicePhase('transcribing');
+        try {
+          stop();
+        } catch {
+          voiceAttempt.current = null;
+          active.controller.abort();
+          setVoicePhase('idle');
+          setNotice('无法结束录音，请重试。');
+        }
+      } else {
+        voiceAttempt.current = null;
+        active.controller.abort();
+        setVoicePhase('idle');
+      }
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-    recognition.lang = 'zh-CN';
-    recognition.onresult = event => {
-      if (recognitionRef.current !== recognition) return;
+    const attempt: VoiceAttempt = {controller:new AbortController()};
+    voiceAttempt.current = attempt;
+    setVoicePhase('starting');
+    setNotice('');
 
-      const phrases = [];
-      for (let index = event.resultIndex; index < event.results.length; index++) {
-        const result = event.results[index];
-        if (result.isFinal) phrases.push(result[0].transcript.trim());
-      }
-      const transcript = phrases.join(' ').trim();
-      if (transcript) {
-        const text = [latestDraft.current.trimEnd(), transcript].filter(Boolean).join(' ');
-        latestDraft.current = text.slice(0, maxTextLength);
-        onDraft(latestDraft.current);
-      }
-    };
-    recognition.onerror = ({error}) => {
-      if (recognitionRef.current !== recognition) return;
-      setNotice(error === 'aborted' ? '' : speechErrors[error] ?? '语音输入暂时不可用，可以直接输入文字。');
-    };
-    recognition.onend = () => {
-      if (recognitionRef.current !== recognition) return;
-      recognitionRef.current = null;
-      setListening(false);
-    };
     try {
-      recognition.start();
-      setNotice('');
-      setListening(true);
-    } catch {
-      recognitionRef.current = null;
-      setNotice('无法启动语音输入，请检查麦克风权限。');
+      const text = (await recognizeVoice(
+        attempt.controller.signal,
+        stop => {
+          if (voiceAttempt.current !== attempt) return;
+          attempt.stop = stop;
+          setVoicePhase('listening');
+        },
+        () => {
+          if (voiceAttempt.current !== attempt) return;
+          attempt.stop = undefined;
+          setVoicePhase('transcribing');
+        },
+      )).trim();
+      if (voiceAttempt.current !== attempt) return;
+      if (!text) {
+        setNotice('没有听清，可以再试一次。');
+        return;
+      }
+      const updated = [latestDraft.current.trimEnd(), text].filter(Boolean).join(' ');
+      latestDraft.current = updated.slice(0, maxTextLength);
+      onDraft(latestDraft.current);
+    } catch (error) {
+      if (voiceAttempt.current !== attempt) return;
+      setNotice(error instanceof Error ? error.message : '语音输入暂时不可用，可以直接输入文字。');
+    } finally {
+      if (voiceAttempt.current === attempt) {
+        voiceAttempt.current = null;
+        setVoicePhase('idle');
+      }
     }
   }
 
@@ -164,22 +162,22 @@ export default function MealInput({
     <input ref={camera} hidden type="file" accept="image/*" capture="environment" onChange={choosePhoto}/>
     <input ref={picker} hidden type="file" accept={supportedImages} onChange={choosePhoto}/>
     <div className="meal-input-controls">
-      <button className="meal-input-tool" type="button" disabled={blocked || listening} onClick={() => camera.current?.click()}>
+      <button className="meal-input-tool" type="button" disabled={blocked || voicePhase !== 'idle'} onClick={() => camera.current?.click()}>
         <span className="meal-input-camera" aria-hidden="true"/>拍照
       </button>
-      <button className="meal-input-tool" type="button" disabled={blocked || listening} onClick={() => picker.current?.click()}>
+      <button className="meal-input-tool" type="button" disabled={blocked || voicePhase !== 'idle'} onClick={() => picker.current?.click()}>
         <span className="meal-input-image" aria-hidden="true"/>选照片
       </button>
-      <button className="meal-input-tool" type="button" aria-label="语音输入" aria-pressed={listening}
+      <button className="meal-input-tool" type="button" aria-label="语音输入" aria-pressed={voicePhase==='listening'}
         disabled={blocked} onClick={toggleVoice}>
-        <span className="meal-input-mic" aria-hidden="true"/>{listening ? '停止' : '语音'}
+        <span className="meal-input-mic" aria-hidden="true"/>{voicePhase==='idle' ? '语音' : voicePhase==='listening' ? '停止' : '取消'}
       </button>
       <button className="meal-input-send" type="submit" disabled={!canSend}>
         {busy ? '处理中' : <>发送 <span aria-hidden="true">↑</span></>}
       </button>
     </div>
-    {(listening || notice) && <p className="meal-input-status" role="status">
-      {listening && !notice ? '正在听，识别结果会填入输入框。' : notice}
+    {(voicePhase !== 'idle' || notice) && <p className="meal-input-status" role="status">
+      {notice || voiceStatus[voicePhase]}
     </p>}
   </form>;
 }
