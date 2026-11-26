@@ -48,3 +48,14 @@ check_llm 会产生少量真实 API 调用，验证文本、工具调用和工�
 默认复用推理模型地址和密钥，可独立配置 VISION_API_KEY、VISION_BASE_URL、VISION_MODEL、VISION_PROVIDER。未设置时分别继承推理配置。修改代码或配置后，停止原服务并重新运行 ./scripts/dev.sh，刷新页面后重新上传图片；旧任务保留原先结果。
 
 视觉功能验证见 [P2 验证记录](docs/VISION_VALIDATION.md)。
+
+
+## TODO
+- 优化前端页面，使其更易读
+- 食材添加的bug
+- 烹饪时间线要以流程图的形式，现在太细节了
+- 采购清单和营养的prompt优化
+- 语音合进来
+- 完成的提示音
+- 换菜时加载太久
+- 改成客户端
