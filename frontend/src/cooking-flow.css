@@ -5,14 +5,14 @@
  border-radius: 18px;
  background: #fffdf7;
 }
-.cooking-flow-head, .cooking-flow-meta, .flow-total, .flow-detail-head {
+.cooking-flow-head, .cooking-flow-meta, .flow-total {
  display: flex;
  align-items: center;
  justify-content: space-between;
  flex-wrap: wrap;
  gap: 6px 14px;
 }
-.cooking-flow-head h2, .flow-detail-head h3 { margin: 0; }
+.cooking-flow-head h2 { margin: 0; }
 .cooking-flow-head > span {
  padding: 4px 10px;
  border-radius: 999px;
@@ -109,10 +109,13 @@
  background: #f6efdf;
  color: #55472e;
 }
-.flow-node.completed {
- border-color: #c9d3c5;
- background: #ecf1ea;
+button.flow-node.completed {
+ border-color: #81a08a;
+ background: #ccdfca;
+ color: #234532;
 }
+button.flow-node.completed:hover:enabled { background: #c1d8be; }
+.flow-node.completed .flow-node-time { color: #315738; font-weight: 700; }
 button.flow-node:hover:enabled {
  border-color: #819e81;
  background: #dce9d6;
@@ -142,25 +145,6 @@ button.flow-node.waiting:hover:enabled {
  font-size: .82rem;
 }
 .flow-total progress { flex: 1; height: 7px; accent-color: #456e50; }
-.flow-detail-dialog {
- width: min(460px, calc(100vw - 28px));
- padding: 22px;
- border: 1px solid #c9d6c5;
- border-radius: 16px;
- background: #fffdf7;
- color: #203c2b;
-}
-.flow-detail-dialog::backdrop { background: #1b2c2466; }
-.flow-detail-head p { margin: 3px 0 12px; color: #536356; font-size: .83rem; }
-.flow-detail-steps label {
- display: flex;
- align-items: baseline;
- gap: 9px;
- padding: 9px 0;
- border-top: 1px solid #e1e7da;
-}
-.flow-detail-steps input { margin: 0; accent-color: #456e50; }
-.flow-detail-error { margin-bottom: 0; color: #953e32; }
 @media (max-width: 560px) {
  .flow-chart { --flow-label-width: 79px; }
  .flow-label { padding-inline: 8px; font-size: .75rem; }

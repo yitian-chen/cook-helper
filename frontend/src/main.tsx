@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import CookingFlow, {type Task} from './CookingFlow';
+import CookingFlow, {type CookingTimeline} from './CookingFlow';
 import MealInput from './MealInput';
 import MealReports, {type Nutrition,type Shopping} from './MealReports';
 import WorkspaceIcon from './WorkspaceIcon';
@@ -20,7 +20,7 @@ type Alternative={id:string;name:string;reason:string;minutes:number;added:Quant
 type Preview={dish_id:string;options:Alternative[]};
 type Run={items:Ingredient[];extra_foods:string[];questions:string[];shopping?:Shopping|null;nutrition?:Nutrition|null;swap_preview?:Preview|null;undo_swap?:{menu:{dishes:Dish[]}}|null;session_id:string;revision:number;preferences_version:number;messages:Message[];confirmed?:boolean;ready:boolean;
  menu:{version:number;people:number;dishes:Dish[]}|null;
- timeline:{id:string;minutes:number;steps:Task[];done:string[]}|null;kitchen?:Kitchen|null};
+ timeline:CookingTimeline|null;kitchen?:Kitchen|null};
 async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
  const res=await fetch('/api'+path,{method:method??(body?'POST':'GET'),headers:body instanceof FormData?{}:{'Content-Type':'application/json'},body:body instanceof FormData?body:body?JSON.stringify(body):undefined});
  const data=await res.json(); if(!res.ok)throw new Error(typeof data.detail==='string'?data.detail:'输入无效，请检查后重试'); return data;
@@ -219,9 +219,9 @@ function App(){
    }
   })
  }
- async function mark(t:Task,done:boolean){
+ async function mark(stepIds:string[],done:boolean){
   if(!run?.timeline)return;
-  const body={session_id:run.session_id,timeline_id:run.timeline.id,step_id:t.id,done,revision:run.revision,preferences_version:run.preferences_version};
+  const body={session_id:run.session_id,timeline_id:run.timeline.id,step_ids:stepIds,done,revision:run.revision,preferences_version:run.preferences_version};
   await action(async()=>applyState(await api<Run>('/v2/progress',body,'PUT')));
  }
  const needsClarification=!!run?.questions?.length;
@@ -274,7 +274,7 @@ function App(){
        '拍一张手边食材的照片，也可以用文字或语音补充。',
        '查看推荐的搭配，换掉不合口味的菜，再确认整套餐单。',
        '看一眼需要采购的食材。备齐后，就可以开始安排下厨。',
-       '照着并行流程安排准备与下锅，完成后逐项勾选。',
+       '照着流程安排准备与下锅，做完一项就点一下。',
       ][stage]}</p>
      </div>
      {needsClarification&&<section className="surface action-notice" role="status">
@@ -333,7 +333,7 @@ function App(){
         <button className="primary" disabled={busy||needsClarification} onClick={()=>menuAction('ready')}>食材已备齐 <WorkspaceIcon name="arrow"/></button>}
       </div>
      </>}
-     {stage===3&&run?.timeline&&<CookingFlow timeline={run.timeline} busy={busy} error={error} onMark={mark}/>}
+     {stage===3&&run?.timeline&&<CookingFlow timeline={run.timeline} busy={busy} onMark={mark}/>}
      {stage===3&&run?.ready&&!run.timeline&&<section className="surface action-notice">
       <h2>{storedKitchen?'生成烹饪流程':'配置厨房'}</h2>
       {storedKitchen&&latestResponse&&/需要|冲突|缺少/.test(latestResponse)?

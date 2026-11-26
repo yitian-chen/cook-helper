@@ -83,6 +83,40 @@ def test_restore_dependencies_and_stale_actions(tmp_path,monkeypatch):
         assert client.get("/api/v2/current").json()["timeline"]["done"]==[first["id"]]
         assert turn("ready").status_code==409
 
+def test_grouped_cooking_progress_updates_atomically(tmp_path,monkeypatch):
+    from app.main import app
+    monkeypatch.setattr(store,"DB",tmp_path/"grouped-progress.db")
+    timeline={
+        "id":"timeline",
+        "steps":[
+            {"id":"wash","after":[]},
+            {"id":"slice","after":["wash"]},
+            {"id":"season","after":["slice"]},
+            {"id":"cook","after":["season"]},
+            {"id":"rice","after":[]},
+        ],
+        "done":[],
+    }
+    with TestClient(app) as client:
+        initial=client.get("/api/v2/current").json()
+        store.put("v2:active",{**initial,"timeline":timeline})
+
+        def mark(ids,revision,done=True):
+            return client.put("/api/v2/progress",json={
+                "revision":revision,"preferences_version":1,"timeline_id":"timeline",
+                "step_ids":ids,"done":done,
+            })
+
+        assert mark(["rice","season"],0).status_code==409
+        assert client.get("/api/v2/current").json()["timeline"]["done"]==[]
+        grouped=mark(["season","wash","slice"],0).json()
+        assert grouped["timeline"]["done"]==["season","slice","wash"]
+        assert mark(["wash","slice","season"],0).json()["revision"]==grouped["revision"]
+        cooked=mark(["cook"],grouped["revision"]).json()
+        assert mark(["wash","slice","season"],cooked["revision"],done=False).status_code==409
+        assert client.get("/api/v2/current").json()["timeline"]["done"]==cooked["timeline"]["done"]
+        assert mark(["wash","slice","season","cook"],cooked["revision"],done=False).json()["timeline"]["done"]==[]
+
 def test_preference_change_retains_inventory_and_invalidates_old_plan(tmp_path,monkeypatch):
     from app.main import app
     monkeypatch.setattr(store,"DB",tmp_path/"pref.db")

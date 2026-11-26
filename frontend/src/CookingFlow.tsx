@@ -1,7 +1,6 @@
-import {useEffect, useRef, useState} from 'react';
 import './cooking-flow.css';
 
-export type Task = {
+type Task = {
  id: string;
  dish: string;
  action: string;
@@ -11,8 +10,8 @@ export type Task = {
  hands: number;
 };
 
-type Timeline = {id: string; minutes: number; steps: Task[]; done: string[]};
-type Stage = {tasks: Task[]; start: number; end: number; dish: string; waiting: boolean};
+export type CookingTimeline = {id: string; minutes: number; steps: Task[]; done: string[]};
+type Stage = {tasks: Task[]; start: number; end: number; waiting: boolean};
 
 function makeDishRows(steps: Task[]) {
  const dishes = new Map<string, Task[][]>();
@@ -28,11 +27,11 @@ function makeDishRows(steps: Task[]) {
  }
  return [...dishes].map(([dish, tracks]) => ({
   dish,
-  tracks: tracks.map(tasks => groupStages(dish, tasks)),
+  tracks: tracks.map(groupStages),
  }));
 }
 
-function groupStages(dish: string, tasks: Task[]) {
+function groupStages(tasks: Task[]) {
  const stages: Stage[] = [];
  for (const task of tasks) {
   const previous = stages.at(-1);
@@ -41,7 +40,7 @@ function groupStages(dish: string, tasks: Task[]) {
    previous.tasks.push(task);
    previous.end = task.end;
   } else {
-   stages.push({tasks: [task], start: task.start, end: task.end, dish, waiting: !task.hands});
+   stages.push({tasks: [task], start: task.start, end: task.end, waiting: !task.hands});
   }
  }
  return stages;
@@ -74,20 +73,17 @@ function stageLabel(stage: Stage) {
  return stage.tasks.map(task => task.action.split(/[，,；;]/, 1)[0]).join('、');
 }
 
-export default function CookingFlow({timeline, busy, onMark, error}: {
- timeline: Timeline;
+export default function CookingFlow({timeline, busy, onMark}: {
+ timeline: CookingTimeline;
  busy: boolean;
- error?: string;
- onMark: (task: Task, done: boolean) => void;
+ onMark: (stepIds: string[], done: boolean) => void;
 }) {
  const rows = makeDishRows(timeline.steps);
  const stages = rows.flatMap(row => row.tracks.flat());
  const x = makeTimeScale(stages, timeline.minutes);
  const chartWidth = x.get(timeline.minutes)!;
  const done = new Set(timeline.done);
- const [selected, setSelected] = useState<string | null>(null);
- const details = useRef<HTMLDialogElement>(null);
- const selectedStage = stages.find(stage => stage.tasks[0].id === selected);
+ const completedCount = stages.filter(stage => stage.tasks.every(task => done.has(task.id))).length;
 
  const ticks = [[0, 0]];
  for (const [minute, position] of x) {
@@ -99,18 +95,13 @@ export default function CookingFlow({timeline, busy, onMark, error}: {
   return (position / Math.max(chartWidth, 1)) * 100 + '%';
  }
 
- useEffect(() => {
-  details.current?.close();
-  setSelected(null);
- }, [timeline.id]);
-
  return <section className="cooking-flow" aria-labelledby="flow-title">
   <div className="cooking-flow-head">
    <h2 id="flow-title">烹饪流程</h2>
    <span>约 {timeline.minutes} 分钟上桌</span>
   </div>
   <div className="cooking-flow-meta">
-   <p>时间从左到右，时间重叠的步骤可并行。点开步骤查看和勾选。</p>
+   <p>时间重叠的操作可并行。点一下方块标记完成，再点撤销。</p>
    <span><i className="flow-dot"/> 动手 <i className="flow-dot waiting"/> 等待</span>
   </div>
   <div className="flow-scroll" tabIndex={0} role="region" aria-label="可横向滚动的烹饪流程">
@@ -134,15 +125,13 @@ export default function CookingFlow({timeline, busy, onMark, error}: {
         const complete = tasks.every(task => done.has(task.id));
         return <button type="button" key={id}
          className={'flow-node' + (waiting ? ' waiting' : '') + (complete ? ' completed' : '')}
-         aria-label={dish + '，' + stageLabel(stage) + '，第 ' + start + ' 到 ' + end + ' 分钟' + (complete ? '，已完成' : '')}
-         aria-haspopup="dialog"
-         onClick={() => {
-          setSelected(id);
-          details.current?.showModal();
-         }}
+         aria-label={dish + '，' + stageLabel(stage) + '，第 ' + start + ' 到 ' + end + ' 分钟'}
+         aria-pressed={complete}
+         disabled={busy}
+         onClick={() => onMark(tasks.map(task => task.id), !complete)}
          style={{left:'calc(' + offset(x.get(start)!) + ' + 3px)',width:'calc(' + offset(x.get(end)! - x.get(start)!) + ' - 6px)'}}>
          <span className="flow-node-name">{stageLabel(stage)}</span>
-         <span className="flow-node-time">{start}–{end} 分{complete && <span aria-hidden="true"> · ✓</span>}</span>
+         <span className="flow-node-time">{start}–{end} 分{complete && ' · ✓'}</span>
         </button>;
        })}
       </div>)}
@@ -150,32 +139,9 @@ export default function CookingFlow({timeline, busy, onMark, error}: {
     </div>)}
    </div>
   </div>
-  <div className="flow-total"><progress value={done.size} max={timeline.steps.length || 1}/>
-   <span>已完成 {done.size}/{timeline.steps.length} 步</span>
+  <div className="flow-total" aria-live="polite">
+   <progress aria-label="烹饪进度" value={completedCount} max={stages.length || 1}/>
+   <span>已完成 {completedCount}/{stages.length} 项</span>
   </div>
-  <dialog ref={details} className="flow-detail-dialog" aria-labelledby="flow-detail-title"
-    onClose={() => setSelected(null)}>
-   {selectedStage && <>
-    <div className="flow-detail-head">
-     <div><h3 id="flow-detail-title">{selectedStage.dish}</h3>
-      <p>第 {selectedStage.start}–{selectedStage.end} 分钟</p></div>
-     <button type="button" onClick={() => details.current?.close()}>关闭</button>
-    </div>
-    <div className="flow-detail-steps">
-     {selectedStage.tasks.map(task => {
-      const checked = done.has(task.id);
-      const blocked = checked ?
-       timeline.steps.some(step => done.has(step.id) && step.after.includes(task.id)) :
-       task.after.some(id => !done.has(id));
-      return <label key={task.id}>
-       <input type="checkbox" checked={checked} disabled={busy || blocked}
-         onChange={event => onMark(task, event.target.checked)}/>
-       <span>{task.action}</span>
-      </label>;
-     })}
-    </div>
-    {error && <p className="flow-detail-error" role="alert">{error}</p>}
-   </>}
-  </dialog>
  </section>;
 }

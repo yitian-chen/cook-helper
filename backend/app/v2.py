@@ -29,8 +29,13 @@ class Settings(Versioned):
 
 class Progress(Versioned):
     timeline_id:str
-    step_id:str
     done:bool
+
+class SingleStepProgress(Progress):
+    step_id:str
+
+class GroupProgress(Progress):
+    step_ids:set[str] = Field(min_length=1)
 
 class Preview(Versioned):
     dish_id:str
@@ -68,28 +73,30 @@ def configure(body:Settings):
     return v2_state.save(state,body.revision,body.kitchen.model_dump())
 
 @router.put("/progress")
-def progress(body:Progress):
+def progress(body:SingleStepProgress|GroupProgress):
     state=v2_state.active(body.session_id)
     timeline=state["timeline"]
     if state["preferences_version"]!=body.preferences_version or not timeline or timeline["id"]!=body.timeline_id:
         raise HTTPException(409,"时间线已更新")
     steps={s["id"]:s for s in timeline["steps"]}
-    if body.step_id not in steps:
+    selected=body.step_ids if isinstance(body,GroupProgress) else {body.step_id}
+    if selected-steps.keys():
         raise HTTPException(404,"步骤不存在")
     done=set(timeline["done"])
-    if (body.step_id in done)==body.done:
+    updated=done|selected if body.done else done-selected
+    if updated==done:
         return state
     if body.revision!=state["revision"]:
         raise HTTPException(409,"进度已更新，请刷新")
     if body.done:
-        if set(steps[body.step_id]["after"])-done:
+        added=updated-done
+        if any(parent not in updated for step in added for parent in steps[step]["after"]):
             raise HTTPException(409,"请先完成前置步骤")
-        done.add(body.step_id)
     else:
-        if any(body.step_id in steps[s]["after"] for s in done):
+        removed=done-updated
+        if any(parent in removed for step in updated for parent in steps[step]["after"]):
             raise HTTPException(409,"请先撤销后续步骤")
-        done.remove(body.step_id)
-    timeline["done"]=sorted(done)
+    timeline["done"]=sorted(updated)
     return v2_state.save(state,body.revision)
 
 HELP={
