@@ -198,3 +198,49 @@ def test_first_inventory_tool_uses_request_then_waits_for_menu_confirmation(tmp_
         assert confirmed["confirmed"] and not confirmed["ready"]
         assert not {"scallion","ginger","garlic"} & {item["ingredient_id"] for item in confirmed["shopping"]["buy"]}
         assert confirmed["nutrition"]["per_person"]
+
+
+def test_supplementing_a_confirmed_menu_keeps_dishes_and_refreshes_reports(tmp_path, monkeypatch):
+    from app import v2, v2_state
+    from app.main import app
+    from app.meal import InventoryChange
+
+    monkeypatch.setattr(store, "DB", tmp_path / "confirmed-meal.db")
+    monkeypatch.setenv("REASONING_PROVIDER", "mock")
+    dish = portions(CATALOG["tomato_egg"], 2, 1)
+    menu = {"version": 1, "people": 2, "dishes": [dish], "options": MenuOptions().model_dump()}
+    shopping, nutrition = meal_reports(menu, [])
+    store.put("v2:active", {**v2_state.fresh(1), "menu": menu, "confirmed": True,
+                            "shopping": shopping, "nutrition": nutrition})
+
+    async def recognize_ingredients(image_id):
+        assert image_id == "photo"
+        return {"items": [], "uncertain": ["这是番茄吗？"]}
+
+    async def interpret(text, items, extras, questions):
+        assert text == "是番茄，已经买了两颗"
+        assert questions == ["这是番茄吗？"]
+        return InventoryChange(intent="inventory", items=[
+            {"ingredient_id": "tomato", "amount": 2, "unit": "piece"},
+        ])
+
+    monkeypatch.setattr(v2, "recognize_ingredients", recognize_ingredients)
+    monkeypatch.setattr(v2, "interpret", interpret)
+    with TestClient(app) as client:
+        def turn(revision, **payload):
+            return client.post("/api/v2/turn", json={
+                "revision": revision, "preferences_version": 1, **payload,
+            })
+
+        unclear = turn(0, image_id="photo").json()
+        assert unclear["confirmed"] and unclear["menu"] == menu
+        assert unclear["questions"] == ["这是番茄吗？"]
+        assert unclear["shopping"] is None and unclear["nutrition"] is None
+        assert turn(unclear["revision"], action="ready").status_code == 409
+
+        updated = turn(unclear["revision"], text="是番茄，已经买了两颗").json()
+        assert updated["confirmed"] and updated["menu"] == menu
+        assert not updated["questions"] and not updated["ready"]
+        assert {item["ingredient_id"] for item in updated["shopping"]["buy"]} == {"egg"}
+        assert updated["nutrition"] == nutrition
+        assert not turn(updated["revision"], action="replan").json()["confirmed"]

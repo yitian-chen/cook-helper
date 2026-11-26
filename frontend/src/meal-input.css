@@ -1,0 +1,138 @@
+.meal-input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line, #dce2d7);
+  border-radius: 20px;
+  background: #fffefa;
+  box-shadow: 0 6px 28px #2034290c;
+}
+.meal-input:focus-within { border-color: #97ad99; }
+.meal-input textarea {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 42px;
+  padding: 5px 6px 3px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  resize: none;
+  line-height: 1.55;
+}
+.meal-input-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.meal-input-controls button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  min-height: 39px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.meal-input-tool {
+  background: #f2f4ec;
+  color: #344b39;
+}
+.meal-input-tool:hover:enabled,
+.meal-input-tool[aria-pressed="true"] {
+  background: #e4ecdf;
+  border-color: #b7c9b4;
+}
+.meal-input-controls .meal-input-send {
+  margin-left: auto;
+  min-width: 79px;
+  color: #fff;
+  background: var(--accent, #2b5139);
+}
+.meal-input-controls .meal-input-send:hover:enabled { filter: brightness(1.1); }
+.meal-input-controls .meal-input-send:disabled { opacity: .6; }
+.meal-input-controls span { flex: none; }
+.meal-input-camera, .meal-input-image {
+  position: relative;
+  width: 15px;
+  height: 11px;
+  border: 1.4px solid currentColor;
+  border-radius: 3px;
+}
+.meal-input-camera::before {
+  position: absolute;
+  top: -4px;
+  left: 3px;
+  width: 6px;
+  height: 3px;
+  border: 1.3px solid currentColor;
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+  content: '';
+}
+.meal-input-camera::after {
+  position: absolute;
+  inset: 1px 3px;
+  border: 1.25px solid currentColor;
+  border-radius: 50%;
+  content: '';
+}
+.meal-input-image {
+  overflow: hidden;
+  height: 13px;
+}
+.meal-input-image::after {
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border: 1.25px solid currentColor;
+  transform: rotate(45deg);
+  content: '';
+}
+.meal-input-mic {
+  position: relative;
+  width: 7px;
+  height: 12px;
+  margin: 0 4px 2px;
+  border: 1.3px solid currentColor;
+  border-radius: 5px;
+}
+.meal-input-mic::after {
+  position: absolute;
+  inset: 3px -4px -4px;
+  border: 1.3px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+  content: '';
+}
+.meal-input-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 2px 4px 2px 10px;
+  border-radius: 9px;
+  color: #344b39;
+  background: #edf1e7;
+  font-size: 13px;
+}
+.meal-input-attachment span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meal-input-attachment button { padding: 0 8px; border-color: transparent; background: transparent; }
+.meal-input-status {
+  color: #55675a;
+  font-size: 13px;
+  margin: 7px 5px 0;
+}
+@media (max-width: 480px) {
+  .meal-input { padding: 8px; border-radius: 15px; }
+  .meal-input-controls { gap: 4px; }
+  .meal-input-controls button { gap: 4px; min-height: 40px; padding-inline: 7px; }
+  .meal-input-controls .meal-input-send { min-width: 61px; }
+}
